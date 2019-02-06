@@ -40,6 +40,7 @@ private:
 
     string board[8];                                    //  holds board indices which indicates color move highlights
     string figurines[8];                                //  holds indices of all figurines
+    string temp[8];                                     //  generic array used as a temporal storage
     string linear;                                      //  holds type of figurine on concrete
     string real;                                        //  holds real type of figurine places on a linear coordinate
 
@@ -79,6 +80,376 @@ public:
         return linear;
     }
 
+    char toLinear(char figurine)
+    {
+        for (int i = 0; i < 32; i++)
+        {
+            if (real[i] == figurine)
+                return linear[i];
+        }
+
+        return '.';
+    }
+
+    bool calculateCheck()
+    {
+        //  call this method right before clicking on highlighted board field
+        //  no figurine is going to have changed its range due to the check result
+        //  clicking on highlighted movement field will do nothing when move is impossible due to the check
+        //  so just test if selected movement/attack will not cause check state for you before movement
+
+        if (blackTurn)
+        {
+            int kingX = 0;
+            int kingY = 0;
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)                 //  iterate through figurines array
+                {
+                    temp[i][j] = toLinear(figurines[i][j]);
+
+                    if (temp[i][j] == 'k')
+                    {
+                        kingX = j;
+                        kingY = i;
+                    }
+                }
+            }
+
+            int x = kingX;
+            int y = kingY;
+
+            //  check horizontal or vertical attack
+
+            while (x > 0)
+            {
+                x--;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                    return true;
+            }
+
+            x = kingX;
+
+            while (x < 7)
+            {
+                x++;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                    return true;
+            }
+
+            x = kingX;
+
+            while (y > 0)
+            {
+                y--;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                    return true;
+            }
+
+            y = kingY;
+
+            while (y < 7)
+            {
+                y++;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                    return true;
+            }
+
+            y = kingY;
+
+            //  check diagonal attack
+
+            while (x > 0 && y > 0)
+            {
+                x--;
+                y--;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            while (x > 0 && y < 7)
+            {
+                x--;
+                y++;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            while (x < 7 && y > 0)
+            {
+                x++;
+                y--;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            while (x < 7 && y < 7)
+            {
+                x++;
+                y++;
+
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            //  check attack by knight
+
+            if (y && (x + 1) < 7 && temp[y - 1][x + 2] == 'N')
+                return true;
+
+            if (y < 7 && (x + 1) < 7 && temp[y + 1][x + 2] == 'N')
+                return true;
+
+            if (y && (x - 1) > 0 && temp[y - 1][x - 2] == 'N')
+                return true;
+
+            if (y < 7 && (x - 1) > 0 && temp[y + 1][x - 2] == 'N')
+                return true;
+
+            if ((y + 1) < 7 && x && temp[y + 2][x - 1] == 'N')
+                return true;
+
+            if ((y + 1) < 7 && x < 7 && temp[y + 2][x + 1] == 'N')
+                return true;
+
+            if ((y - 1) > 0 && x && temp[y - 2][x - 1] == 'N')
+                return true;
+
+            if ((y - 1) > 0 && x < 7 && temp[y - 2][x + 1] == 'N')
+                return true;
+
+            //  check attack by king
+
+            if (y && figurines[y - 1][x] == 'K')
+                return true;
+
+            if (y < 7 && figurines[y + 1][x] == 'K')
+                return true;
+
+            if (x && figurines[y][x - 1] == 'K')
+                return true;
+
+            if (x < 7 && figurines[y][x + 1] == 'K')
+                return true;
+
+            if (y && x && figurines[y - 1][x - 1] == 'K')
+                return true;
+
+            if (y && x < 7 && figurines[y - 1][x + 1] == 'K')
+                return true;
+
+            if (y < 7 && x && figurines[y + 1][x - 1] == 'K')
+                return true;
+
+            if (y < 7 && x < 7 && figurines[y + 1][x + 1] == 'K')
+                return true;
+
+            //  check attack by pawn
+
+            if (y && x < 7 && figurines[y - 1][x + 1] == 'P')
+                return true;
+
+            if (y < 7 && x < 7 && figurines[y + 1][x + 1] == 'P')
+                return true;
+        }
+        else
+        {
+            int kingX = 0;
+            int kingY = 0;
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)                 //  iterate through figurines array
+                {
+                    temp[i][j] = toLinear(figurines[i][j]);
+
+                    if (temp[i][j] == 'K')
+                    {
+                        kingX = j;
+                        kingY = i;
+                    }
+                }
+            }
+
+            int x = kingX;
+            int y = kingY;
+
+            //  check horizontal or vertical attack
+
+            while (x > 0)
+            {
+                x--;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                    return true;
+            }
+
+            x = kingX;
+
+            while (x < 7)
+            {
+                x++;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                    return true;
+            }
+
+            x = kingX;
+
+            while (y > 0)
+            {
+                y--;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                    return true;
+            }
+
+            y = kingY;
+
+            while (y < 7)
+            {
+                y++;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                    return true;
+            }
+
+            y = kingY;
+
+            //  check diagonal attack
+
+            while (x > 0 && y > 0)
+            {
+                x--;
+                y--;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            while (x > 0 && y < 7)
+            {
+                x--;
+                y++;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            while (x < 7 && y > 0)
+            {
+                x++;
+                y--;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            while (x < 7 && y < 7)
+            {
+                x++;
+                y++;
+
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                    return true;
+            }
+
+            x = kingX;
+            y = kingY;
+
+            //  check attack by knight
+
+            if (y && (x + 1) < 7 && temp[y - 1][x + 2] == 'n')
+                return true;
+
+            if (y < 7 && (x + 1) < 7 && temp[y + 1][x + 2] == 'n')
+                return true;
+
+            if (y && (x - 1) > 0 && temp[y - 1][x - 2] == 'n')
+                return true;
+
+            if (y < 7 && (x - 1) > 0 && temp[y + 1][x - 2] == 'n')
+                return true;
+
+            if ((y + 1) < 7 && x && temp[y + 2][x - 1] == 'n')
+                return true;
+
+            if ((y + 1) < 7 && x < 7 && temp[y + 2][x + 1] == 'n')
+                return true;
+
+            if ((y - 1) > 0 && x && temp[y - 2][x - 1] == 'n')
+                return true;
+
+            if ((y - 1) > 0 && x < 7 && temp[y - 2][x + 1] == 'n')
+                return true;
+
+            //  check attack by king
+
+            if (y && figurines[y - 1][x] == 'k')
+                return true;
+
+            if (y < 7 && figurines[y + 1][x] == 'k')
+                return true;
+
+            if (x && figurines[y][x - 1] == 'k')
+                return true;
+
+            if (x < 7 && figurines[y][x + 1] == 'k')
+                return true;
+
+            if (y && x && figurines[y - 1][x - 1] == 'k')
+                return true;
+
+            if (y && x < 7 && figurines[y - 1][x + 1] == 'k')
+                return true;
+
+            if (y < 7 && x && figurines[y + 1][x - 1] == 'k')
+                return true;
+
+            if (y < 7 && x < 7 && figurines[y + 1][x + 1] == 'k')
+                return true;
+
+            //  check attack by pawn
+
+            if (y && x && figurines[y - 1][x - 1] == 'p')
+                return true;
+
+            if (y < 7 && x && figurines[y + 1][x - 1] == 'p')
+                return true;
+        }
+
+        return false;
+    }
+
     void refreshBoard(int index)                        //  handle click on concrete figurine with click index attribute
     {
         for (int j = 0; j < 8; j++)
@@ -96,7 +467,7 @@ public:
         {
             for (int i = 0; i < 8; i++)
             {
-                if (ch == figurines[i][j])              //  cocnrete figurine found inside array
+                if (ch == figurines[i][j])              //  concrete figurine found inside array
                 {
                     selection[0] = i;                   //  markup actual figurine selection
                     selection[1] = j;
@@ -1755,7 +2126,7 @@ int main(int argc, char ** argv)                        //  required main method
             cube.render();
         }
 
-        for (int i = 64; i < 96; i++)                   //  render all figures
+        for (int i = 64; i < 96; i++)                   //  render all figurines
         {
             glm::mat4 modelOne;
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
@@ -1844,7 +2215,7 @@ int main(int argc, char ** argv)                        //  required main method
             cube.render();
         }
 
-        for (int i = 64; i < 96; i++)                   //  render all figures
+        for (int i = 64; i < 96; i++)                   //  render all figurines
         {
             glm::mat4 modelOne;
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
