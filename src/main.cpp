@@ -1810,9 +1810,9 @@ int main(int argc, char ** argv)                        //  required main method
     GLFWwindow * window;
 
     if (fullscreen)                                     //  toggle fullscreen mode by the appropriate flag value
-        window = glfwCreateWindow(window_width, window_height, "Chess", glfwGetPrimaryMonitor(), nullptr);
+        window = glfwCreateWindow(window_width, window_height, "Richess", glfwGetPrimaryMonitor(), nullptr);
     else
-        window = glfwCreateWindow(window_width, window_height, "Chess", nullptr, nullptr);
+        window = glfwCreateWindow(window_width, window_height, "Richess", nullptr, nullptr);
 
     if (window == nullptr)                              //  window has not been created successfully
     {
