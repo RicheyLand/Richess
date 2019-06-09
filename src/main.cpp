@@ -519,9 +519,17 @@ public:
 
                     if (ch == 'p')                      //  black pawn selected by mouse
                     {
+                        if (j == 1)                     //  pawn can move by two blocks on the first move
+                        {
+                            if (j < 6 && figurines[i][j + 2] == '.')
+                            {
+                                board[i][j + 2] = 'M';  //  move by two blocks
+                            }
+                        }
+
                         if (j < 7 && figurines[i][j + 1] == '.')
                         {
-                            board[i][j + 1] = 'M';      //  move
+                            board[i][j + 1] = 'M';      //  move by one block
                         }
 
                         if (i && j < 7 && figurines[i - 1][j + 1] != '.' && isupper(figurines[i - 1][j + 1]))
@@ -536,6 +544,14 @@ public:
                     }
                     else if (ch == 'P')                 //  white pawn
                     {
+                        if (j == 6)                     //  pawn can move by two blocks on the first move
+                        {
+                            if (j - 2 >= 0 && figurines[i][j - 2] == '.')
+                            {
+                                board[i][j - 2] = 'M';  //  move by two blocks
+                            }
+                        }
+
                         if (j && figurines[i][j - 1] == '.')
                         {
                             board[i][j - 1] = 'M';      //  move
