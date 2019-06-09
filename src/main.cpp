@@ -71,8 +71,20 @@ public:
         figurines[1] = "jb....BJ";                      //  B  np....PN  W
         figurines[0] = "ia....AI";                      //  B  rp....PR  W
 
+        // figurines[7] = "p......P";                      //  B  rp....PR  W
+        // figurines[6] = "o......O";                      //  B  np....PN  W
+        // figurines[5] = "n......N";                      //  B  bp....PB  W
+        // figurines[4] = "m......M";                      //  B  kp....PK  W
+        // figurines[3] = "l......L";                      //  B  qp....PQ  W
+        // figurines[2] = "k......K";                      //  B  bp....PB  W
+        // figurines[1] = "j......J";                      //  B  np....PN  W
+        // figurines[0] = "i......I";                      //  B  rp....PR  W
+
         linear = "ppppppppPPPPPPPPrnbqkbnrRNBQKBNR";
         real = "abcdefghABCDEFGHijklmnopIJKLMNOP";
+
+        // linear = "................rnbqkbnrRNBQKBNR";
+        // real = "................ijklmnopIJKLMNOP";
     }
 
     string getLinear()                                  //  linear string getter
@@ -91,13 +103,8 @@ public:
         return '.';
     }
 
-    bool calculateCheck()
+    bool calculateCheck()                               //  check if king is under attack
     {
-        //  call this method right before clicking on highlighted board field
-        //  no figurine is going to have changed its range due to the check result
-        //  clicking on highlighted movement field will do nothing when move is impossible due to the check
-        //  so just test if selected movement/attack will not cause check state for you before movement
-
         if (blackTurn)
         {
             int kingX = 0;
@@ -105,14 +112,16 @@ public:
 
             for (int i = 0; i < 8; i++)
             {
-                for (int j = 0; j < 8; j++)                 //  iterate through figurines array
+                for (int j = 0; j < 8; j++)             //  iterate through figurines array
                 {
                     temp[i][j] = toLinear(figurines[i][j]);
 
-                    if (temp[i][j] == 'k')
+                    if (temp[i][j] == 'k')              //  king figurine has been found
                     {
-                        kingX = j;
+                        kingX = j;                      //  save coordinates
                         kingY = i;
+
+                        break;
                     }
                 }
             }
@@ -122,91 +131,107 @@ public:
 
             //  check horizontal or vertical attack
 
-            while (x > 0)
+            while (x > 0)                               //  handle border of the game board
             {
                 x--;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
 
-            while (x < 7)
+            while (x < 7)                               //  handle border of the game board
             {
                 x++;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
 
-            while (y > 0)
+            while (y > 0)                               //  handle border of the game board
             {
                 y--;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             y = kingY;
 
-            while (y < 7)
+            while (y < 7)                               //  handle border of the game board
             {
                 y++;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'R')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'R')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             y = kingY;
 
             //  check diagonal attack
 
-            while (x > 0 && y > 0)
+            while (x > 0 && y > 0)                      //  handle border of the game board
             {
                 x--;
                 y--;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
             y = kingY;
 
-            while (x > 0 && y < 7)
+            while (x > 0 && y < 7)                      //  handle border of the game board
             {
                 x--;
                 y++;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
             y = kingY;
 
-            while (x < 7 && y > 0)
+            while (x < 7 && y > 0)                      //  handle border of the game board
             {
                 x++;
                 y--;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
             y = kingY;
 
-            while (x < 7 && y < 7)
+            while (x < 7 && y < 7)                      //  handle border of the game board
             {
                 x++;
                 y++;
 
-                if (temp[y][x] == 'Q' || temp[y][x] == 'B')
+                if (temp[y][x] == 'Q' || temp[y][x] == 'B')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
@@ -240,36 +265,36 @@ public:
 
             //  check attack by king
 
-            if (y && figurines[y - 1][x] == 'K')
+            if (y && temp[y - 1][x] == 'K')
                 return true;
 
-            if (y < 7 && figurines[y + 1][x] == 'K')
+            if (y < 7 && temp[y + 1][x] == 'K')
                 return true;
 
-            if (x && figurines[y][x - 1] == 'K')
+            if (x && temp[y][x - 1] == 'K')
                 return true;
 
-            if (x < 7 && figurines[y][x + 1] == 'K')
+            if (x < 7 && temp[y][x + 1] == 'K')
                 return true;
 
-            if (y && x && figurines[y - 1][x - 1] == 'K')
+            if (y && x && temp[y - 1][x - 1] == 'K')
                 return true;
 
-            if (y && x < 7 && figurines[y - 1][x + 1] == 'K')
+            if (y && x < 7 && temp[y - 1][x + 1] == 'K')
                 return true;
 
-            if (y < 7 && x && figurines[y + 1][x - 1] == 'K')
+            if (y < 7 && x && temp[y + 1][x - 1] == 'K')
                 return true;
 
-            if (y < 7 && x < 7 && figurines[y + 1][x + 1] == 'K')
+            if (y < 7 && x < 7 && temp[y + 1][x + 1] == 'K')
                 return true;
 
             //  check attack by pawn
 
-            if (y && x < 7 && figurines[y - 1][x + 1] == 'P')
+            if (y && x < 7 && temp[y - 1][x + 1] == 'P')
                 return true;
 
-            if (y < 7 && x < 7 && figurines[y + 1][x + 1] == 'P')
+            if (y < 7 && x < 7 && temp[y + 1][x + 1] == 'P')
                 return true;
         }
         else
@@ -279,14 +304,16 @@ public:
 
             for (int i = 0; i < 8; i++)
             {
-                for (int j = 0; j < 8; j++)                 //  iterate through figurines array
+                for (int j = 0; j < 8; j++)             //  iterate through figurines array
                 {
                     temp[i][j] = toLinear(figurines[i][j]);
 
-                    if (temp[i][j] == 'K')
+                    if (temp[i][j] == 'K')              //  king figurine has been found
                     {
-                        kingX = j;
+                        kingX = j;                      //  save coordinates
                         kingY = i;
+
+                        break;
                     }
                 }
             }
@@ -296,91 +323,107 @@ public:
 
             //  check horizontal or vertical attack
 
-            while (x > 0)
+            while (x > 0)                               //  handle border of the game board
             {
                 x--;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
 
-            while (x < 7)
+            while (x < 7)                               //  handle border of the game board
             {
                 x++;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
 
-            while (y > 0)
+            while (y > 0)                               //  handle border of the game board
             {
                 y--;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             y = kingY;
 
-            while (y < 7)
+            while (y < 7)                               //  handle border of the game board
             {
                 y++;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'r')
+                if (temp[y][x] == 'q' || temp[y][x] == 'r')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             y = kingY;
 
             //  check diagonal attack
 
-            while (x > 0 && y > 0)
+            while (x > 0 && y > 0)                      //  handle border of the game board
             {
                 x--;
                 y--;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
             y = kingY;
 
-            while (x > 0 && y < 7)
+            while (x > 0 && y < 7)                      //  handle border of the game board
             {
                 x--;
                 y++;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
             y = kingY;
 
-            while (x < 7 && y > 0)
+            while (x < 7 && y > 0)                      //  handle border of the game board
             {
                 x++;
                 y--;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
             y = kingY;
 
-            while (x < 7 && y < 7)
+            while (x < 7 && y < 7)                      //  handle border of the game board
             {
                 x++;
                 y++;
 
-                if (temp[y][x] == 'q' || temp[y][x] == 'b')
+                if (temp[y][x] == 'q' || temp[y][x] == 'b')     //  king is under attack
                     return true;
+                else if (temp[y][x] != '.')             //  blocking figurine has been found
+                    break;
             }
 
             x = kingX;
@@ -414,36 +457,36 @@ public:
 
             //  check attack by king
 
-            if (y && figurines[y - 1][x] == 'k')
+            if (y && temp[y - 1][x] == 'k')
                 return true;
 
-            if (y < 7 && figurines[y + 1][x] == 'k')
+            if (y < 7 && temp[y + 1][x] == 'k')
                 return true;
 
-            if (x && figurines[y][x - 1] == 'k')
+            if (x && temp[y][x - 1] == 'k')
                 return true;
 
-            if (x < 7 && figurines[y][x + 1] == 'k')
+            if (x < 7 && temp[y][x + 1] == 'k')
                 return true;
 
-            if (y && x && figurines[y - 1][x - 1] == 'k')
+            if (y && x && temp[y - 1][x - 1] == 'k')
                 return true;
 
-            if (y && x < 7 && figurines[y - 1][x + 1] == 'k')
+            if (y && x < 7 && temp[y - 1][x + 1] == 'k')
                 return true;
 
-            if (y < 7 && x && figurines[y + 1][x - 1] == 'k')
+            if (y < 7 && x && temp[y + 1][x - 1] == 'k')
                 return true;
 
-            if (y < 7 && x < 7 && figurines[y + 1][x + 1] == 'k')
+            if (y < 7 && x < 7 && temp[y + 1][x + 1] == 'k')
                 return true;
 
             //  check attack by pawn
 
-            if (y && x && figurines[y - 1][x - 1] == 'p')
+            if (y && x && temp[y - 1][x - 1] == 'p')
                 return true;
 
-            if (y < 7 && x && figurines[y + 1][x - 1] == 'p')
+            if (y < 7 && x && temp[y + 1][x - 1] == 'p')
                 return true;
         }
 
@@ -1606,11 +1649,6 @@ public:
 
                     figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
                     figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
-                    selection[0] = selection[1] = -1;
-
-                    camera.toggle();                    //  toggle camera to trace second player
-                    animationActive = true;             //  activate animation flag
-                    blackTurn = !blackTurn;             //  opponent is now on the turn
 
                     return;
                 }
@@ -1658,7 +1696,7 @@ public:
         }
     }
 
-    void handle()                                       //  handles click on any game object and executes appropropriate reaction
+    void handle()                                       //  handles click on any game object and executes appropriate reaction
     {
         if (animationActive)
             return;
@@ -1669,7 +1707,29 @@ public:
             {
                 if (highlight[clicked])                 //  check if selected position is highlighted
                 {
-                    refreshFigurines(clicked);
+                    string oldLinear = linear;
+                    string oldFigurines[8];
+
+                    for (int i = 0; i < 8; i++)
+                        oldFigurines[i] = figurines[i];    //  save actual game board state
+
+                    refreshFigurines(clicked);          //  calculate new turn
+
+                    if (calculateCheck())               //  king is under attack
+                    {
+                        linear = oldLinear;
+
+                        for (int i = 0; i < 8; i++)
+                            figurines[i] = oldFigurines[i];    //  restore old game board state
+
+                        clicked = -1;
+                        return;                         //  cancel selected turn
+                    }
+
+                    selection[0] = selection[1] = -1;   //  remove actual selection
+                    camera.toggle();                    //  toggle camera to trace second player
+                    animationActive = true;             //  activate animation flag
+                    blackTurn = !blackTurn;             //  opponent is now on the turn
 
                     for (int i = 0; i <= 96; i++)       //  remove all highlights from game board
                     {
