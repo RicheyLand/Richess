@@ -45,6 +45,7 @@ private:
     string real;                                        //  holds real type of figurine places on a linear coordinate
 
     int selection[2];                                   //  holds selection coordinates of highlighted figure
+    int lastSelection[2];                               //  holds destination coordinates of last movement
 
 public:
     bool animationActive = false;                       //  tells if camera movement needs to be animated
@@ -85,6 +86,8 @@ public:
 
         // linear = "................rnbqkbnrRNBQKBNR";
         // real = "................ijklmnopIJKLMNOP";
+
+        lastSelection[0] = lastSelection[1] = -1;
     }
 
     string getLinear()                                  //  linear string getter
@@ -521,7 +524,7 @@ public:
                     {
                         if (j == 1)                     //  pawn can move by two blocks on the first move
                         {
-                            if (j < 6 && figurines[i][j + 2] == '.')
+                            if (j < 6 && figurines[i][j + 1] == '.' && figurines[i][j + 2] == '.')
                             {
                                 board[i][j + 2] = 'M';  //  move by two blocks
                             }
@@ -541,12 +544,26 @@ public:
                         {
                             board[i + 1][j + 1] = 'A';  //  attack
                         }
+
+                        if (j == 4)
+                        {
+                            if (i && toLinear(figurines[i - 1][j]) == 'P')
+                            {
+                                if (i - 1 == lastSelection[0] && j == lastSelection[1])
+                                    board[i - 1][j] = 'A';  //  En passant rule
+                            }
+                            else if (i < 7 && toLinear(figurines[i + 1][j]) == 'P')
+                            {
+                                if (i + 1 == lastSelection[0] && j == lastSelection[1])
+                                    board[i + 1][j] = 'A';  //  En passant rule
+                            }
+                        }
                     }
                     else if (ch == 'P')                 //  white pawn
                     {
                         if (j == 6)                     //  pawn can move by two blocks on the first move
                         {
-                            if (j - 2 >= 0 && figurines[i][j - 2] == '.')
+                            if (j - 2 >= 0 && figurines[i][j - 1] == '.' && figurines[i][j - 2] == '.')
                             {
                                 board[i][j - 2] = 'M';  //  move by two blocks
                             }
@@ -565,6 +582,20 @@ public:
                         if (i < 7 && j && figurines[i + 1][j - 1] != '.' && islower(figurines[i + 1][j - 1]))
                         {
                             board[i + 1][j - 1] = 'A';  //  attack
+                        }
+
+                        if (j == 3)
+                        {
+                            if (i && toLinear(figurines[i - 1][j]) == 'p')
+                            {
+                                if (i - 1 == lastSelection[0] && j == lastSelection[1])
+                                    board[i - 1][j] = 'A';  //  En passant rule
+                            }
+                            else if (i < 7 && toLinear(figurines[i + 1][j]) == 'p')
+                            {
+                                if (i + 1 == lastSelection[0] && j == lastSelection[1])
+                                    board[i + 1][j] = 'A';  //  En passant rule
+                            }
                         }
                     }
                     else if (ch == 'r')                 //  black rook selected by mouse
@@ -1666,6 +1697,9 @@ public:
                     figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
                     figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
 
+                    lastSelection[0] = i;
+                    lastSelection[1] = j;
+
                     return;
                 }
 
@@ -1723,6 +1757,9 @@ public:
             {
                 if (highlight[clicked])                 //  check if selected position is highlighted
                 {
+                    int oldSelection[2];
+                    oldSelection[0] = lastSelection[0];
+                    oldSelection[1] = lastSelection[1];
                     string oldLinear = linear;
                     string oldFigurines[8];
 
@@ -1733,7 +1770,10 @@ public:
 
                     if (calculateCheck())               //  king is under attack
                     {
-                        linear = oldLinear;
+                        lastSelection[0] = oldSelection[0];     //  restore old coordinates
+                        lastSelection[1] = oldSelection[1];
+
+                        linear = oldLinear;             //  restore old array
 
                         for (int i = 0; i < 8; i++)
                             figurines[i] = oldFigurines[i];    //  restore old game board state
