@@ -46,6 +46,7 @@ private:
 
     int selection[2];                                   //  holds selection coordinates of highlighted figure
     int lastSelection[2];                               //  holds destination coordinates of last movement
+    int promotion = -1;                                 //  holds index of promoted pawn on the border line of game board
 
 public:
     bool animationActive = false;                       //  tells if camera movement needs to be animated
@@ -72,21 +73,10 @@ public:
         figurines[1] = "jb....BJ";                      //  B  np....PN  W
         figurines[0] = "ia....AI";                      //  B  rp....PR  W
 
-        // figurines[7] = "p......P";                      //  B  rp....PR  W
-        // figurines[6] = "o......O";                      //  B  np....PN  W
-        // figurines[5] = "n......N";                      //  B  bp....PB  W
-        // figurines[4] = "m......M";                      //  B  kp....PK  W
-        // figurines[3] = "l......L";                      //  B  qp....PQ  W
-        // figurines[2] = "k......K";                      //  B  bp....PB  W
-        // figurines[1] = "j......J";                      //  B  np....PN  W
-        // figurines[0] = "i......I";                      //  B  rp....PR  W
-
         linear = "ppppppppPPPPPPPPrnbqkbnrRNBQKBNR";
         real = "abcdefghABCDEFGHijklmnopIJKLMNOP";
 
-        // linear = "................rnbqkbnrRNBQKBNR";
-        // real = "................ijklmnopIJKLMNOP";
-
+        selection[0] = selection[1] = -1;
         lastSelection[0] = lastSelection[1] = -1;
     }
 
@@ -1667,10 +1657,10 @@ public:
         }
     }
 
-    void refreshFigurines(int index)                    //  rehresh game board after clicking onto highlighted game board board
+    bool refreshFigurines(int index)                    //  rehresh game board after clicking onto highlighted game board board
     {
         if (selection[0] == -1 || selection[1] == -1)   //  do nothing when nothing is selected
-            return;
+            return false;
 
         int count = 0;
 
@@ -1680,6 +1670,12 @@ public:
             {
                 if (count == index)
                 {
+                    string oldLinear = linear;
+                    string oldFigurines[8];
+
+                    for (int i = 0; i < 8; i++)
+                        oldFigurines[i] = figurines[i];    //  save actual game board state
+
                     if (board[i][j] == 'A')             //  attack is going to be performed
                     {
                         char ch = figurines[i][j];
@@ -1697,15 +1693,58 @@ public:
                     figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
                     figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
 
+                    if (calculateCheck())               //  king is under attack
+                    {
+                        linear = oldLinear;             //  restore old array
+
+                        for (int i = 0; i < 8; i++)
+                            figurines[i] = oldFigurines[i];    //  restore old game board state
+
+                        return false;
+                    }
+
                     lastSelection[0] = i;
                     lastSelection[1] = j;
 
-                    return;
+                    promotion = -1;                     //  reset pawn promotion flag
+
+                    if (j == 0 && toLinear(figurines[i][j]) == 'P')     //  handle pawn promotion
+                    {
+                        char ch = figurines[i][j];
+
+                        for (int k = 0; k < 32; k++)
+                        {
+                            if (real[k] == ch)
+                            {
+                                linear[k] = 'Q';        //  replace pawn figurine by queen figurine
+                                promotion = i;          //  set promotion flag to appropriate index value
+                                break;
+                            }
+                        }
+                    }
+                    else if (j == 7 && toLinear(figurines[i][j]) == 'p')    //  handle pawn promotion
+                    {
+                        char ch = figurines[i][j];
+
+                        for (int k = 0; k < 32; k++)
+                        {
+                            if (real[k] == ch)
+                            {
+                                linear[k] = 'q';        //  replace pawn figurine by queen figurine
+                                promotion = i;          //  set promotion flag to appropriate index value
+                                break;
+                            }
+                        }
+                    }
+
+                    return true;
                 }
 
                 count++;
             }
         }
+
+        return false;
     }
 
     void refreshPositions()                             //  refresh real coordinates of all figurines after performed turn
@@ -1757,29 +1796,10 @@ public:
             {
                 if (highlight[clicked])                 //  check if selected position is highlighted
                 {
-                    int oldSelection[2];
-                    oldSelection[0] = lastSelection[0];
-                    oldSelection[1] = lastSelection[1];
-                    string oldLinear = linear;
-                    string oldFigurines[8];
-
-                    for (int i = 0; i < 8; i++)
-                        oldFigurines[i] = figurines[i];    //  save actual game board state
-
-                    refreshFigurines(clicked);          //  calculate new turn
-
-                    if (calculateCheck())               //  king is under attack
+                    if (refreshFigurines(clicked) == false)     //  calculate new turn
                     {
-                        lastSelection[0] = oldSelection[0];     //  restore old coordinates
-                        lastSelection[1] = oldSelection[1];
-
-                        linear = oldLinear;             //  restore old array
-
-                        for (int i = 0; i < 8; i++)
-                            figurines[i] = oldFigurines[i];    //  restore old game board state
-
                         clicked = -1;
-                        return;                         //  cancel selected turn
+                        return;
                     }
 
                     selection[0] = selection[1] = -1;   //  remove actual selection
@@ -1808,7 +1828,30 @@ public:
                 {
                     if (blackTurn)                      //  black player is on turn
                     {
-                        if ((clicked >= 64 && clicked < 72) || (clicked >= 80 && clicked < 88))
+                        if (promotion >= 0 && clicked >= 72 && clicked < 80)    //  handle promotion of opponent's pawn
+                        {
+                            int index = clicked;
+                            index -= 64;                //  ignore game board blocks
+                            char ch = real[index];      //  use mapping of index to real type of figurine
+
+                            if (ch == figurines[promotion][0])  //  concrete figurine found inside array
+                            {
+                                ch = linear[index];     //  use mapping to linear type of figurine
+
+                                if (ch == 'Q')          //  handle toggling between allowed promotion figurines
+                                    linear[index] = 'N';
+                                else if (ch == 'N')
+                                    linear[index] = 'R';
+                                else if (ch == 'R')
+                                    linear[index] = 'B';
+                                else if (ch == 'B')
+                                    linear[index] = 'Q';
+                            }
+
+                            clicked = -1;
+                            return;                     //  just toggle figurine without affecting opponent's turn
+                        }
+                        else if ((clicked >= 64 && clicked < 72) || (clicked >= 80 && clicked < 88))
                         {
                             for (int i = 0; i <= 96; i++)   //  remove all highlights from game board
                             {
@@ -1823,7 +1866,30 @@ public:
                     }
                     else                                //  white player is on turn
                     {
-                        if ((clicked >= 72 && clicked < 80) || (clicked >= 88 && clicked < 96))
+                        if (promotion >= 0 && clicked >= 64 && clicked < 72)    //  handle promotion of opponent's pawn
+                        {
+                            int index = clicked;
+                            index -= 64;                //  ignore game board blocks
+                            char ch = real[index];      //  use mapping of index to real type of figurine
+
+                            if (ch == figurines[promotion][7])  //  concrete figurine found inside array
+                            {
+                                ch = linear[index];     //  use mapping to linear type of figurine
+
+                                if (ch == 'q')          //  handle toggling between allowed promotion figurines
+                                    linear[index] = 'n';
+                                else if (ch == 'n')
+                                    linear[index] = 'r';
+                                else if (ch == 'r')
+                                    linear[index] = 'b';
+                                else if (ch == 'b')
+                                    linear[index] = 'q';
+                            }
+
+                            clicked = -1;
+                            return;                     //  just toggle figurine without affecting opponent's turn
+                        }
+                        else if ((clicked >= 72 && clicked < 80) || (clicked >= 88 && clicked < 96))
                         {
                             for (int i = 0; i <= 96; i++)   //  remove all highlights from game board
                             {
