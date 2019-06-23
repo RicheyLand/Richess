@@ -48,6 +48,12 @@ private:
     int lastSelection[2];                               //  holds destination coordinates of last movement
     int promotion = -1;                                 //  holds index of promoted pawn on the border line of game board
 
+    bool blackCastlingKingside = true;                  //  holds if kingside castling is allowed due to the initial positions of figurines
+    bool blackCastlingQueenside = true;                 //  holds if queenside castling is allowed due to the initial positions of figurines
+
+    bool whiteCastlingKingside = true;                  //  holds if kingside castling is allowed due to the initial positions of figurines
+    bool whiteCastlingQueenside = true;                 //  holds if queenside castling is allowed due to the initial positions of figurines
+
 public:
     bool animationActive = false;                       //  tells if camera movement needs to be animated
     double previous = 0.0f;                             //  holds last saved timestamp value
@@ -73,8 +79,20 @@ public:
         figurines[1] = "jb....BJ";                      //  B  np....PN  W
         figurines[0] = "ia....AI";                      //  B  rp....PR  W
 
+        // figurines[7] = "p......P";                      //  B  rp....PR  W
+        // figurines[6] = "........";                      //  B  np....PN  W
+        // figurines[5] = "........";                      //  B  bp....PB  W
+        // figurines[4] = "m......M";                      //  B  kp....PK  W
+        // figurines[3] = "........";                      //  B  qp....PQ  W
+        // figurines[2] = "........";                      //  B  bp....PB  W
+        // figurines[1] = "........";                      //  B  np....PN  W
+        // figurines[0] = "i......I";                      //  B  rp....PR  W
+
         linear = "ppppppppPPPPPPPPrnbqkbnrRNBQKBNR";
         real = "abcdefghABCDEFGHijklmnopIJKLMNOP";
+
+        // linear = "................r...k..rR...K..R";
+        // real = "abcdefghABCDEFGHijklmnopIJKLMNOP";
 
         selection[0] = selection[1] = -1;
         lastSelection[0] = lastSelection[1] = -1;
@@ -1340,6 +1358,21 @@ public:
                     }
                     else if (ch == 'k')                 //  black king selected by mouse
                     {
+                        if (i == 4 && j == 0)
+                        {
+                            if (blackCastlingKingside)
+                            {
+                                if (toLinear(figurines[7][0]) == 'r' && figurines[6][0] == '.' && figurines[5][0] == '.')   //  check if kingside castling is possible
+                                    board[7][0] = 'C';      //  mark castling on the board
+                            }
+
+                            if (blackCastlingQueenside)
+                            {
+                                if (toLinear(figurines[0][0]) == 'r' && figurines[1][0] == '.' && figurines[2][0] == '.' && figurines[3][0] == '.')     //  check if queenside castling is possible
+                                    board[0][0] = 'C';      //  mark castling on the board
+                            }
+                        }
+
                         if (i && figurines[i - 1][j] == '.')    //  empty block on the coordinate
                         {
                             board[i - 1][j] = 'M';      //  move
@@ -1414,6 +1447,21 @@ public:
                     }
                     else if (ch == 'K')                 //  white king selected by mouse
                     {
+                        if (i == 4 && j == 7)
+                        {
+                            if (whiteCastlingKingside)
+                            {
+                                if (toLinear(figurines[7][7]) == 'R' && figurines[6][7] == '.' && figurines[5][7] == '.')   //  check if kingside castling is possible
+                                    board[7][7] = 'C';      //  mark castling on the board
+                            }
+
+                            if (whiteCastlingQueenside)
+                            {
+                                if (toLinear(figurines[0][7]) == 'R' && figurines[1][7] == '.' && figurines[2][7] == '.' && figurines[3][7] == '.')     //  check if queenside castling is possible
+                                    board[0][7] = 'C';      //  mark castling on the board
+                            }
+                        }
+
                         if (i && figurines[i - 1][j] == '.')    //  empty block on the coordinate
                         {
                             board[i - 1][j] = 'M';      //  move
@@ -1643,9 +1691,10 @@ public:
                         {
                             if (board[i][j] == 'M')     //  move
                                 highlight[count] = 1;   //  save found coordinates into highlight array
-
-                            if (board[i][j] == 'A')     //  attack
+                            else if (board[i][j] == 'A')     //  attack
                                 highlight[count] = 2;   //  save found coordinates into highlight array
+                            else if (board[i][j] == 'C')     //  castling
+                                highlight[count] = 3;   //  save found coordinates into highlight array
 
                             count++;
                         }
@@ -1676,7 +1725,60 @@ public:
                     for (int i = 0; i < 8; i++)
                         oldFigurines[i] = figurines[i];    //  save actual game board state
 
-                    if (board[i][j] == 'A')             //  attack is going to be performed
+                    if (board[i][j] == 'M')             //  move is going to be performed
+                    {
+                        figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
+                        figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
+                    }
+                    else if (board[i][j] == 'C')        //  castling is going to be performed
+                    {                                   //  attack check of all three king's movement positions needs to be performed
+                        if (calculateCheck())           //  king is under attack on its initial position
+                        {
+                            linear = oldLinear;         //  restore old array
+
+                            for (int i = 0; i < 8; i++)
+                                figurines[i] = oldFigurines[i];    //  restore old game board state
+
+                            return false;
+                        }
+
+                        if (i == 0)                     //  differ kingside and queenside castling
+                        {
+                            figurines[3][j] = figurines[4][j];
+                            figurines[4][j] = '.';
+                        }
+                        else if (i == 7)
+                        {
+                            figurines[5][j] = figurines[4][j];
+                            figurines[4][j] = '.';
+                        }
+
+                        if (calculateCheck())           //  king is under attack on its movement position
+                        {
+                            linear = oldLinear;         //  restore old array
+
+                            for (int i = 0; i < 8; i++)
+                                figurines[i] = oldFigurines[i];    //  restore old game board state
+
+                            return false;
+                        }
+
+                        if (i == 0)                     //  differ kingside and queenside castling
+                        {
+                            figurines[2][j] = figurines[3][j];
+
+                            figurines[3][j] = figurines[0][j];
+                            figurines[0][j] = '.';
+                        }
+                        else if (i == 7)
+                        {
+                            figurines[6][j] = figurines[5][j];
+
+                            figurines[5][j] = figurines[7][j];
+                            figurines[7][j] = '.';
+                        }
+                    }
+                    else if (board[i][j] == 'A')        //  attack is going to be performed
                     {
                         char ch = figurines[i][j];
 
@@ -1688,12 +1790,12 @@ public:
                                 break;
                             }
                         }
+
+                        figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
+                        figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
                     }
 
-                    figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
-                    figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
-
-                    if (calculateCheck())               //  king is under attack
+                    if (calculateCheck())               //  king is under attack on its final position
                     {
                         linear = oldLinear;             //  restore old array
 
@@ -1701,6 +1803,44 @@ public:
                             figurines[i] = oldFigurines[i];    //  restore old game board state
 
                         return false;
+                    }
+
+                    if (board[i][j] == 'C')             //  castling has just been performed
+                    {
+                        if (blackTurn)
+                        {
+                            blackCastlingKingside = false;  //  castling is not allowed anymore for black player
+                            blackCastlingQueenside = false;
+                        }
+                        else
+                        {
+                            whiteCastlingKingside = false;  //  castling is not allowed anymore for white player
+                            whiteCastlingQueenside = false;
+                        }
+                    }
+                    else if (toLinear(figurines[i][j]) == 'k')
+                    {
+                        blackCastlingKingside = false;  //  castling is not allowed anymore for black player
+                        blackCastlingQueenside = false;
+                    }
+                    else if (toLinear(figurines[i][j]) == 'K')
+                    {
+                        whiteCastlingKingside = false;  //  castling is not allowed anymore for white player
+                        whiteCastlingQueenside = false;
+                    }
+                    else if (toLinear(figurines[i][j]) == 'r')
+                    {
+                        if (figurines[i][j] == 'i')
+                            blackCastlingQueenside = false;
+                        else if (figurines[i][j] == 'p')
+                            blackCastlingKingside = false;  //  castling is not allowed anymore for black player
+                    }
+                    else if (toLinear(figurines[i][j]) == 'R')
+                    {
+                        if (figurines[i][j] == 'I')
+                            whiteCastlingQueenside = false;
+                        else if (figurines[i][j] == 'P')
+                            whiteCastlingKingside = false;  //  castling is not allowed anymore for white player
                     }
 
                     lastSelection[0] = i;
@@ -2300,6 +2440,8 @@ int main(int argc, char ** argv)                        //  required main method
                 simpleDepthShader.passVector("objectColor", blueHighlightColor);
             else if (highlight[i] == 2)
                 simpleDepthShader.passVector("objectColor", redHighlightColor);
+            else if (highlight[i] == 3)
+                simpleDepthShader.passVector("objectColor", redHighlightColor);
             else
                 simpleDepthShader.passVector("objectColor", colors[i]);
 
@@ -2388,6 +2530,8 @@ int main(int argc, char ** argv)                        //  required main method
             if (highlight[i] == 1)
                 shader.passVector("objectColor", blueHighlightColor);
             else if (highlight[i] == 2)
+                shader.passVector("objectColor", redHighlightColor);
+            else if (highlight[i] == 3)
                 shader.passVector("objectColor", redHighlightColor);
             else
                 shader.passVector("objectColor", colors[i]);
