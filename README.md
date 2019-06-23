@@ -1,2 +1,2 @@
 # Richess
-3D chess game implementation
+3D Chess game written in C++ and OpenGL
