@@ -2057,27 +2057,27 @@ int main(int argc, char ** argv)                        //  required main method
     ios_base::sync_with_stdio(false);
 
     bool fullscreen = true;
-    int details = 1;
+    int details = 0;
 
     for (int i = 1; i < argc; i++)
     {
-        if (!strcmp(argv[i], "-v"))
+        if (!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v"))
         {
-            cout << "richers\n";
+            cout << "richess\n";
             cout << "version 1.0\n";
             return 0;
         }
-        else if (!strcmp(argv[i], "-h"))
+        else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
         {
             cout << "DESCRIPTION\n"
-                 << "    richess - rich and amazing chess game\n\n"
+                 << "    richess - 3D Chess game written in C++ and OpenGL\n\n"
                  << "USAGE\n"
-                 << "    richess -h  ->  print usage information\n"
-                 << "    richess -v  ->  print version information\n"
-                 << "    richess -l  ->  set low details of shadows\n"
-                 << "    richess -m  ->  set medium details of shadows\n"
-                 << "    richess -h  ->  set high details of shadows\n"
-                 << "    richess -w  ->  run application in windowed mode\n\n"
+                 << "    richess --help     ->  print usage information\n"
+                 << "    richess --version  ->  print version information\n"
+                 << "    richess --low      ->  set low details of shadows\n"
+                 << "    richess --medium   ->  set medium details of shadows\n"
+                 << "    richess --high     ->  set high details of shadows\n"
+                 << "    richess --window   ->  run application in windowed mode\n\n"
                  << "RETURN VALUES\n"
                  << "    0  ->  success\n"
                  << "    1  ->  program arguments error\n\n"
@@ -2098,13 +2098,13 @@ int main(int argc, char ** argv)                        //  required main method
 
             return 0;
         }
-        else if (!strcmp(argv[i], "-w"))
+        else if (!strcmp(argv[i], "--window") || !strcmp(argv[i], "-w"))
             fullscreen = false;
-        else if (!strcmp(argv[i], "-l"))
+        else if (!strcmp(argv[i], "--low"))
             details = 0;
-        else if (!strcmp(argv[i], "-m"))
+        else if (!strcmp(argv[i], "--medium"))
             details = 1;
-        else if (!strcmp(argv[i], "-h"))
+        else if (!strcmp(argv[i], "--high"))
             details = 2;
     }
 
