@@ -103,7 +103,7 @@ public:
         return linear;
     }
 
-    char toLinear(char figurine)
+    char toLinear(char figurine)                        //  get linear value of desired figurine
     {
         for (int i = 0; i < 32; i++)
         {
@@ -112,6 +112,28 @@ public:
         }
 
         return '.';
+    }
+
+    bool isUnderAttack(int index, int & i, int & j)     //  check if figurine on index is under the attack
+    {
+        index -= 64;                                    //  ignore game board blocks
+        char ch = real[index];                          //  use mapping of index to real type of figurine
+
+        for (j = 0; j < 8; j++)                         //  iterate through figurines array
+        {
+            for (i = 0; i < 8; i++)
+            {
+                if (ch == figurines[i][j])              //  concrete figurine found inside array
+                {
+                    if (board[i][j] == 'A')
+                        return true;                    //  figurine is under attack
+
+                    break;
+                }
+            }
+        }
+
+        return false;                                   //  figurine is not under attack
     }
 
     bool calculateCheck()                               //  check if king is under attack
@@ -1706,6 +1728,180 @@ public:
         }
     }
 
+    bool performMove(int & i, int & j)                  //  perform move with figurine to position on desired coordinates
+    {
+        string oldLinear = linear;
+        string oldFigurines[8];
+
+        for (int i = 0; i < 8; i++)
+            oldFigurines[i] = figurines[i];             //  save actual game board state
+
+        if (board[i][j] == 'M')                         //  move is going to be performed
+        {
+            figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
+            figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
+        }
+        else if (board[i][j] == 'C')                    //  castling is going to be performed
+        {                                               //  attack check of all three king's movement positions needs to be performed
+            if (calculateCheck())                       //  king is under attack on its initial position
+            {
+                linear = oldLinear;                     //  restore old array
+
+                for (int i = 0; i < 8; i++)
+                    figurines[i] = oldFigurines[i];    //  restore old game board state
+
+                return false;
+            }
+
+            if (i == 0)                                 //  differ kingside and queenside castling
+            {
+                figurines[3][j] = figurines[4][j];
+                figurines[4][j] = '.';
+            }
+            else if (i == 7)
+            {
+                figurines[5][j] = figurines[4][j];
+                figurines[4][j] = '.';
+            }
+
+            if (calculateCheck())                       //  king is under attack on its movement position
+            {
+                linear = oldLinear;                     //  restore old array
+
+                for (int i = 0; i < 8; i++)
+                    figurines[i] = oldFigurines[i];    //  restore old game board state
+
+                return false;
+            }
+
+            if (i == 0)                                 //  differ kingside and queenside castling
+            {
+                figurines[2][j] = figurines[3][j];
+
+                figurines[3][j] = figurines[0][j];
+                figurines[0][j] = '.';
+            }
+            else if (i == 7)
+            {
+                figurines[6][j] = figurines[5][j];
+
+                figurines[5][j] = figurines[7][j];
+                figurines[7][j] = '.';
+            }
+        }
+        else if (board[i][j] == 'A')                    //  attack is going to be performed
+        {
+            char ch = figurines[i][j];
+
+            for (int k = 0; k < 32; k++)
+            {
+                if (real[k] == ch)
+                {
+                    linear[k] = '.';                    //  remove opponent's figurine from the game board
+                    break;
+                }
+            }
+
+            figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
+            figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
+        }
+
+        if (calculateCheck())                           //  king is under attack on its final position
+        {
+            linear = oldLinear;                         //  restore old array
+
+            for (int i = 0; i < 8; i++)
+                figurines[i] = oldFigurines[i];         //  restore old game board state
+
+            return false;
+        }
+
+        if (board[i][j] == 'C')                         //  castling has just been performed
+        {
+            if (blackTurn)
+            {
+                blackCastlingKingside = false;          //  castling is not allowed anymore for black player
+                blackCastlingQueenside = false;
+            }
+            else
+            {
+                whiteCastlingKingside = false;          //  castling is not allowed anymore for white player
+                whiteCastlingQueenside = false;
+            }
+        }
+        else if (toLinear(figurines[i][j]) == 'k')
+        {
+            blackCastlingKingside = false;              //  castling is not allowed anymore for black player
+            blackCastlingQueenside = false;
+        }
+        else if (toLinear(figurines[i][j]) == 'K')
+        {
+            whiteCastlingKingside = false;              //  castling is not allowed anymore for white player
+            whiteCastlingQueenside = false;
+        }
+        else if (toLinear(figurines[i][j]) == 'r')
+        {
+            if (figurines[i][j] == 'i')
+                blackCastlingQueenside = false;
+            else if (figurines[i][j] == 'p')
+                blackCastlingKingside = false;          //  castling is not allowed anymore for black player
+        }
+        else if (toLinear(figurines[i][j]) == 'R')
+        {
+            if (figurines[i][j] == 'I')
+                whiteCastlingQueenside = false;
+            else if (figurines[i][j] == 'P')
+                whiteCastlingKingside = false;          //  castling is not allowed anymore for white player
+        }
+
+        lastSelection[0] = i;
+        lastSelection[1] = j;
+
+        promotion = -1;                                 //  reset pawn promotion flag
+
+        if (j == 0 && toLinear(figurines[i][j]) == 'P')     //  handle pawn promotion
+        {
+            char ch = figurines[i][j];
+
+            for (int k = 0; k < 32; k++)
+            {
+                if (real[k] == ch)
+                {
+                    linear[k] = 'Q';                    //  replace pawn figurine by queen figurine
+                    promotion = i;                      //  set promotion flag to appropriate index value
+                    break;
+                }
+            }
+        }
+        else if (j == 7 && toLinear(figurines[i][j]) == 'p')    //  handle pawn promotion
+        {
+            char ch = figurines[i][j];
+
+            for (int k = 0; k < 32; k++)
+            {
+                if (real[k] == ch)
+                {
+                    linear[k] = 'q';                    //  replace pawn figurine by queen figurine
+                    promotion = i;                      //  set promotion flag to appropriate index value
+                    break;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    bool refreshFigurines(int & i, int & j)             //  rehresh game board after clicking onto highlighted game board board
+    {
+        if (selection[0] == -1 || selection[1] == -1)   //  do nothing when nothing is selected
+            return false;
+
+        if (i < 0 || j < 0 || i >= 8 || j >= 8)         //  handle index overflow
+            return false;
+
+        return performMove(i, j);                       //  perform move with figurine
+    }
+
     bool refreshFigurines(int index)                    //  rehresh game board after clicking onto highlighted game board board
     {
         if (selection[0] == -1 || selection[1] == -1)   //  do nothing when nothing is selected
@@ -1717,168 +1913,8 @@ public:
         {
             for (int i = 0; i < 8; i++)
             {
-                if (count == index)
-                {
-                    string oldLinear = linear;
-                    string oldFigurines[8];
-
-                    for (int i = 0; i < 8; i++)
-                        oldFigurines[i] = figurines[i];    //  save actual game board state
-
-                    if (board[i][j] == 'M')             //  move is going to be performed
-                    {
-                        figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
-                        figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
-                    }
-                    else if (board[i][j] == 'C')        //  castling is going to be performed
-                    {                                   //  attack check of all three king's movement positions needs to be performed
-                        if (calculateCheck())           //  king is under attack on its initial position
-                        {
-                            linear = oldLinear;         //  restore old array
-
-                            for (int i = 0; i < 8; i++)
-                                figurines[i] = oldFigurines[i];    //  restore old game board state
-
-                            return false;
-                        }
-
-                        if (i == 0)                     //  differ kingside and queenside castling
-                        {
-                            figurines[3][j] = figurines[4][j];
-                            figurines[4][j] = '.';
-                        }
-                        else if (i == 7)
-                        {
-                            figurines[5][j] = figurines[4][j];
-                            figurines[4][j] = '.';
-                        }
-
-                        if (calculateCheck())           //  king is under attack on its movement position
-                        {
-                            linear = oldLinear;         //  restore old array
-
-                            for (int i = 0; i < 8; i++)
-                                figurines[i] = oldFigurines[i];    //  restore old game board state
-
-                            return false;
-                        }
-
-                        if (i == 0)                     //  differ kingside and queenside castling
-                        {
-                            figurines[2][j] = figurines[3][j];
-
-                            figurines[3][j] = figurines[0][j];
-                            figurines[0][j] = '.';
-                        }
-                        else if (i == 7)
-                        {
-                            figurines[6][j] = figurines[5][j];
-
-                            figurines[5][j] = figurines[7][j];
-                            figurines[7][j] = '.';
-                        }
-                    }
-                    else if (board[i][j] == 'A')        //  attack is going to be performed
-                    {
-                        char ch = figurines[i][j];
-
-                        for (int k = 0; k < 32; k++)
-                        {
-                            if (real[k] == ch)
-                            {
-                                linear[k] = '.';        //  remove opponent's figurine from the game board
-                                break;
-                            }
-                        }
-
-                        figurines[i][j] = figurines[selection[0]][selection[1]];    //  move figurine to new position
-                        figurines[selection[0]][selection[1]] = '.';    //  previous position is going to be empty
-                    }
-
-                    if (calculateCheck())               //  king is under attack on its final position
-                    {
-                        linear = oldLinear;             //  restore old array
-
-                        for (int i = 0; i < 8; i++)
-                            figurines[i] = oldFigurines[i];    //  restore old game board state
-
-                        return false;
-                    }
-
-                    if (board[i][j] == 'C')             //  castling has just been performed
-                    {
-                        if (blackTurn)
-                        {
-                            blackCastlingKingside = false;  //  castling is not allowed anymore for black player
-                            blackCastlingQueenside = false;
-                        }
-                        else
-                        {
-                            whiteCastlingKingside = false;  //  castling is not allowed anymore for white player
-                            whiteCastlingQueenside = false;
-                        }
-                    }
-                    else if (toLinear(figurines[i][j]) == 'k')
-                    {
-                        blackCastlingKingside = false;  //  castling is not allowed anymore for black player
-                        blackCastlingQueenside = false;
-                    }
-                    else if (toLinear(figurines[i][j]) == 'K')
-                    {
-                        whiteCastlingKingside = false;  //  castling is not allowed anymore for white player
-                        whiteCastlingQueenside = false;
-                    }
-                    else if (toLinear(figurines[i][j]) == 'r')
-                    {
-                        if (figurines[i][j] == 'i')
-                            blackCastlingQueenside = false;
-                        else if (figurines[i][j] == 'p')
-                            blackCastlingKingside = false;  //  castling is not allowed anymore for black player
-                    }
-                    else if (toLinear(figurines[i][j]) == 'R')
-                    {
-                        if (figurines[i][j] == 'I')
-                            whiteCastlingQueenside = false;
-                        else if (figurines[i][j] == 'P')
-                            whiteCastlingKingside = false;  //  castling is not allowed anymore for white player
-                    }
-
-                    lastSelection[0] = i;
-                    lastSelection[1] = j;
-
-                    promotion = -1;                     //  reset pawn promotion flag
-
-                    if (j == 0 && toLinear(figurines[i][j]) == 'P')     //  handle pawn promotion
-                    {
-                        char ch = figurines[i][j];
-
-                        for (int k = 0; k < 32; k++)
-                        {
-                            if (real[k] == ch)
-                            {
-                                linear[k] = 'Q';        //  replace pawn figurine by queen figurine
-                                promotion = i;          //  set promotion flag to appropriate index value
-                                break;
-                            }
-                        }
-                    }
-                    else if (j == 7 && toLinear(figurines[i][j]) == 'p')    //  handle pawn promotion
-                    {
-                        char ch = figurines[i][j];
-
-                        for (int k = 0; k < 32; k++)
-                        {
-                            if (real[k] == ch)
-                            {
-                                linear[k] = 'q';        //  replace pawn figurine by queen figurine
-                                promotion = i;          //  set promotion flag to appropriate index value
-                                break;
-                            }
-                        }
-                    }
-
-                    return true;
-                }
+                if (count == index)                     //  correct coordinates have been found
+                    return performMove(i, j);           //  perform move with figurine
 
                 count++;
             }
@@ -1968,30 +2004,54 @@ public:
                 {
                     if (blackTurn)                      //  black player is on turn
                     {
-                        if (promotion >= 0 && clicked >= 72 && clicked < 80)    //  handle promotion of opponent's pawn
+                        if ((clicked >= 72 && clicked < 80) || (clicked >= 88 && clicked < 96))     //  handle clicking on the opponent's pawn
                         {
-                            int index = clicked;
-                            index -= 64;                //  ignore game board blocks
-                            char ch = real[index];      //  use mapping of index to real type of figurine
+                            int i, j;                   //  hold appropriate coordinates
 
-                            if (ch == figurines[promotion][0])  //  concrete figurine found inside array
+                            if (isUnderAttack(clicked, i, j))   //  check if figurine is under attack
                             {
-                                ch = linear[index];     //  use mapping to linear type of figurine
+                                if (refreshFigurines(i, j) == false)     //  calculate new turn
+                                {
+                                    clicked = -1;
+                                    return;
+                                }
 
-                                if (ch == 'Q')          //  handle toggling between allowed promotion figurines
-                                    linear[index] = 'N';
-                                else if (ch == 'N')
-                                    linear[index] = 'R';
-                                else if (ch == 'R')
-                                    linear[index] = 'B';
-                                else if (ch == 'B')
-                                    linear[index] = 'Q';
+                                selection[0] = selection[1] = -1;   //  remove actual selection
+                                camera.toggle();        //  toggle camera to trace second player
+                                animationActive = true;     //  activate animation flag
+                                blackTurn = !blackTurn;     //  opponent is now on the turn
+
+                                for (i = 0; i <= 96; i++)   //  remove all highlights from game board
+                                {
+                                    if (highlight[i])
+                                        highlight[i] = 0;
+                                }
                             }
+                            else if (promotion >= 0 && clicked >= 72 && clicked < 80)    //  handle promotion of opponent's pawn
+                            {
+                                int index = clicked;
+                                index -= 64;            //  ignore game board blocks
+                                char ch = real[index];  //  use mapping of index to real type of figurine
 
-                            clicked = -1;
-                            return;                     //  just toggle figurine without affecting opponent's turn
+                                if (ch == figurines[promotion][0])  //  concrete figurine found inside array
+                                {
+                                    ch = linear[index];     //  use mapping to linear type of figurine
+
+                                    if (ch == 'Q')      //  handle toggling between allowed promotion figurines
+                                        linear[index] = 'N';
+                                    else if (ch == 'N')
+                                        linear[index] = 'R';
+                                    else if (ch == 'R')
+                                        linear[index] = 'B';
+                                    else if (ch == 'B')
+                                        linear[index] = 'Q';
+                                }
+
+                                clicked = -1;
+                                return;                 //  just toggle figurine without affecting opponent's turn
+                            }
                         }
-                        else if ((clicked >= 64 && clicked < 72) || (clicked >= 80 && clicked < 88))
+                        else if ((clicked >= 64 && clicked < 72) || (clicked >= 80 && clicked < 88))    //  handle clicking on the black figurine
                         {
                             for (int i = 0; i <= 96; i++)   //  remove all highlights from game board
                             {
@@ -2006,30 +2066,54 @@ public:
                     }
                     else                                //  white player is on turn
                     {
-                        if (promotion >= 0 && clicked >= 64 && clicked < 72)    //  handle promotion of opponent's pawn
+                        if ((clicked >= 64 && clicked < 72) || (clicked >= 80 && clicked < 88))     //  handle clicking on the opponent's pawn
                         {
-                            int index = clicked;
-                            index -= 64;                //  ignore game board blocks
-                            char ch = real[index];      //  use mapping of index to real type of figurine
+                            int i, j;                   //  hold appropriate coordinates
 
-                            if (ch == figurines[promotion][7])  //  concrete figurine found inside array
+                            if (isUnderAttack(clicked, i, j))   //  check if figurine is under attack
                             {
-                                ch = linear[index];     //  use mapping to linear type of figurine
+                                if (refreshFigurines(i, j) == false)     //  calculate new turn
+                                {
+                                    clicked = -1;
+                                    return;
+                                }
 
-                                if (ch == 'q')          //  handle toggling between allowed promotion figurines
-                                    linear[index] = 'n';
-                                else if (ch == 'n')
-                                    linear[index] = 'r';
-                                else if (ch == 'r')
-                                    linear[index] = 'b';
-                                else if (ch == 'b')
-                                    linear[index] = 'q';
+                                selection[0] = selection[1] = -1;   //  remove actual selection
+                                camera.toggle();        //  toggle camera to trace second player
+                                animationActive = true;     //  activate animation flag
+                                blackTurn = !blackTurn;     //  opponent is now on the turn
+
+                                for (i = 0; i <= 96; i++)   //  remove all highlights from game board
+                                {
+                                    if (highlight[i])
+                                        highlight[i] = 0;
+                                }
                             }
+                            else if (promotion >= 0 && clicked >= 64 && clicked < 72)    //  handle promotion of opponent's pawn
+                            {
+                                int index = clicked;
+                                index -= 64;            //  ignore game board blocks
+                                char ch = real[index];      //  use mapping of index to real type of figurine
 
-                            clicked = -1;
-                            return;                     //  just toggle figurine without affecting opponent's turn
+                                if (ch == figurines[promotion][7])  //  concrete figurine found inside array
+                                {
+                                    ch = linear[index];     //  use mapping to linear type of figurine
+
+                                    if (ch == 'q')      //  handle toggling between allowed promotion figurines
+                                        linear[index] = 'n';
+                                    else if (ch == 'n')
+                                        linear[index] = 'r';
+                                    else if (ch == 'r')
+                                        linear[index] = 'b';
+                                    else if (ch == 'b')
+                                        linear[index] = 'q';
+                                }
+
+                                clicked = -1;
+                                return;                 //  just toggle figurine without affecting opponent's turn
+                            }
                         }
-                        else if ((clicked >= 72 && clicked < 80) || (clicked >= 88 && clicked < 96))
+                        else if ((clicked >= 72 && clicked < 80) || (clicked >= 88 && clicked < 96))    //  handle clicking on the white figurine
                         {
                             for (int i = 0; i <= 96; i++)   //  remove all highlights from game board
                             {
@@ -2064,7 +2148,7 @@ int main(int argc, char ** argv)                        //  required main method
         if (!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v"))
         {
             cout << "richess\n";
-            cout << "version 1.0\n";
+            cout << "version 1.1\n";
             return 0;
         }
         else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
