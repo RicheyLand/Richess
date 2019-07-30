@@ -2734,24 +2734,24 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
         camera.zoomIn();
                                                         //  move light source by pressing appropriate buttons
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        lampPos.z -= 0.03;
-
-    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         lampPos.z += 0.03;
 
-    if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-        lampPos.x += 0.03;
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+        lampPos.z -= 0.03;
 
-    if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
         lampPos.x -= 0.03;
 
-    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+        lampPos.x += 0.03;
+
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
     {
         if (lampPos.y >= 0.4f)
             lampPos.y -= 0.03;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
         lampPos.y += 0.03;
 }
 
