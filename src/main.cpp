@@ -2499,8 +2499,9 @@ int main(int argc, char ** argv)                        //  required main method
 
         //  render scene only to the depth texture for future calculation of shadows
 
-        glm::mat4 lightProjection, lightView;
-        glm::mat4 lightSpaceMatrix;
+        glm::mat4 lightProjection = glm::mat4(1.0f);
+        glm::mat4 lightView = glm::mat4(1.0f);
+        glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
         float near_plane = 1.0f, far_plane = 7.5f;      //  setup view frustum
         
         lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);  //  enable orthographic view when rendering shadows
@@ -2516,7 +2517,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         for (int i = 0; i < 64; i++)                    //  render all game board block
         {
-            glm::mat4 modelOne;
+            glm::mat4 modelOne = glm::mat4(1.0f);
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
             modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
 
@@ -2536,7 +2537,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         for (int i = 64; i < 96; i++)                   //  render all figurines
         {
-            glm::mat4 modelOne;
+            glm::mat4 modelOne = glm::mat4(1.0f);
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
             modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
 
@@ -2572,7 +2573,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         for (int i = 96; i < 132; i++)                  //  render game board border cubes
         {
-            glm::mat4 modelOne;
+            glm::mat4 modelOne = glm::mat4(1.0f);
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
             modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
             simpleDepthShader.passVector("objectColor", colors[i]);
@@ -2607,7 +2608,7 @@ int main(int argc, char ** argv)                        //  required main method
         for (int i = 0; i < 64; i++)                    //  render all game board block
         {
             // render the loaded model
-            glm::mat4 modelOne;
+            glm::mat4 modelOne = glm::mat4(1.0f);
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
             modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
 
@@ -2627,7 +2628,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         for (int i = 64; i < 96; i++)                   //  render all figurines
         {
-            glm::mat4 modelOne;
+            glm::mat4 modelOne = glm::mat4(1.0f);
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
             modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
 
@@ -2664,7 +2665,7 @@ int main(int argc, char ** argv)                        //  required main method
         for (int i = 96; i < 132; i++)                  //  render game board border cubes
         {
             // render the loaded model
-            glm::mat4 modelOne;
+            glm::mat4 modelOne = glm::mat4(1.0f);
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
             modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
             shader.passVector("objectColor", colors[i]);
@@ -2687,7 +2688,7 @@ int main(int argc, char ** argv)                        //  required main method
             lampShader.passMatrix("view", viewThree);
 
             // render the loaded model
-            glm::mat4 modelThree;
+            glm::mat4 modelThree = glm::mat4(1.0f);
             modelThree = glm::translate(modelThree, glm::vec3(lampPos));    //  translate and scale object before rendering
             modelThree = glm::scale(modelThree, glm::vec3(0.1f, 0.1f, 0.1f));
             lampShader.passMatrix("model", modelThree);
