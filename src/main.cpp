@@ -23,7 +23,7 @@ glm::vec3 backgroundColor(rgbToFloats(0, 0, 0));        //  window background co
 Camera camera;                                          //  create camera instance and use default camera position
 
 bool lampVisible = false;                               //  holds lamp object visibility
-glm::vec3 lampPos(0.0f, 1.4f, 0.0f);                    //  initial position of light source
+glm::vec3 lampPos(0.0f, 2.4f, 0.0f);                    //  initial position of light source
 glm::vec3 lightColor(1.0f, 1.0f, 1.0f);                 //  emitted color of light source
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
@@ -2141,7 +2141,7 @@ int main(int argc, char ** argv)                        //  required main method
     ios_base::sync_with_stdio(false);
 
     bool fullscreen = true;
-    int details = 0;
+    int details = 1;
 
     for (int i = 1; i < argc; i++)
     {
@@ -2496,6 +2496,10 @@ int main(int argc, char ** argv)                        //  required main method
                     chess.animationActive = false;      //  disable animation after successfull camera movement
             }
         }
+
+        float radius = 3.0f;
+        lampPos.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
+        lampPos.z = cos(glfwGetTime() * 0.1f) * radius;
 
         //  render scene only to the depth texture for future calculation of shadows
 
