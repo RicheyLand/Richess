@@ -22,8 +22,9 @@ glm::vec3 backgroundColor(rgbToFloats(0, 0, 0));        //  window background co
 
 Camera camera;                                          //  create camera instance and use default camera position
 
+bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
-glm::vec3 lampPos(0.0f, 2.4f, 0.0f);                    //  initial position of light source
+glm::vec3 lampPos(0.0f, 1.4f, 0.0f);                    //  initial position of light source
 glm::vec3 lightColor(1.0f, 1.0f, 1.0f);                 //  emitted color of light source
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
@@ -2176,9 +2177,10 @@ int main(int argc, char ** argv)                        //  required main method
                  << "    k  ->  move light source backward\n"
                  << "    j  ->  move light source left\n"
                  << "    l  ->  move light source right\n"
-                 << "    u  ->  move light source down\n"
-                 << "    o  ->  move light source up\n"
-                 << "    p  ->  toggle light source visibility\n";
+                 << "    u  ->  move light source up\n"
+                 << "    h  ->  move light source down\n"
+                 << "    p  ->  toggle light source visibility\n"
+                 << "    o  ->  toggle light source orbit\n";
 
             return 0;
         }
@@ -2497,9 +2499,12 @@ int main(int argc, char ** argv)                        //  required main method
             }
         }
 
-        float radius = 3.0f;
-        lampPos.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
-        lampPos.z = cos(glfwGetTime() * 0.1f) * radius;
+        if (lampOrbit)
+        {
+            float radius = 3.0f;
+            lampPos.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
+            lampPos.z = cos(glfwGetTime() * 0.1f) * radius;
+        }
 
         //  render scene only to the depth texture for future calculation of shadows
 
@@ -2712,6 +2717,26 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
 {
     if (key == GLFW_KEY_P && action == GLFW_PRESS)      //  toggle lamp object visibility
         lampVisible = !lampVisible;
+
+    if (key == GLFW_KEY_O && action == GLFW_PRESS)      //  toggle lamp orbit
+    {
+        if (lampOrbit)                                  //  enable lamp orbit
+        {
+            lampOrbit = false;
+
+            lampPos.x = 0.0f;
+            lampPos.y = 1.4f;
+            lampPos.z = 0.0f;
+        }
+        else                                            //  disable lamp orbit
+        {
+            lampOrbit = true;
+
+            lampPos.x = 0.0f;
+            lampPos.y = 2.4f;
+            lampPos.z = 0.0f;
+        }
+    }
 }
 
 void processInput(GLFWwindow * window)                  //  non-callback keyboard input
@@ -2749,7 +2774,7 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
         lampPos.x += 0.03;
 
-    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
     {
         if (lampPos.y >= 0.4f)
             lampPos.y -= 0.03;
