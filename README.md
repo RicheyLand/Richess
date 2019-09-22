@@ -1,5 +1,5 @@
 # Richess
-Richers is a cross-platform 3D chess game.<br />
+Richess is a cross-platform 3D chess game.<br />
 Application has been written in C++ language.<br />
 OpenGL and GLFW libraries have been used.<br />
 
