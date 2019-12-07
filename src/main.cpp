@@ -2293,6 +2293,8 @@ int main(int argc, char ** argv)                        //  required main method
     Model pawn("resources/vertices/pawn.txt", "resources/indices/pawn.txt");    //  load pawn model from file
     Model lamp("resources/vertices/cube.txt", "resources/indices/cube.txt");    //  load lamp model from file
 
+    ModelUV pawnUV("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt");
+
     glm::vec3 cubeBrownColor(rgbToFloats(139, 69, 19));     //  set RGB values of all required colors
     glm::vec3 cubeWhiteColor(rgbToFloats(255, 211, 155));
     glm::vec3 figurineBrownColor(rgbToFloats(139, 69, 19));
@@ -2490,26 +2492,17 @@ int main(int argc, char ** argv)                        //  required main method
         shaderPBR.passInteger("roughnessMap", 3);
         shaderPBR.passInteger("aoMap", 4);
 
-        unsigned int albedo    = loadTexture("resources/rustediron2_basecolor.png");
-        unsigned int normal    = loadTexture("resources/rustediron2_normal.png");
-        unsigned int metallic  = loadTexture("resources/rustediron2_metallic.png");
+        unsigned int albedo = loadTexture("resources/rustediron2_basecolor.png");
+        unsigned int normal = loadTexture("resources/rustediron2_normal.png");
+        unsigned int metallic = loadTexture("resources/rustediron2_metallic.png");
         unsigned int roughness = loadTexture("resources/rustediron2_roughness.png");
-        unsigned int ao        = loadTexture("resources/rustediron2_ao.png");
+        unsigned int ao = loadTexture("resources/rustediron2_ao.png");
 
-        glm::vec3 lightPositions[] = {
-            glm::vec3(0.0f, 0.0f, 10.0f),
-        };
-
-        glm::vec3 lightColors[] = {
-            glm::vec3(150.0f, 150.0f, 150.0f),
-        };
-
-        int nrRows = 1;
-        int nrColumns = 1;
-        float spacing = 4.0;
+        glm::vec3 lightPosition = glm::vec3(2.0f, 5.0f, 2.0f);
+        glm::vec3 lightColor = glm::vec3(150.0f, 150.0f, 150.0f);
 
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(camera.distance), (float)window_width / (float)window_height, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
         shaderPBR.activate();
         shaderPBR.passMatrix("projection", projection);
 
@@ -2563,7 +2556,7 @@ int main(int argc, char ** argv)                        //  required main method
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO); //  use depth map
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        for (int i = 0; i < 64; i++)                    //  render all game board block
+        for (int i = 0; i < 64; i++)                    //  render all game board blocks
         {
             glm::mat4 modelOne = glm::mat4(1.0f);
             modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
@@ -2710,39 +2703,17 @@ int main(int argc, char ** argv)                        //  required main method
                 king.render();
         }
 
-        for (int i = 96; i < 132; i++)                  //  render game board border cubes
-        {
-            // render the loaded model
-            glm::mat4 modelOne = glm::mat4(1.0f);
-            modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-            modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
-            shader.passVector("objectColor", colors[i]);
-            shader.passMatrix("model", modelOne);
-            glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cube.render();
-        }
-
-        //  render lamp object without shadow mapping with its own shader
-
-        if (lampVisible)                                //  check whether lamp object should be visible
-        {
-            lampShader.activate();                      //  activate appropriate shader
-            lampShader.passVector("lightColor", lightColor);
-
-            // view/projection transformations
-            glm::mat4 projectionThree = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
-            glm::mat4 viewThree = camera.loadViewMatrix();
-            lampShader.passMatrix("projection", projectionThree);
-            lampShader.passMatrix("view", viewThree);
-
-            // render the loaded model
-            glm::mat4 modelThree = glm::mat4(1.0f);
-            modelThree = glm::translate(modelThree, glm::vec3(lampPos));    //  translate and scale object before rendering
-            modelThree = glm::scale(modelThree, glm::vec3(0.1f, 0.1f, 0.1f));
-            lampShader.passMatrix("model", modelThree);
-            glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
-            lamp.render();
-        }
+        // for (int i = 96; i < 132; i++)                  //  render game board border cubes
+        // {
+        //     // render the loaded model
+        //     glm::mat4 modelOne = glm::mat4(1.0f);
+        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
+        //     modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
+        //     shader.passVector("objectColor", colors[i]);
+        //     shader.passMatrix("model", modelOne);
+        //     glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+        //     cube.render();
+        // }
 
         //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -2765,40 +2736,49 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, ao);
 
-            ModelUV pawn("resources/positions.txt", "resources/normals.txt", "resources/indices.txt", "resources/uv.txt");
-
-            glm::mat4 model= glm::mat4(1.0f);;
-            for (int row = 0; row < nrRows; ++row)
+            for (int i = 96; i < 132; i++)                  //  render game board border cubes
             {
-                for (int col = 0; col < nrColumns; ++col)
-                {
-                    model = glm::mat4(1.0f);
-                    model = glm::translate(model, glm::vec3(
-                        (float)(col - (nrColumns / 2)) * spacing,
-                        (float)(row - (nrRows / 2)) * spacing,
-                        0.0f
-                    ));
-                    shaderPBR.passMatrix("model", model);
-                    pawn.render();
-                }
-            }
-
-            for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
-            {
-                glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
-                newPos = lightPositions[i];
-                shaderPBR.passVector("lightPositions[" + std::to_string(i) + "]", newPos);
-                shaderPBR.passVector("lightColors[" + std::to_string(i) + "]", lightColors[i]);
-
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, newPos);
-                model = glm::scale(model, glm::vec3(0.5f));
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, positions[i]);
+                model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
                 shaderPBR.passMatrix("model", model);
-                pawn.render();
+                glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+                pawnUV.render();
             }
+
+            shaderPBR.passVector("lightPositions[0]", lightPosition);
+            shaderPBR.passVector("lightColors[0]", lightColor);
+
+            // glm::mat4 model = glm::mat4(1.0f);
+            // model = glm::translate(model, lightPosition);
+            // model = glm::scale(model, glm::vec3(0.1f));
+            // shaderPBR.passMatrix("model", model);
+            // pawnUV.render();
         }
 
         //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        //  render lamp object without shadow mapping with its own shader
+
+        if (lampVisible)                                //  check whether lamp object should be visible
+        {
+            lampShader.activate();                      //  activate appropriate shader
+            lampShader.passVector("lightColor", lightColor);
+
+            // view/projection transformations
+            glm::mat4 projectionThree = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
+            glm::mat4 viewThree = camera.loadViewMatrix();
+            lampShader.passMatrix("projection", projectionThree);
+            lampShader.passMatrix("view", viewThree);
+
+            // render the loaded model
+            glm::mat4 modelThree = glm::mat4(1.0f);
+            modelThree = glm::translate(modelThree, glm::vec3(lampPos));    //  translate and scale object before rendering
+            modelThree = glm::scale(modelThree, glm::vec3(0.1f, 0.1f, 0.1f));
+            lampShader.passMatrix("model", modelThree);
+            glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
+            lamp.render();
+        }
 
         glfwSwapBuffers(window);                        //  swap buffers and poll IO events
         glfwPollEvents();
