@@ -2490,11 +2490,11 @@ int main(int argc, char ** argv)                        //  required main method
         shaderPBR.passInteger("roughnessMap", 3);
         shaderPBR.passInteger("aoMap", 4);
 
-        unsigned int albedo    = loadTexture("/home/rich/Pictures/rustediron2_basecolor.png");
-        unsigned int normal    = loadTexture("/home/rich/Pictures/rustediron2_normal.png");
-        unsigned int metallic  = loadTexture("/home/rich/Pictures/rustediron2_metallic.png");
-        unsigned int roughness = loadTexture("/home/rich/Pictures/rustediron2_roughness.png");
-        unsigned int ao        = loadTexture("/home/rich/Pictures/rustediron2_ao.png");
+        unsigned int albedo    = loadTexture("resources/rustediron2_basecolor.png");
+        unsigned int normal    = loadTexture("resources/rustediron2_normal.png");
+        unsigned int metallic  = loadTexture("resources/rustediron2_metallic.png");
+        unsigned int roughness = loadTexture("resources/rustediron2_roughness.png");
+        unsigned int ao        = loadTexture("resources/rustediron2_ao.png");
 
         glm::vec3 lightPositions[] = {
             glm::vec3(0.0f, 0.0f, 10.0f),
@@ -2765,7 +2765,7 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, ao);
 
-            ModelUV pawn("/home/rich/Downloads/mesh/positions.txt", "/home/rich/Downloads/mesh/normals.txt", "/home/rich/Downloads/mesh/indices.txt", "/home/rich/Downloads/mesh/uv.txt");
+            ModelUV pawn("resources/positions.txt", "resources/normals.txt", "resources/indices.txt", "resources/uv.txt");
 
             glm::mat4 model= glm::mat4(1.0f);;
             for (int row = 0; row < nrRows; ++row)
