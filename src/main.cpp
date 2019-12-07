@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include "shader.h"
 #include "model.h"
 #include "camera.h"
@@ -6,6 +8,7 @@ void framebuffer_size_callback(GLFWwindow * window, int width, int height);
 void mouse_button_callback(GLFWwindow * window, int button, int action, int mods);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow * window);
+unsigned int loadTexture(const char *path);
 
 glm::vec3 rgbToFloats(int red, int green, int blue)     //  convert integer RGB value to appropriate float RGB value
 {
@@ -2476,6 +2479,42 @@ int main(int argc, char ** argv)                        //  required main method
         positions[i].z -= 1.4f;
     }
 
+    //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        Shader shaderPBR("pbr.vs", "pbr.fs");
+
+        shaderPBR.activate();
+        shaderPBR.passInteger("albedoMap", 0);
+        shaderPBR.passInteger("normalMap", 1);
+        shaderPBR.passInteger("metallicMap", 2);
+        shaderPBR.passInteger("roughnessMap", 3);
+        shaderPBR.passInteger("aoMap", 4);
+
+        unsigned int albedo    = loadTexture("/home/rich/Pictures/rustediron2_basecolor.png");
+        unsigned int normal    = loadTexture("/home/rich/Pictures/rustediron2_normal.png");
+        unsigned int metallic  = loadTexture("/home/rich/Pictures/rustediron2_metallic.png");
+        unsigned int roughness = loadTexture("/home/rich/Pictures/rustediron2_roughness.png");
+        unsigned int ao        = loadTexture("/home/rich/Pictures/rustediron2_ao.png");
+
+        glm::vec3 lightPositions[] = {
+            glm::vec3(0.0f, 0.0f, 10.0f),
+        };
+
+        glm::vec3 lightColors[] = {
+            glm::vec3(150.0f, 150.0f, 150.0f),
+        };
+
+        int nrRows = 1;
+        int nrColumns = 1;
+        float spacing = 4.0;
+
+        glm::mat4 projection = glm::mat4(1.0f);
+        projection = glm::perspective(glm::radians(camera.distance), (float)window_width / (float)window_height, 0.1f, 100.0f);
+        shaderPBR.activate();
+        shaderPBR.passMatrix("projection", projection);
+
+    //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     while (!glfwWindowShouldClose(window))              //  handle infinite render loop
     {
         processInput(window);                           //  process keyboard input
@@ -2705,6 +2744,62 @@ int main(int argc, char ** argv)                        //  required main method
             lamp.render();
         }
 
+        //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        if (true)
+        {
+            shaderPBR.activate();
+            glm::mat4 view = glm::mat4(1.0f);
+            view = camera.loadViewMatrix();
+            shaderPBR.passMatrix("view", view);
+            shaderPBR.passVector("camPos", camera.Position);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, albedo);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, normal);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, metallic);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, roughness);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, ao);
+
+            ModelUV pawn("/home/rich/Downloads/mesh/positions.txt", "/home/rich/Downloads/mesh/normals.txt", "/home/rich/Downloads/mesh/indices.txt", "/home/rich/Downloads/mesh/uv.txt");
+
+            glm::mat4 model= glm::mat4(1.0f);;
+            for (int row = 0; row < nrRows; ++row)
+            {
+                for (int col = 0; col < nrColumns; ++col)
+                {
+                    model = glm::mat4(1.0f);
+                    model = glm::translate(model, glm::vec3(
+                        (float)(col - (nrColumns / 2)) * spacing,
+                        (float)(row - (nrRows / 2)) * spacing,
+                        0.0f
+                    ));
+                    shaderPBR.passMatrix("model", model);
+                    pawn.render();
+                }
+            }
+
+            for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
+            {
+                glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
+                newPos = lightPositions[i];
+                shaderPBR.passVector("lightPositions[" + std::to_string(i) + "]", newPos);
+                shaderPBR.passVector("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+
+                model = glm::mat4(1.0f);
+                model = glm::translate(model, newPos);
+                model = glm::scale(model, glm::vec3(0.5f));
+                shaderPBR.passMatrix("model", model);
+                pawn.render();
+            }
+        }
+
+        //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
         glfwSwapBuffers(window);                        //  swap buffers and poll IO events
         glfwPollEvents();
     }
@@ -2809,4 +2904,41 @@ void mouse_button_callback(GLFWwindow * window, int button, int action, int)    
         if (index && index <= 96)
             clicked = index - 1;                        //  ignore border cubes and light source click
     }
+}
+
+unsigned int loadTexture(char const * path)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data)
+    {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
