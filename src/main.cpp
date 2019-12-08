@@ -2412,7 +2412,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[64 + i] = glm::vec3(offset, 0.36f, 0.4f);
+        positions[64 + i] = glm::vec3(offset, 0.27f, 0.4f);
         highlight[64 + i] = 0;                          //  nothing is highlighted by default
         colors[64 + i] = figurineBrownColor;
     }
@@ -2421,7 +2421,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[72 + i] = glm::vec3(offset, 0.36f, 2.4f);
+        positions[72 + i] = glm::vec3(offset, 0.27f, 2.4f);
         highlight[72 + i] = 0;                          //  nothing is highlighted by default
         colors[72 + i] = figurineWhiteColor;
     }
@@ -2430,7 +2430,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[80 + i] = glm::vec3(offset, 0.36f, 0.0f);
+        positions[80 + i] = glm::vec3(offset, 0.27f, 0.0f);
         highlight[80 + i] = 0;                          //  nothing is highlighted by default
         colors[80 + i] = figurineBrownColor;
     }
@@ -2439,7 +2439,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[88 + i] = glm::vec3(offset, 0.36f, 2.8f);
+        positions[88 + i] = glm::vec3(offset, 0.27f, 2.8f);
         highlight[88 + i] = 0;                          //  nothing is highlighted by default
         colors[88 + i] = figurineWhiteColor;
     }
@@ -2448,7 +2448,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[96 + i] = glm::vec3(offset, -0.05f, -0.4f);
+        positions[96 + i] = glm::vec3(offset, -0.06f, -0.4f);
         colors[96 + i] = rgbToFloats(160 - 10 * i, 160 - 10 * i, 160 - 10 * i);
     }
 
@@ -2456,7 +2456,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
-        positions[105 + i] = glm::vec3(offset, -0.05f, 3.2f);
+        positions[105 + i] = glm::vec3(offset, -0.06f, 3.2f);
         colors[105 + i] = rgbToFloats(80 + 10 * i, 80 + 10 * i, 80 + 10 * i);
     }
 
@@ -2464,7 +2464,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[114 + i] = glm::vec3(3.2f, -0.05f, offset);
+        positions[114 + i] = glm::vec3(3.2f, -0.06f, offset);
         colors[114 + i] = rgbToFloats(80 + 10 * i, 80 + 10 * i, 80 + 10 * i);
     }
 
@@ -2472,7 +2472,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
-        positions[123 + i] = glm::vec3(-0.4f, -0.05f, offset);
+        positions[123 + i] = glm::vec3(-0.4f, -0.06f, offset);
         colors[123 + i] = rgbToFloats(160 - 10 * i, 160 - 10 * i, 160 - 10 * i);
     }
 
@@ -2493,9 +2493,16 @@ int main(int argc, char ** argv)                        //  required main method
         shaderPBR.passInteger("roughnessMap", 3);
         shaderPBR.passInteger("aoMap", 4);
 
-        unsigned int albedoIron = loadTexture("resources/textures/iron/streakedmetal-albedo.png");
-        unsigned int metallicIron = loadTexture("resources/textures/iron/streakedmetal-metalness.png");
-        unsigned int roughnessIron = loadTexture("resources/textures/iron/streakedmetal-roughness.png");
+        unsigned int albedoRed = loadTexture("resources/textures/highlight/albedoRed.png");
+        unsigned int albedoGreen = loadTexture("resources/textures/highlight/albedoGreen.png");
+        unsigned int albedoBlue = loadTexture("resources/textures/highlight/albedoBlue.png");
+        unsigned int albedoYellow = loadTexture("resources/textures/highlight/albedoYellow.png");
+
+        unsigned int albedoGranite = loadTexture("resources/textures/granite/granitesmooth1-albedo2.png");
+        unsigned int normalGranite = loadTexture("resources/textures/granite/granitesmooth1-normal2.png");
+        unsigned int metallicGranite = loadTexture("resources/textures/granite/granitesmooth1-metalness.png");
+        unsigned int roughnessGranite = loadTexture("resources/textures/granite/granitesmooth1-roughness3.png");
+        unsigned int aoGranite = loadTexture("resources/textures/granite/granitesmooth1-ao.png");
 
         unsigned int albedoWood = loadTexture("resources/textures/wood/bamboo-wood-semigloss-albedo.png");
         unsigned int normalWood = loadTexture("resources/textures/wood/bamboo-wood-semigloss-normal.png");
@@ -2509,7 +2516,19 @@ int main(int argc, char ** argv)                        //  required main method
         unsigned int roughnessPlanks = loadTexture("resources/textures/planks/mahogfloor_roughness.png");
         unsigned int aoPlanks = loadTexture("resources/textures/planks/mahogfloor_AO.png");
 
-        glm::vec3 lightPosition = glm::vec3(2.0f, 5.0f, 2.0f);
+        unsigned int albedoMarble = loadTexture("resources/textures/marble/marble-speckled-albedo.png");
+        unsigned int normalMarble = loadTexture("resources/textures/marble/marble-speckled-normal.png");
+        unsigned int metallicMarble = loadTexture("resources/textures/marble/marble-speckled-metalness.png");
+        unsigned int roughnessMarble = loadTexture("resources/textures/marble/marble-speckled-roughness.png");
+        unsigned int aoMarble = loadTexture("resources/textures/marble/marble-speckled-ao.png");
+
+        unsigned int albedoFoam = loadTexture("resources/textures/foam/foam-grip1-albedo.png");
+        unsigned int normalFoam = loadTexture("resources/textures/foam/foam-grip1-normal-dx1.png");
+        unsigned int metallicFoam = loadTexture("resources/textures/foam/foam-grip1-metallic.png");
+        unsigned int roughnessFoam = loadTexture("resources/textures/foam/foam-grip1-roughness.png");
+        unsigned int aoFoam = loadTexture("resources/textures/foam/foam-grip1-ao.png");
+
+        glm::vec3 lightPosition = glm::vec3(-3.0f, 4.0f, -1.0f);
         glm::vec3 lightColor = glm::vec3(150.0f, 150.0f, 150.0f);
 
         glm::mat4 projection = glm::mat4(1.0f);
@@ -2587,41 +2606,41 @@ int main(int argc, char ** argv)                        //  required main method
         //     cube.render();
         // }
 
-        for (int i = 64; i < 96; i++)                   //  render all figurines
-        {
-            glm::mat4 modelOne = glm::mat4(1.0f);
-            modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-            modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
+        // for (int i = 64; i < 96; i++)                   //  render all figurines
+        // {
+        //     glm::mat4 modelOne = glm::mat4(1.0f);
+        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
+        //     modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
 
-            if (highlight[i])
-                simpleDepthShader.passVector("objectColor", greenHighlightColor);
-            else
-                simpleDepthShader.passVector("objectColor", colors[i]);
+        //     if (highlight[i])
+        //         simpleDepthShader.passVector("objectColor", greenHighlightColor);
+        //     else
+        //         simpleDepthShader.passVector("objectColor", colors[i]);
 
-            simpleDepthShader.passMatrix("model", modelOne);
-            // glStencilFunc(GL_ALWAYS, i + 1, -1);
+        //     simpleDepthShader.passMatrix("model", modelOne);
+        //     // glStencilFunc(GL_ALWAYS, i + 1, -1);
 
-            string linear = chess.getLinear();
-                                                        //  check type of figure using value inside linear array
-            if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-                pawn.render();
-            else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-                rook.render();
-            else if (linear[i - 64] == 'n')
-            {
-                modelOne = glm::rotate(modelOne, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-                simpleDepthShader.passMatrix("model", modelOne);
-                knight.render();
-            }
-            else if (linear[i - 64] == 'N')
-                knight.render();
-            else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-                bishop.render();
-            else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-                queen.render();
-            else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-                king.render();
-        }
+        //     string linear = chess.getLinear();
+        //                                                 //  check type of figure using value inside linear array
+        //     if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
+        //         pawn.render();
+        //     else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
+        //         rook.render();
+        //     else if (linear[i - 64] == 'n')
+        //     {
+        //         modelOne = glm::rotate(modelOne, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //         simpleDepthShader.passMatrix("model", modelOne);
+        //         knight.render();
+        //     }
+        //     else if (linear[i - 64] == 'N')
+        //         knight.render();
+        //     else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
+        //         bishop.render();
+        //     else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
+        //         queen.render();
+        //     else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
+        //         king.render();
+        // }
 
         // for (int i = 96; i < 132; i++)                  //  render game board border cubes
         // {
@@ -2678,41 +2697,41 @@ int main(int argc, char ** argv)                        //  required main method
         //     cube.render();
         // }
 
-        for (int i = 64; i < 96; i++)                   //  render all figurines
-        {
-            glm::mat4 modelOne = glm::mat4(1.0f);
-            modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-            modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
+        // for (int i = 64; i < 96; i++)                   //  render all figurines
+        // {
+        //     glm::mat4 modelOne = glm::mat4(1.0f);
+        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
+        //     modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
 
-            if (highlight[i])
-                shader.passVector("objectColor", greenHighlightColor);
-            else
-                shader.passVector("objectColor", colors[i]);
+        //     if (highlight[i])
+        //         shader.passVector("objectColor", greenHighlightColor);
+        //     else
+        //         shader.passVector("objectColor", colors[i]);
 
-            shader.passMatrix("model", modelOne);
-            glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+        //     shader.passMatrix("model", modelOne);
+        //     glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
 
-            string linear = chess.getLinear();
-                                                        //  check type of figure using value inside linear array
-            if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-                pawn.render();
-            else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-                rook.render();
-            else if (linear[i - 64] == 'n')
-            {
-                modelOne = glm::rotate(modelOne, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-                shader.passMatrix("model", modelOne);
-                knight.render();
-            }
-            else if (linear[i - 64] == 'N')
-                knight.render();
-            else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-                bishop.render();
-            else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-                queen.render();
-            else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-                king.render();
-        }
+        //     string linear = chess.getLinear();
+        //                                                 //  check type of figure using value inside linear array
+        //     if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
+        //         pawn.render();
+        //     else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
+        //         rook.render();
+        //     else if (linear[i - 64] == 'n')
+        //     {
+        //         modelOne = glm::rotate(modelOne, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //         shader.passMatrix("model", modelOne);
+        //         knight.render();
+        //     }
+        //     else if (linear[i - 64] == 'N')
+        //         knight.render();
+        //     else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
+        //         bishop.render();
+        //     else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
+        //         queen.render();
+        //     else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
+        //         king.render();
+        // }
 
         // for (int i = 96; i < 132; i++)                  //  render game board border cubes
         // {
@@ -2764,31 +2783,73 @@ int main(int argc, char ** argv)                        //  required main method
                 model = glm::translate(model, positions[i]);
                 model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 
-                if (colors[i] == cubeWhiteColor)
+                if (highlight[i] == 1)                          //  move
                 {
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoWood);
+                    glBindTexture(GL_TEXTURE_2D, albedoBlue);
                     glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalWood);
+                    glBindTexture(GL_TEXTURE_2D, normalFoam);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicWood);
+                    glBindTexture(GL_TEXTURE_2D, metallicFoam);
                     glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessWood);
+                    glBindTexture(GL_TEXTURE_2D, roughnessFoam);
                     glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoWood);
+                    glBindTexture(GL_TEXTURE_2D, aoFoam);
+                }
+                else if (highlight[i] == 2)                     //  attack
+                {
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, albedoRed);
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D, normalFoam);
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                    glActiveTexture(GL_TEXTURE4);
+                    glBindTexture(GL_TEXTURE_2D, aoFoam);
+                }
+                else if (highlight[i] == 3)                     //  castling
+                {
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, albedoYellow);
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D, normalFoam);
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                    glActiveTexture(GL_TEXTURE4);
+                    glBindTexture(GL_TEXTURE_2D, aoFoam);
                 }
                 else
                 {
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoPlanks);
-                    glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalPlanks);
-                    glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicPlanks);
-                    glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessPlanks);
-                    glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoPlanks);
+                    if (colors[i] == cubeWhiteColor)
+                    {
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, albedoWood);
+                        glActiveTexture(GL_TEXTURE1);
+                        glBindTexture(GL_TEXTURE_2D, normalWood);
+                        glActiveTexture(GL_TEXTURE2);
+                        glBindTexture(GL_TEXTURE_2D, metallicWood);
+                        glActiveTexture(GL_TEXTURE3);
+                        glBindTexture(GL_TEXTURE_2D, roughnessWood);
+                        glActiveTexture(GL_TEXTURE4);
+                        glBindTexture(GL_TEXTURE_2D, aoWood);
+                    }
+                    else
+                    {
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, albedoPlanks);
+                        glActiveTexture(GL_TEXTURE1);
+                        glBindTexture(GL_TEXTURE_2D, normalPlanks);
+                        glActiveTexture(GL_TEXTURE2);
+                        glBindTexture(GL_TEXTURE_2D, metallicPlanks);
+                        glActiveTexture(GL_TEXTURE3);
+                        glBindTexture(GL_TEXTURE_2D, roughnessPlanks);
+                        glActiveTexture(GL_TEXTURE4);
+                        glBindTexture(GL_TEXTURE_2D, aoPlanks);
+                    }
                 }
 
                 shaderPBR.passMatrix("model", model);
@@ -2797,15 +2858,100 @@ int main(int argc, char ** argv)                        //  required main method
             }
 
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, albedoIron);
-            // glActiveTexture(GL_TEXTURE1);
-            // glBindTexture(GL_TEXTURE_2D, normalIron);
+            glBindTexture(GL_TEXTURE_2D, albedoWood);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, normalWood);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, metallicIron);
+            glBindTexture(GL_TEXTURE_2D, metallicWood);
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, roughnessIron);
-            // glActiveTexture(GL_TEXTURE4);
-            // glBindTexture(GL_TEXTURE_2D, aoIron);
+            glBindTexture(GL_TEXTURE_2D, roughnessWood);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, aoWood);
+
+            for (int i = 64; i < 96; i++)                   //  render all figurines
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, positions[i]);  //  translate and scale object before rendering
+                model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+
+                if (highlight[i])
+                {
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, albedoGreen);
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D, normalGranite);
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, metallicGranite);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, roughnessGranite);
+                    glActiveTexture(GL_TEXTURE4);
+                    glBindTexture(GL_TEXTURE_2D, aoGranite);
+                }
+                else
+                {
+                    if (colors[i] == cubeWhiteColor)
+                    {
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, albedoMarble);
+                        glActiveTexture(GL_TEXTURE1);
+                        glBindTexture(GL_TEXTURE_2D, normalMarble);
+                        glActiveTexture(GL_TEXTURE2);
+                        glBindTexture(GL_TEXTURE_2D, metallicMarble);
+                        glActiveTexture(GL_TEXTURE3);
+                        glBindTexture(GL_TEXTURE_2D, roughnessMarble);
+                        glActiveTexture(GL_TEXTURE4);
+                        glBindTexture(GL_TEXTURE_2D, aoMarble);
+                    }
+                    else
+                    {
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, albedoGranite);
+                        glActiveTexture(GL_TEXTURE1);
+                        glBindTexture(GL_TEXTURE_2D, normalGranite);
+                        glActiveTexture(GL_TEXTURE2);
+                        glBindTexture(GL_TEXTURE_2D, metallicGranite);
+                        glActiveTexture(GL_TEXTURE3);
+                        glBindTexture(GL_TEXTURE_2D, roughnessGranite);
+                        glActiveTexture(GL_TEXTURE4);
+                        glBindTexture(GL_TEXTURE_2D, aoGranite);
+                    }
+                }
+
+                shader.passMatrix("model", model);
+                glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+
+                string linear = chess.getLinear();
+                                                            //  check type of figure using value inside linear array
+                if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
+                    pawnUV.render();
+                else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
+                    pawnUV.render();
+                else if (linear[i - 64] == 'n')
+                {
+                    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                    shaderPBR.passMatrix("model", model);
+                    pawnUV.render();
+                }
+                else if (linear[i - 64] == 'N')
+                    pawnUV.render();
+                else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
+                    pawnUV.render();
+                else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
+                    pawnUV.render();
+                else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
+                    pawnUV.render();
+            }
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, albedoFoam);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, normalFoam);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, metallicFoam);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, aoFoam);
 
             for (int i = 96; i < 132; i++)                  //  render game board border cubes
             {
