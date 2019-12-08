@@ -2285,13 +2285,13 @@ int main(int argc, char ** argv)                        //  required main method
     shader.passInteger("diffuseTexture", 0);
     shader.passInteger("shadowMap", 1);
 
-    ModelUV cubeUV("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
-    ModelUV rookUV("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt");
-    ModelUV knightUV("resources/knight/positions.txt", "resources/knight/normals.txt", "resources/knight/indices.txt", "resources/knight/uv.txt");
-    ModelUV bishopUV("resources/bishop/positions.txt", "resources/bishop/normals.txt", "resources/bishop/indices.txt", "resources/bishop/uv.txt");
-    ModelUV kingUV("resources/king/positions.txt", "resources/king/normals.txt", "resources/king/indices.txt", "resources/king/uv.txt");
-    ModelUV queenUV("resources/queen/positions.txt", "resources/queen/normals.txt", "resources/queen/indices.txt", "resources/queen/uv.txt");
-    ModelUV pawnUV("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt");
+    Model cube("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
+    Model rook("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt");
+    Model knight("resources/knight/positions.txt", "resources/knight/normals.txt", "resources/knight/indices.txt", "resources/knight/uv.txt");
+    Model bishop("resources/bishop/positions.txt", "resources/bishop/normals.txt", "resources/bishop/indices.txt", "resources/bishop/uv.txt");
+    Model king("resources/king/positions.txt", "resources/king/normals.txt", "resources/king/indices.txt", "resources/king/uv.txt");
+    Model queen("resources/queen/positions.txt", "resources/queen/normals.txt", "resources/queen/indices.txt", "resources/queen/uv.txt");
+    Model pawn("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt");
 
     for (int i = 0; i < 8; i++)                         //  initialize first row of game board blocks
     {
@@ -2643,7 +2643,7 @@ int main(int argc, char ** argv)                        //  required main method
 
             shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cubeUV.render();
+            cube.render();
         }
 
         glActiveTexture(GL_TEXTURE0);
@@ -2712,23 +2712,23 @@ int main(int argc, char ** argv)                        //  required main method
             string linear = chess.getLinear();
                                                         //  check type of figure using value inside linear array
             if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-                pawnUV.render();
+                pawn.render();
             else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-                rookUV.render();
+                rook.render();
             else if (linear[i - 64] == 'n')
             {
                 model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
                 shaderPBR.passMatrix("model", model);
-                knightUV.render();
+                knight.render();
             }
             else if (linear[i - 64] == 'N')
-                knightUV.render();
+                knight.render();
             else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-                bishopUV.render();
+                bishop.render();
             else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-                queenUV.render();
+                queen.render();
             else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-                kingUV.render();
+                king.render();
         }
 
         glActiveTexture(GL_TEXTURE0);
@@ -2749,7 +2749,7 @@ int main(int argc, char ** argv)                        //  required main method
             model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
             shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cubeUV.render();
+            cube.render();
         }
 
         shaderPBR.passVector("lightPositions[0]", lightPosition);
@@ -2773,7 +2773,7 @@ int main(int argc, char ** argv)                        //  required main method
             model = glm::scale(model, glm::vec3(0.1f));
             shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
-            cubeUV.render();
+            cube.render();
         }
 
         glfwSwapBuffers(window);                        //  swap buffers and poll IO events
