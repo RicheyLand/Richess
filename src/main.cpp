@@ -28,7 +28,7 @@ Camera camera;                                          //  create camera instan
 bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
 
-glm::vec3 lightPosition(-3.5f, 3.5f, 0.0f);
+glm::vec3 lightPosition(-3.0f, 3.0f, 0.0f);
 glm::vec3 lightColor(150.0f, 150.0f, 150.0f);           //  emitted color of light source
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
@@ -2787,8 +2787,8 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
         {
             lampOrbit = false;
 
-            lightPosition.x = 0.0f;
-            lightPosition.y = 1.4f;
+            lightPosition.x = -3.0f;
+            lightPosition.y = 3.0f;
             lightPosition.z = 0.0f;
         }
         else                                            //  disable lamp orbit
@@ -2796,7 +2796,7 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
             lampOrbit = true;
 
             lightPosition.x = 0.0f;
-            lightPosition.y = 2.4f;
+            lightPosition.y = 3.0f;
             lightPosition.z = 0.0f;
         }
     }
@@ -2881,6 +2881,7 @@ unsigned int loadTexture(char const * path)
 
     int width, height, nrComponents;
     unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+
     if (data)
     {
         GLenum format;
@@ -2904,7 +2905,7 @@ unsigned int loadTexture(char const * path)
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        cout << "Texture failed to load at path: " << path << endl;
         stbi_image_free(data);
     }
 
