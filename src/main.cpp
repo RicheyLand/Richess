@@ -27,14 +27,13 @@ Camera camera;                                          //  create camera instan
 
 bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
-glm::vec3 lampPos(0.0f, 1.4f, 0.0f);                    //  initial position of light source
 
-glm::vec3 lightPosition(-3.0f, 4.0f, -1.0f);
+glm::vec3 lightPosition(-3.5f, 3.5f, 0.0f);
 glm::vec3 lightColor(150.0f, 150.0f, 150.0f);           //  emitted color of light source
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
 glm::vec3 positions[objectCount + 36];                  //  positions of all game objects(includes game board border)
-glm::vec3 colors[objectCount + 36];                     //  colors of all game objects(includes game board border)
+bool isWhite[objectCount + 36];                         //  colors of all game objects(includes game board border)
 int highlight[objectCount];                             //  highlight indiced of all game objects
 
 int clicked = -1;                                       //  holds actual index of mouse click selection
@@ -2286,8 +2285,6 @@ int main(int argc, char ** argv)                        //  required main method
     shader.passInteger("diffuseTexture", 0);
     shader.passInteger("shadowMap", 1);
 
-    Model lamp("resources/cube/vertices/cube.txt", "resources/indices/cube/cube.txt");    //  load lamp model from file
-
     ModelUV cubeUV("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
     ModelUV rookUV("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt");
     ModelUV knightUV("resources/knight/positions.txt", "resources/knight/normals.txt", "resources/knight/indices.txt", "resources/knight/uv.txt");
@@ -2295,14 +2292,6 @@ int main(int argc, char ** argv)                        //  required main method
     ModelUV kingUV("resources/king/positions.txt", "resources/king/normals.txt", "resources/king/indices.txt", "resources/king/uv.txt");
     ModelUV queenUV("resources/queen/positions.txt", "resources/queen/normals.txt", "resources/queen/indices.txt", "resources/queen/uv.txt");
     ModelUV pawnUV("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt");
-
-    glm::vec3 cubeBrownColor(rgbToFloats(139, 69, 19));     //  set RGB values of all required colors
-    glm::vec3 cubeWhiteColor(rgbToFloats(255, 211, 155));
-    glm::vec3 figurineBrownColor(rgbToFloats(139, 69, 19));
-    glm::vec3 figurineWhiteColor(rgbToFloats(255, 211, 155));
-    glm::vec3 greenHighlightColor(rgbToFloats(0, 201, 87));
-    glm::vec3 blueHighlightColor(rgbToFloats(30, 144, 255));
-    glm::vec3 redHighlightColor(rgbToFloats(255, 20, 80));
 
     for (int i = 0; i < 8; i++)                         //  initialize first row of game board blocks
     {
@@ -2312,9 +2301,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[i] = 0;                               //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[i] = cubeBrownColor;
+            isWhite[i] = false;
         else
-            colors[i] = cubeWhiteColor;
+            isWhite[i] = true;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize second row of game board blocks
@@ -2325,9 +2314,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[8 + i] = 0;                           //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[8 + i] = cubeWhiteColor;
+            isWhite[8 + i] = true;
         else
-            colors[8 + i] = cubeBrownColor;
+            isWhite[8 + i] = false;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize third row of game board blocks
@@ -2338,9 +2327,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[16 + i] = 0;                          //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[16 + i] = cubeBrownColor;
+            isWhite[16 + i] = false;
         else
-            colors[16 + i] = cubeWhiteColor;
+            isWhite[16 + i] = true;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize fourth row of game board blocks
@@ -2351,9 +2340,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[24 + i] = 0;                          //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[24 + i] = cubeWhiteColor;
+            isWhite[24 + i] = true;
         else
-            colors[24 + i] = cubeBrownColor;
+            isWhite[24 + i] = false;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize fifth row of game board blocks
@@ -2364,9 +2353,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[32 + i] = 0;                          //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[32 + i] = cubeBrownColor;
+            isWhite[32 + i] = false;
         else
-            colors[32 + i] = cubeWhiteColor;
+            isWhite[32 + i] = true;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize sixth row of game board blocks
@@ -2377,9 +2366,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[40 + i] = 0;                          //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[40 + i] = cubeWhiteColor;
+            isWhite[40 + i] = true;
         else
-            colors[40 + i] = cubeBrownColor;
+            isWhite[40 + i] = false;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize seventh row of game board blocks
@@ -2390,9 +2379,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[48 + i] = 0;                          //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[48 + i] = cubeBrownColor;
+            isWhite[48 + i] = false;
         else
-            colors[48 + i] = cubeWhiteColor;
+            isWhite[48 + i] = true;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize eighth row of game board blocks
@@ -2403,9 +2392,9 @@ int main(int argc, char ** argv)                        //  required main method
         highlight[56 + i] = 0;                          //  nothing is highlighted by default
 
         if (i % 2 == 1)
-            colors[56 + i] = cubeWhiteColor;
+            isWhite[56 + i] = true;
         else
-            colors[56 + i] = cubeBrownColor;
+            isWhite[56 + i] = false;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize black pawns
@@ -2414,7 +2403,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[64 + i] = glm::vec3(offset, 0.23f, 0.4f);
         highlight[64 + i] = 0;                          //  nothing is highlighted by default
-        colors[64 + i] = figurineBrownColor;
+        isWhite[64 + i] = false;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize white pawns
@@ -2423,7 +2412,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[72 + i] = glm::vec3(offset, 0.23f, 2.4f);
         highlight[72 + i] = 0;                          //  nothing is highlighted by default
-        colors[72 + i] = figurineWhiteColor;
+        isWhite[72 + i] = true;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize black non-pawns
@@ -2432,7 +2421,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[80 + i] = glm::vec3(offset, 0.23f, 0.0f);
         highlight[80 + i] = 0;                          //  nothing is highlighted by default
-        colors[80 + i] = figurineBrownColor;
+        isWhite[80 + i] = false;
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize white non-pawns
@@ -2441,7 +2430,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[88 + i] = glm::vec3(offset, 0.23f, 2.8f);
         highlight[88 + i] = 0;                          //  nothing is highlighted by default
-        colors[88 + i] = figurineWhiteColor;
+        isWhite[88 + i] = true;
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2449,7 +2438,7 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f;                 //  handle object offset
 
         positions[96 + i] = glm::vec3(offset, -0.03f, -0.4f);
-        colors[96 + i] = rgbToFloats(160 - 10 * i, 160 - 10 * i, 160 - 10 * i);
+        isWhite[96 + i] = false;
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2457,7 +2446,7 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
         positions[105 + i] = glm::vec3(offset, -0.03f, 3.2f);
-        colors[105 + i] = rgbToFloats(80 + 10 * i, 80 + 10 * i, 80 + 10 * i);
+        isWhite[105 + i] = false;
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2465,7 +2454,7 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f;                 //  handle object offset
 
         positions[114 + i] = glm::vec3(3.2f, -0.03f, offset);
-        colors[114 + i] = rgbToFloats(80 + 10 * i, 80 + 10 * i, 80 + 10 * i);
+        isWhite[114 + i] = false;
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2473,7 +2462,7 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
         positions[123 + i] = glm::vec3(-0.4f, -0.03f, offset);
-        colors[123 + i] = rgbToFloats(160 - 10 * i, 160 - 10 * i, 160 - 10 * i);
+        isWhite[123 + i] = false;
     }
 
     for (int i = 0; i < 132; i++)                       //  move all game objects into the center of coordinate system
@@ -2497,6 +2486,7 @@ int main(int argc, char ** argv)                        //  required main method
         unsigned int albedoGreen = loadTexture("resources/textures/highlight/green/albedo.png");
         unsigned int albedoBlue = loadTexture("resources/textures/highlight/blue/albedo.png");
         unsigned int albedoYellow = loadTexture("resources/textures/highlight/yellow/albedo.png");
+        unsigned int albedoWhite = loadTexture("resources/textures/highlight/white/albedo.png");
 
         unsigned int albedoGranite = loadTexture("resources/textures/granite/albedo.png");
         unsigned int normalGranite = loadTexture("resources/textures/granite/normal.png");
@@ -2561,298 +2551,150 @@ int main(int argc, char ** argv)                        //  required main method
         if (lampOrbit)
         {
             float radius = 3.0f;
-            lampPos.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
-            lampPos.z = cos(glfwGetTime() * 0.1f) * radius;
+            lightPosition.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
+            lightPosition.z = cos(glfwGetTime() * 0.1f) * radius;
         }
 
-        //  render scene only to the depth texture for future calculation of shadows
+        // reset viewport
+        glViewport(0, 0, window_width, window_height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-        glm::mat4 lightProjection = glm::mat4(1.0f);
-        glm::mat4 lightView = glm::mat4(1.0f);
-        glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
-        float near_plane = 1.0f, far_plane = 7.5f;      //  setup view frustum
-        
-        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);  //  enable orthographic view when rendering shadows
-        lightView = glm::lookAt(lampPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-        lightSpaceMatrix = lightProjection * lightView;
+        shaderPBR.activate();
+        glm::mat4 view = glm::mat4(1.0f);
+        view = camera.loadViewMatrix();
+        shaderPBR.passMatrix("view", view);
+        shaderPBR.passVector("camPos", camera.Position);
 
-        simpleDepthShader.activate();                   //  activate appropriate shader
-        simpleDepthShader.passMatrix("lightSpaceMatrix", lightSpaceMatrix);
-
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO); //  use depth map
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        // for (int i = 0; i < 64; i++)                    //  render all game board blocks
-        // {
-        //     glm::mat4 modelOne = glm::mat4(1.0f);
-        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-        //     modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
-
-        //     if (highlight[i] == 1)
-        //         simpleDepthShader.passVector("objectColor", blueHighlightColor);
-        //     else if (highlight[i] == 2)
-        //         simpleDepthShader.passVector("objectColor", redHighlightColor);
-        //     else if (highlight[i] == 3)
-        //         simpleDepthShader.passVector("objectColor", redHighlightColor);
-        //     else
-        //         simpleDepthShader.passVector("objectColor", colors[i]);
-
-        //     simpleDepthShader.passMatrix("model", modelOne);
-        //     // glStencilFunc(GL_ALWAYS, i + 1, -1);
-        //     cubeUV.render();
-        // }
-
-        // for (int i = 64; i < 96; i++)                   //  render all figurines
-        // {
-        //     glm::mat4 modelOne = glm::mat4(1.0f);
-        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-        //     modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
-
-        //     if (highlight[i])
-        //         simpleDepthShader.passVector("objectColor", greenHighlightColor);
-        //     else
-        //         simpleDepthShader.passVector("objectColor", colors[i]);
-
-        //     simpleDepthShader.passMatrix("model", modelOne);
-        //     // glStencilFunc(GL_ALWAYS, i + 1, -1);
-
-        //     string linear = chess.getLinear();
-        //                                                 //  check type of figure using value inside linear array
-        //     if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-        //         pawnUV.render();
-        //     else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-        //         rookUV.render();
-        //     else if (linear[i - 64] == 'n')
-        //     {
-        //         modelOne = glm::rotate(modelOne, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        //         simpleDepthShader.passMatrix("model", modelOne);
-        //         knightUV.render();
-        //     }
-        //     else if (linear[i - 64] == 'N')
-        //         knightUV.render();
-        //     else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-        //         bishopUV.render();
-        //     else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-        //         queenUV.render();
-        //     else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-        //         kingUV.render();
-        // }
-
-        // for (int i = 96; i < 132; i++)                  //  render game board border cubes
-        // {
-        //     glm::mat4 modelOne = glm::mat4(1.0f);
-        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-        //     modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
-        //     simpleDepthShader.passVector("objectColor", colors[i]);
-        //     simpleDepthShader.passMatrix("model", modelOne);
-        //     // glStencilFunc(GL_ALWAYS, i + 1, -1);
-        //     cubeUV.render();
-        // }
-
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-            // reset viewport
-            glViewport(0, 0, window_width, window_height);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-            //  render complete scene now, but use previously rendered depth map
-
-            // glViewport(0, 0, window_width, window_height);
-            // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            // shader.activate();                              //  activate appropriate shader
-            // glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
-            // glm::mat4 view = camera.loadViewMatrix();
-            // shader.passMatrix("projection", projection);
-            // shader.passMatrix("view", view);
-            // // set light uniforms
-            // shader.passVector("viewPos", camera.Position);
-            // shader.passVector("lightPos", lampPos);
-            // shader.passMatrix("lightSpaceMatrix", lightSpaceMatrix);
-            // glActiveTexture(GL_TEXTURE1);
-            // glBindTexture(GL_TEXTURE_2D, depthMap);
-        
-        // for (int i = 0; i < 64; i++)                    //  render all game board blocks
-        // {
-        //     // render the loaded model
-        //     glm::mat4 modelOne = glm::mat4(1.0f);
-        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-        //     modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
-
-        //     if (highlight[i] == 1)
-        //         shader.passVector("objectColor", blueHighlightColor);
-        //     else if (highlight[i] == 2)
-        //         shader.passVector("objectColor", redHighlightColor);
-        //     else if (highlight[i] == 3)
-        //         shader.passVector("objectColor", redHighlightColor);
-        //     else
-        //         shader.passVector("objectColor", colors[i]);
-
-        //     shader.passMatrix("model", modelOne);
-        //     glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-        //     cube.render();
-        // }
-
-        // for (int i = 64; i < 96; i++)                   //  render all figurines
-        // {
-        //     glm::mat4 modelOne = glm::mat4(1.0f);
-        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-        //     modelOne = glm::scale(modelOne, glm::vec3(0.08f, 0.08f, 0.08f));
-
-        //     if (highlight[i])
-        //         shader.passVector("objectColor", greenHighlightColor);
-        //     else
-        //         shader.passVector("objectColor", colors[i]);
-
-        //     shader.passMatrix("model", modelOne);
-        //     glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-
-        //     string linear = chess.getLinear();
-        //                                                 //  check type of figure using value inside linear array
-        //     if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-        //         pawn.render();
-        //     else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-        //         rook.render();
-        //     else if (linear[i - 64] == 'n')
-        //     {
-        //         modelOne = glm::rotate(modelOne, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        //         shader.passMatrix("model", modelOne);
-        //         knight.render();
-        //     }
-        //     else if (linear[i - 64] == 'N')
-        //         knight.render();
-        //     else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-        //         bishop.render();
-        //     else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-        //         queen.render();
-        //     else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-        //         king.render();
-        // }
-
-        // for (int i = 96; i < 132; i++)                  //  render game board border cubes
-        // {
-        //     // render the loaded model
-        //     glm::mat4 modelOne = glm::mat4(1.0f);
-        //     modelOne = glm::translate(modelOne, positions[i]);  //  translate and scale object before rendering
-        //     modelOne = glm::scale(modelOne, glm::vec3(0.2f, 0.2f, 0.2f));
-        //     shader.passVector("objectColor", colors[i]);
-        //     shader.passMatrix("model", modelOne);
-        //     glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-        //     cube.render();
-        // }
-
-        //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        if (true)
+        for (int i = 0; i < 64; i++)                    //  render all game board blocks
         {
-            shaderPBR.activate();
-            glm::mat4 view = glm::mat4(1.0f);
-            view = camera.loadViewMatrix();
-            shaderPBR.passMatrix("view", view);
-            shaderPBR.passVector("camPos", camera.Position);
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, positions[i]);
+            model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 
-            for (int i = 0; i < 64; i++)                    //  render all game board blocks
+            if (highlight[i] == 1)                          //  move
             {
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, positions[i]);
-                model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-
-                if (highlight[i] == 1)                          //  move
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, albedoBlue);
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, normalFoam);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, aoFoam);
+            }
+            else if (highlight[i] == 2)                     //  attack
+            {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, albedoRed);
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, normalFoam);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, aoFoam);
+            }
+            else if (highlight[i] == 3)                     //  castling
+            {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, albedoYellow);
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, normalFoam);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, aoFoam);
+            }
+            else
+            {
+                if (isWhite[i] == true)
                 {
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoBlue);
+                    glBindTexture(GL_TEXTURE_2D, albedoWood);
                     glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalFoam);
+                    glBindTexture(GL_TEXTURE_2D, normalWood);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                    glBindTexture(GL_TEXTURE_2D, metallicWood);
                     glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                    glBindTexture(GL_TEXTURE_2D, roughnessWood);
                     glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoFoam);
-                }
-                else if (highlight[i] == 2)                     //  attack
-                {
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoRed);
-                    glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalFoam);
-                    glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicFoam);
-                    glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessFoam);
-                    glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoFoam);
-                }
-                else if (highlight[i] == 3)                     //  castling
-                {
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoYellow);
-                    glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalFoam);
-                    glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicFoam);
-                    glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessFoam);
-                    glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoFoam);
+                    glBindTexture(GL_TEXTURE_2D, aoWood);
                 }
                 else
                 {
-                    if (colors[i] == cubeWhiteColor)
-                    {
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, albedoWood);
-                        glActiveTexture(GL_TEXTURE1);
-                        glBindTexture(GL_TEXTURE_2D, normalWood);
-                        glActiveTexture(GL_TEXTURE2);
-                        glBindTexture(GL_TEXTURE_2D, metallicWood);
-                        glActiveTexture(GL_TEXTURE3);
-                        glBindTexture(GL_TEXTURE_2D, roughnessWood);
-                        glActiveTexture(GL_TEXTURE4);
-                        glBindTexture(GL_TEXTURE_2D, aoWood);
-                    }
-                    else
-                    {
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, albedoPlanks);
-                        glActiveTexture(GL_TEXTURE1);
-                        glBindTexture(GL_TEXTURE_2D, normalPlanks);
-                        glActiveTexture(GL_TEXTURE2);
-                        glBindTexture(GL_TEXTURE_2D, metallicPlanks);
-                        glActiveTexture(GL_TEXTURE3);
-                        glBindTexture(GL_TEXTURE_2D, roughnessPlanks);
-                        glActiveTexture(GL_TEXTURE4);
-                        glBindTexture(GL_TEXTURE_2D, aoPlanks);
-                    }
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, albedoPlanks);
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D, normalPlanks);
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, metallicPlanks);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, roughnessPlanks);
+                    glActiveTexture(GL_TEXTURE4);
+                    glBindTexture(GL_TEXTURE_2D, aoPlanks);
                 }
-
-                shaderPBR.passMatrix("model", model);
-                glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-                cubeUV.render();
             }
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, albedoWood);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, normalWood);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, metallicWood);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, roughnessWood);
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, aoWood);
+            shaderPBR.passMatrix("model", model);
+            glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+            cubeUV.render();
+        }
 
-            for (int i = 64; i < 96; i++)                   //  render all figurines
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, albedoWood);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, normalWood);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, metallicWood);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, roughnessWood);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, aoWood);
+
+        for (int i = 64; i < 96; i++)                   //  render all figurines
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, positions[i]);  //  translate and scale object before rendering
+            model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+
+            if (highlight[i])
             {
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, positions[i]);  //  translate and scale object before rendering
-                model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
-
-                if (highlight[i])
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, albedoGreen);
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, normalGranite);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, metallicGranite);
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, roughnessGranite);
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, aoGranite);
+            }
+            else
+            {
+                if (isWhite[i] == true)
                 {
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoGreen);
+                    glBindTexture(GL_TEXTURE_2D, albedoMarble);
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D, normalMarble);
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, metallicMarble);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, roughnessMarble);
+                    glActiveTexture(GL_TEXTURE4);
+                    glBindTexture(GL_TEXTURE_2D, aoMarble);
+                }
+                else
+                {
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, albedoGranite);
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, normalGranite);
                     glActiveTexture(GL_TEXTURE2);
@@ -2862,63 +2704,61 @@ int main(int argc, char ** argv)                        //  required main method
                     glActiveTexture(GL_TEXTURE4);
                     glBindTexture(GL_TEXTURE_2D, aoGranite);
                 }
-                else
-                {
-                    if (colors[i] == cubeWhiteColor)
-                    {
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, albedoMarble);
-                        glActiveTexture(GL_TEXTURE1);
-                        glBindTexture(GL_TEXTURE_2D, normalMarble);
-                        glActiveTexture(GL_TEXTURE2);
-                        glBindTexture(GL_TEXTURE_2D, metallicMarble);
-                        glActiveTexture(GL_TEXTURE3);
-                        glBindTexture(GL_TEXTURE_2D, roughnessMarble);
-                        glActiveTexture(GL_TEXTURE4);
-                        glBindTexture(GL_TEXTURE_2D, aoMarble);
-                    }
-                    else
-                    {
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, albedoGranite);
-                        glActiveTexture(GL_TEXTURE1);
-                        glBindTexture(GL_TEXTURE_2D, normalGranite);
-                        glActiveTexture(GL_TEXTURE2);
-                        glBindTexture(GL_TEXTURE_2D, metallicGranite);
-                        glActiveTexture(GL_TEXTURE3);
-                        glBindTexture(GL_TEXTURE_2D, roughnessGranite);
-                        glActiveTexture(GL_TEXTURE4);
-                        glBindTexture(GL_TEXTURE_2D, aoGranite);
-                    }
-                }
-
-                shader.passMatrix("model", model);
-                glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-
-                string linear = chess.getLinear();
-                                                            //  check type of figure using value inside linear array
-                if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-                    pawnUV.render();
-                else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-                    rookUV.render();
-                else if (linear[i - 64] == 'n')
-                {
-                    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-                    shaderPBR.passMatrix("model", model);
-                    knightUV.render();
-                }
-                else if (linear[i - 64] == 'N')
-                    knightUV.render();
-                else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-                    bishopUV.render();
-                else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-                    queenUV.render();
-                else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-                    kingUV.render();
             }
 
+            shader.passMatrix("model", model);
+            glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+
+            string linear = chess.getLinear();
+                                                        //  check type of figure using value inside linear array
+            if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
+                pawnUV.render();
+            else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
+                rookUV.render();
+            else if (linear[i - 64] == 'n')
+            {
+                model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                shaderPBR.passMatrix("model", model);
+                knightUV.render();
+            }
+            else if (linear[i - 64] == 'N')
+                knightUV.render();
+            else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
+                bishopUV.render();
+            else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
+                queenUV.render();
+            else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
+                kingUV.render();
+        }
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, albedoFoam);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, normalFoam);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, metallicFoam);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, aoFoam);
+
+        for (int i = 96; i < 132; i++)                  //  render game board border cubes
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, positions[i]);
+            model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+            shaderPBR.passMatrix("model", model);
+            glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+            cubeUV.render();
+        }
+
+        shaderPBR.passVector("lightPositions[0]", lightPosition);
+        shaderPBR.passVector("lightColors[0]", lightColor);
+
+        if (lampVisible)
+        {
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, albedoFoam);
+            glBindTexture(GL_TEXTURE_2D, albedoWhite);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, normalFoam);
             glActiveTexture(GL_TEXTURE2);
@@ -2928,49 +2768,13 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, aoFoam);
 
-            for (int i = 96; i < 132; i++)                  //  render game board border cubes
-            {
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, positions[i]);
-                model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-                shaderPBR.passMatrix("model", model);
-                glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-                cubeUV.render();
-            }
-
-            shaderPBR.passVector("lightPositions[0]", lightPosition);
-            shaderPBR.passVector("lightColors[0]", lightColor);
-
-            // glm::mat4 model = glm::mat4(1.0f);
-            // model = glm::translate(model, lightPosition);
-            // model = glm::scale(model, glm::vec3(0.1f));
-            // shaderPBR.passMatrix("model", model);
-            // pawnUV.render();
-
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, lightPosition);
+            model = glm::scale(model, glm::vec3(0.1f));
+            shaderPBR.passMatrix("model", model);
+            glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
+            cubeUV.render();
         }
-
-        //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            //  render lamp object without shadow mapping with its own shader
-
-            if (lampVisible)                                //  check whether lamp object should be visible
-            {
-                lampShader.activate();                      //  activate appropriate shader
-                lampShader.passVector("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-
-                // view/projection transformations
-                glm::mat4 projectionThree = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
-                glm::mat4 viewThree = camera.loadViewMatrix();
-                lampShader.passMatrix("projection", projectionThree);
-                lampShader.passMatrix("view", viewThree);
-
-                // render the loaded model
-                glm::mat4 modelThree = glm::mat4(1.0f);
-                modelThree = glm::translate(modelThree, glm::vec3(lampPos));    //  translate and scale object before rendering
-                modelThree = glm::scale(modelThree, glm::vec3(0.1f, 0.1f, 0.1f));
-                lampShader.passMatrix("model", modelThree);
-                glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
-                lamp.render();
-            }
 
         glfwSwapBuffers(window);                        //  swap buffers and poll IO events
         glfwPollEvents();
@@ -2991,17 +2795,17 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
         {
             lampOrbit = false;
 
-            lampPos.x = 0.0f;
-            lampPos.y = 1.4f;
-            lampPos.z = 0.0f;
+            lightPosition.x = 0.0f;
+            lightPosition.y = 1.4f;
+            lightPosition.z = 0.0f;
         }
         else                                            //  disable lamp orbit
         {
             lampOrbit = true;
 
-            lampPos.x = 0.0f;
-            lampPos.y = 2.4f;
-            lampPos.z = 0.0f;
+            lightPosition.x = 0.0f;
+            lightPosition.y = 2.4f;
+            lightPosition.z = 0.0f;
         }
     }
 }
@@ -3030,25 +2834,25 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
         camera.zoomIn();
                                                         //  move light source by pressing appropriate buttons
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        lampPos.z += 0.03;
+        lightPosition.z += 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        lampPos.z -= 0.03;
+        lightPosition.z -= 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-        lampPos.x -= 0.03;
+        lightPosition.x -= 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        lampPos.x += 0.03;
+        lightPosition.x += 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
     {
-        if (lampPos.y >= 0.4f)
-            lampPos.y -= 0.03;
+        if (lightPosition.y >= 0.4f)
+            lightPosition.y -= 0.03;
     }
 
     if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-        lampPos.y += 0.03;
+        lightPosition.y += 0.03;
 }
 
 void framebuffer_size_callback(GLFWwindow * /*window*/, int width, int height)  //  handle window resize using callback
