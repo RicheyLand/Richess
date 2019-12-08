@@ -2154,7 +2154,7 @@ int main(int argc, char ** argv)                        //  required main method
         if (!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v"))
         {
             cout << "richess\n";
-            cout << "version 1.1\n";
+            cout << "version 1.2\n";
             return 0;
         }
         else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
@@ -2286,7 +2286,7 @@ int main(int argc, char ** argv)                        //  required main method
     shader.passInteger("diffuseTexture", 0);
     shader.passInteger("shadowMap", 1);
 
-    Model lamp("resources/vertices/cube.txt", "resources/indices/cube.txt");    //  load lamp model from file
+    Model lamp("resources/cube/vertices/cube.txt", "resources/indices/cube/cube.txt");    //  load lamp model from file
 
     ModelUV cubeUV("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
     ModelUV rookUV("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt");
@@ -2493,40 +2493,40 @@ int main(int argc, char ** argv)                        //  required main method
         shaderPBR.passInteger("roughnessMap", 3);
         shaderPBR.passInteger("aoMap", 4);
 
-        unsigned int albedoRed = loadTexture("resources/textures/highlight/albedoRed.png");
-        unsigned int albedoGreen = loadTexture("resources/textures/highlight/albedoGreen.png");
-        unsigned int albedoBlue = loadTexture("resources/textures/highlight/albedoBlue.png");
-        unsigned int albedoYellow = loadTexture("resources/textures/highlight/albedoYellow.png");
+        unsigned int albedoRed = loadTexture("resources/textures/highlight/red/albedo.png");
+        unsigned int albedoGreen = loadTexture("resources/textures/highlight/green/albedo.png");
+        unsigned int albedoBlue = loadTexture("resources/textures/highlight/blue/albedo.png");
+        unsigned int albedoYellow = loadTexture("resources/textures/highlight/yellow/albedo.png");
 
-        unsigned int albedoGranite = loadTexture("resources/textures/granite/granitesmooth1-albedo2.png");
-        unsigned int normalGranite = loadTexture("resources/textures/granite/granitesmooth1-normal2.png");
-        unsigned int metallicGranite = loadTexture("resources/textures/granite/granitesmooth1-metalness.png");
-        unsigned int roughnessGranite = loadTexture("resources/textures/granite/granitesmooth1-roughness3.png");
-        unsigned int aoGranite = loadTexture("resources/textures/granite/granitesmooth1-ao.png");
+        unsigned int albedoGranite = loadTexture("resources/textures/granite/albedo.png");
+        unsigned int normalGranite = loadTexture("resources/textures/granite/normal.png");
+        unsigned int metallicGranite = loadTexture("resources/textures/granite/metallic.png");
+        unsigned int roughnessGranite = loadTexture("resources/textures/granite/roughness.png");
+        unsigned int aoGranite = loadTexture("resources/textures/granite/ao.png");
 
-        unsigned int albedoWood = loadTexture("resources/textures/wood/bamboo-wood-semigloss-albedo.png");
-        unsigned int normalWood = loadTexture("resources/textures/wood/bamboo-wood-semigloss-normal.png");
-        unsigned int metallicWood = loadTexture("resources/textures/wood/bamboo-wood-semigloss-metal.png");
-        unsigned int roughnessWood = loadTexture("resources/textures/wood/bamboo-wood-semigloss-roughness.png");
-        unsigned int aoWood = loadTexture("resources/textures/wood/bamboo-wood-semigloss-ao.png");
+        unsigned int albedoWood = loadTexture("resources/textures/wood/albedo.png");
+        unsigned int normalWood = loadTexture("resources/textures/wood/normal.png");
+        unsigned int metallicWood = loadTexture("resources/textures/wood/metallic.png");
+        unsigned int roughnessWood = loadTexture("resources/textures/wood/roughness.png");
+        unsigned int aoWood = loadTexture("resources/textures/wood/ao.png");
 
-        unsigned int albedoPlanks = loadTexture("resources/textures/planks/mahogfloor_basecolor.png");
-        unsigned int normalPlanks = loadTexture("resources/textures/planks/mahogfloor_normal.png");
-        unsigned int metallicPlanks = loadTexture("resources/textures/planks/mahogfloor_metalness.png");
-        unsigned int roughnessPlanks = loadTexture("resources/textures/planks/mahogfloor_roughness.png");
-        unsigned int aoPlanks = loadTexture("resources/textures/planks/mahogfloor_AO.png");
+        unsigned int albedoPlanks = loadTexture("resources/textures/planks/albedo.png");
+        unsigned int normalPlanks = loadTexture("resources/textures/planks/normal.png");
+        unsigned int metallicPlanks = loadTexture("resources/textures/planks/metallic.png");
+        unsigned int roughnessPlanks = loadTexture("resources/textures/planks/roughness.png");
+        unsigned int aoPlanks = loadTexture("resources/textures/planks/ao.png");
 
-        unsigned int albedoMarble = loadTexture("resources/textures/marble/marble-speckled-albedo.png");
-        unsigned int normalMarble = loadTexture("resources/textures/marble/marble-speckled-normal.png");
-        unsigned int metallicMarble = loadTexture("resources/textures/marble/marble-speckled-metalness.png");
-        unsigned int roughnessMarble = loadTexture("resources/textures/marble/marble-speckled-roughness.png");
-        unsigned int aoMarble = loadTexture("resources/textures/marble/marble-speckled-ao.png");
+        unsigned int albedoMarble = loadTexture("resources/textures/marble/albedo.png");
+        unsigned int normalMarble = loadTexture("resources/textures/marble/normal.png");
+        unsigned int metallicMarble = loadTexture("resources/textures/marble/metallic.png");
+        unsigned int roughnessMarble = loadTexture("resources/textures/marble/roughness.png");
+        unsigned int aoMarble = loadTexture("resources/textures/marble/ao.png");
 
-        unsigned int albedoFoam = loadTexture("resources/textures/foam/foam-grip1-albedo.png");
-        unsigned int normalFoam = loadTexture("resources/textures/foam/foam-grip1-normal-dx1.png");
-        unsigned int metallicFoam = loadTexture("resources/textures/foam/foam-grip1-metallic.png");
-        unsigned int roughnessFoam = loadTexture("resources/textures/foam/foam-grip1-roughness.png");
-        unsigned int aoFoam = loadTexture("resources/textures/foam/foam-grip1-ao.png");
+        unsigned int albedoFoam = loadTexture("resources/textures/foam/albedo.png");
+        unsigned int normalFoam = loadTexture("resources/textures/foam/normal.png");
+        unsigned int metallicFoam = loadTexture("resources/textures/foam/metallic.png");
+        unsigned int roughnessFoam = loadTexture("resources/textures/foam/roughness.png");
+        unsigned int aoFoam = loadTexture("resources/textures/foam/ao.png");
 
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
@@ -2742,28 +2742,6 @@ int main(int argc, char ** argv)                        //  required main method
         //     cube.render();
         // }
 
-        //  render lamp object without shadow mapping with its own shader
-
-        if (lampVisible)                                //  check whether lamp object should be visible
-        {
-            lampShader.activate();                      //  activate appropriate shader
-            lampShader.passVector("lightColor", lightColor);
-
-            // view/projection transformations
-            glm::mat4 projectionThree = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
-            glm::mat4 viewThree = camera.loadViewMatrix();
-            lampShader.passMatrix("projection", projectionThree);
-            lampShader.passMatrix("view", viewThree);
-
-            // render the loaded model
-            glm::mat4 modelThree = glm::mat4(1.0f);
-            modelThree = glm::translate(modelThree, glm::vec3(lampPos));    //  translate and scale object before rendering
-            modelThree = glm::scale(modelThree, glm::vec3(0.1f, 0.1f, 0.1f));
-            lampShader.passMatrix("model", modelThree);
-            glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
-            lamp.render();
-        }
-
         //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         if (true)
@@ -2968,9 +2946,31 @@ int main(int argc, char ** argv)                        //  required main method
             // model = glm::scale(model, glm::vec3(0.1f));
             // shaderPBR.passMatrix("model", model);
             // pawnUV.render();
+
         }
 
         //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            //  render lamp object without shadow mapping with its own shader
+
+            if (lampVisible)                                //  check whether lamp object should be visible
+            {
+                lampShader.activate();                      //  activate appropriate shader
+                lampShader.passVector("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+                // view/projection transformations
+                glm::mat4 projectionThree = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
+                glm::mat4 viewThree = camera.loadViewMatrix();
+                lampShader.passMatrix("projection", projectionThree);
+                lampShader.passMatrix("view", viewThree);
+
+                // render the loaded model
+                glm::mat4 modelThree = glm::mat4(1.0f);
+                modelThree = glm::translate(modelThree, glm::vec3(lampPos));    //  translate and scale object before rendering
+                modelThree = glm::scale(modelThree, glm::vec3(0.1f, 0.1f, 0.1f));
+                lampShader.passMatrix("model", modelThree);
+                glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
+                lamp.render();
+            }
 
         glfwSwapBuffers(window);                        //  swap buffers and poll IO events
         glfwPollEvents();
