@@ -2245,10 +2245,6 @@ int main(int argc, char ** argv)                        //  required main method
     glEnable(GL_DEPTH_TEST);                            //  enable depth and stencil test
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_MULTISAMPLE);                           //  multisampling is going to be used
-
-    Shader lampShader("lamp.vs", "lamp.fs");            //  setup and compile shaders
-    Shader simpleDepthShader("depth.vs", "depth.fs");
-    Shader shader("shadow.vs", "shadow.fs");
                                                         //  setup shadow rendering
     unsigned int SHADOW_WIDTH, SHADOW_HEIGHT;           //  shadow resolution
 
@@ -2280,10 +2276,6 @@ int main(int argc, char ** argv)                        //  required main method
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     Chess chess;                                        //  create chess game logic instance
-
-    shader.activate();                                  //  activate and configure shader
-    shader.passInteger("diffuseTexture", 0);
-    shader.passInteger("shadowMap", 1);
 
     Model cube("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
     Model rook("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt");
@@ -2706,7 +2698,7 @@ int main(int argc, char ** argv)                        //  required main method
                 }
             }
 
-            shader.passMatrix("model", model);
+            shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
 
             string linear = chess.getLinear();
