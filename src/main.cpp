@@ -2300,7 +2300,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[i] = glm::vec3(offset, 0.0f, 0.0f);
         highlight[i] = 0;                               //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[i] = false;
         else
             isWhite[i] = true;
@@ -2313,7 +2313,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[8 + i] = glm::vec3(offset, 0.0f, 0.4f);
         highlight[8 + i] = 0;                           //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[8 + i] = true;
         else
             isWhite[8 + i] = false;
@@ -2326,7 +2326,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[16 + i] = glm::vec3(offset, 0.0f, 0.8f);
         highlight[16 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[16 + i] = false;
         else
             isWhite[16 + i] = true;
@@ -2339,7 +2339,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[24 + i] = glm::vec3(offset, 0.0f, 1.2f);
         highlight[24 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[24 + i] = true;
         else
             isWhite[24 + i] = false;
@@ -2352,7 +2352,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[32 + i] = glm::vec3(offset, 0.0f, 1.6f);
         highlight[32 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[32 + i] = false;
         else
             isWhite[32 + i] = true;
@@ -2365,7 +2365,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[40 + i] = glm::vec3(offset, 0.0f, 2.0f);
         highlight[40 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[40 + i] = true;
         else
             isWhite[40 + i] = false;
@@ -2378,7 +2378,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[48 + i] = glm::vec3(offset, 0.0f, 2.4f);
         highlight[48 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[48 + i] = false;
         else
             isWhite[48 + i] = true;
@@ -2391,7 +2391,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[56 + i] = glm::vec3(offset, 0.0f, 2.8f);
         highlight[56 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i % 2 == 1)
+        if (i & 1)
             isWhite[56 + i] = true;
         else
             isWhite[56 + i] = false;
