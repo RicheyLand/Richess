@@ -2412,7 +2412,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[64 + i] = glm::vec3(offset, 0.27f, 0.4f);
+        positions[64 + i] = glm::vec3(offset, 0.23f, 0.4f);
         highlight[64 + i] = 0;                          //  nothing is highlighted by default
         colors[64 + i] = figurineBrownColor;
     }
@@ -2421,7 +2421,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[72 + i] = glm::vec3(offset, 0.27f, 2.4f);
+        positions[72 + i] = glm::vec3(offset, 0.23f, 2.4f);
         highlight[72 + i] = 0;                          //  nothing is highlighted by default
         colors[72 + i] = figurineWhiteColor;
     }
@@ -2430,7 +2430,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[80 + i] = glm::vec3(offset, 0.27f, 0.0f);
+        positions[80 + i] = glm::vec3(offset, 0.23f, 0.0f);
         highlight[80 + i] = 0;                          //  nothing is highlighted by default
         colors[80 + i] = figurineBrownColor;
     }
@@ -2439,7 +2439,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[88 + i] = glm::vec3(offset, 0.27f, 2.8f);
+        positions[88 + i] = glm::vec3(offset, 0.23f, 2.8f);
         highlight[88 + i] = 0;                          //  nothing is highlighted by default
         colors[88 + i] = figurineWhiteColor;
     }
@@ -2448,7 +2448,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[96 + i] = glm::vec3(offset, -0.06f, -0.4f);
+        positions[96 + i] = glm::vec3(offset, -0.03f, -0.4f);
         colors[96 + i] = rgbToFloats(160 - 10 * i, 160 - 10 * i, 160 - 10 * i);
     }
 
@@ -2456,7 +2456,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
-        positions[105 + i] = glm::vec3(offset, -0.06f, 3.2f);
+        positions[105 + i] = glm::vec3(offset, -0.03f, 3.2f);
         colors[105 + i] = rgbToFloats(80 + 10 * i, 80 + 10 * i, 80 + 10 * i);
     }
 
@@ -2464,7 +2464,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f;                 //  handle object offset
 
-        positions[114 + i] = glm::vec3(3.2f, -0.06f, offset);
+        positions[114 + i] = glm::vec3(3.2f, -0.03f, offset);
         colors[114 + i] = rgbToFloats(80 + 10 * i, 80 + 10 * i, 80 + 10 * i);
     }
 
@@ -2472,7 +2472,7 @@ int main(int argc, char ** argv)                        //  required main method
     {
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
-        positions[123 + i] = glm::vec3(-0.4f, -0.06f, offset);
+        positions[123 + i] = glm::vec3(-0.4f, -0.03f, offset);
         colors[123 + i] = rgbToFloats(160 - 10 * i, 160 - 10 * i, 160 - 10 * i);
     }
 
