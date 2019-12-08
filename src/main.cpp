@@ -28,7 +28,9 @@ Camera camera;                                          //  create camera instan
 bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
 glm::vec3 lampPos(0.0f, 1.4f, 0.0f);                    //  initial position of light source
-glm::vec3 lightColor(1.0f, 1.0f, 1.0f);                 //  emitted color of light source
+
+glm::vec3 lightPosition(-3.0f, 4.0f, -1.0f);
+glm::vec3 lightColor(150.0f, 150.0f, 150.0f);           //  emitted color of light source
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
 glm::vec3 positions[objectCount + 36];                  //  positions of all game objects(includes game board border)
@@ -2284,13 +2286,6 @@ int main(int argc, char ** argv)                        //  required main method
     shader.passInteger("diffuseTexture", 0);
     shader.passInteger("shadowMap", 1);
 
-    Model cube("resources/vertices/block.txt", "resources/indices/block.txt");  //  load cube model from file
-    Model rook("resources/vertices/rook.txt", "resources/indices/rook.txt");    //  load rook model from file
-    Model knight("resources/vertices/knight.txt", "resources/indices/knight.txt");  //  load knight model from file
-    Model bishop("resources/vertices/bishop.txt", "resources/indices/bishop.txt");  //  load bishop model from file
-    Model king("resources/vertices/king.txt", "resources/indices/king.txt");    //  load king model from file
-    Model queen("resources/vertices/queen.txt", "resources/indices/queen.txt"); //  load queen model from file
-    Model pawn("resources/vertices/pawn.txt", "resources/indices/pawn.txt");    //  load pawn model from file
     Model lamp("resources/vertices/cube.txt", "resources/indices/cube.txt");    //  load lamp model from file
 
     ModelUV cubeUV("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
@@ -2533,9 +2528,6 @@ int main(int argc, char ** argv)                        //  required main method
         unsigned int roughnessFoam = loadTexture("resources/textures/foam/foam-grip1-roughness.png");
         unsigned int aoFoam = loadTexture("resources/textures/foam/foam-grip1-ao.png");
 
-        glm::vec3 lightPosition = glm::vec3(-3.0f, 4.0f, -1.0f);
-        glm::vec3 lightColor = glm::vec3(150.0f, 150.0f, 150.0f);
-
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
         shaderPBR.activate();
@@ -2608,7 +2600,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         //     simpleDepthShader.passMatrix("model", modelOne);
         //     // glStencilFunc(GL_ALWAYS, i + 1, -1);
-        //     cube.render();
+        //     cubeUV.render();
         // }
 
         // for (int i = 64; i < 96; i++)                   //  render all figurines
@@ -2628,23 +2620,23 @@ int main(int argc, char ** argv)                        //  required main method
         //     string linear = chess.getLinear();
         //                                                 //  check type of figure using value inside linear array
         //     if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-        //         pawn.render();
+        //         pawnUV.render();
         //     else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-        //         rook.render();
+        //         rookUV.render();
         //     else if (linear[i - 64] == 'n')
         //     {
         //         modelOne = glm::rotate(modelOne, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         //         simpleDepthShader.passMatrix("model", modelOne);
-        //         knight.render();
+        //         knightUV.render();
         //     }
         //     else if (linear[i - 64] == 'N')
-        //         knight.render();
+        //         knightUV.render();
         //     else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-        //         bishop.render();
+        //         bishopUV.render();
         //     else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-        //         queen.render();
+        //         queenUV.render();
         //     else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-        //         king.render();
+        //         kingUV.render();
         // }
 
         // for (int i = 96; i < 132; i++)                  //  render game board border cubes
@@ -2655,31 +2647,31 @@ int main(int argc, char ** argv)                        //  required main method
         //     simpleDepthShader.passVector("objectColor", colors[i]);
         //     simpleDepthShader.passMatrix("model", modelOne);
         //     // glStencilFunc(GL_ALWAYS, i + 1, -1);
-        //     cube.render();
+        //     cubeUV.render();
         // }
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // reset viewport
-        glViewport(0, 0, window_width, window_height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            // reset viewport
+            glViewport(0, 0, window_width, window_height);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-        //  render complete scene now, but use previously rendered depth map
+            //  render complete scene now, but use previously rendered depth map
 
-        glViewport(0, 0, window_width, window_height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shader.activate();                              //  activate appropriate shader
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
-        glm::mat4 view = camera.loadViewMatrix();
-        shader.passMatrix("projection", projection);
-        shader.passMatrix("view", view);
-        // set light uniforms
-        shader.passVector("viewPos", camera.Position);
-        shader.passVector("lightPos", lampPos);
-        shader.passMatrix("lightSpaceMatrix", lightSpaceMatrix);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
+            // glViewport(0, 0, window_width, window_height);
+            // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            // shader.activate();                              //  activate appropriate shader
+            // glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
+            // glm::mat4 view = camera.loadViewMatrix();
+            // shader.passMatrix("projection", projection);
+            // shader.passMatrix("view", view);
+            // // set light uniforms
+            // shader.passVector("viewPos", camera.Position);
+            // shader.passVector("lightPos", lampPos);
+            // shader.passMatrix("lightSpaceMatrix", lightSpaceMatrix);
+            // glActiveTexture(GL_TEXTURE1);
+            // glBindTexture(GL_TEXTURE_2D, depthMap);
         
         // for (int i = 0; i < 64; i++)                    //  render all game board blocks
         // {

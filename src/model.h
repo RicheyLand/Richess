@@ -137,7 +137,7 @@ private:
         glGenBuffers(1, &EBO);
 
         vector<float> data;
-        int N = positions.size();
+        unsigned N = positions.size();
 
         for (unsigned i = 0; i < N; i++)
         {
