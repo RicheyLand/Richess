@@ -2294,6 +2294,11 @@ int main(int argc, char ** argv)                        //  required main method
     Model lamp("resources/vertices/cube.txt", "resources/indices/cube.txt");    //  load lamp model from file
 
     ModelUV cubeUV("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
+    ModelUV rookUV("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt");
+    ModelUV knightUV("resources/knight/positions.txt", "resources/knight/normals.txt", "resources/knight/indices.txt", "resources/knight/uv.txt");
+    ModelUV bishopUV("resources/bishop/positions.txt", "resources/bishop/normals.txt", "resources/bishop/indices.txt", "resources/bishop/uv.txt");
+    ModelUV kingUV("resources/king/positions.txt", "resources/king/normals.txt", "resources/king/indices.txt", "resources/king/uv.txt");
+    ModelUV queenUV("resources/queen/positions.txt", "resources/queen/normals.txt", "resources/queen/indices.txt", "resources/queen/uv.txt");
     ModelUV pawnUV("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt");
 
     glm::vec3 cubeBrownColor(rgbToFloats(139, 69, 19));     //  set RGB values of all required colors
@@ -2925,21 +2930,21 @@ int main(int argc, char ** argv)                        //  required main method
                 if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
                     pawnUV.render();
                 else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-                    pawnUV.render();
+                    rookUV.render();
                 else if (linear[i - 64] == 'n')
                 {
                     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
                     shaderPBR.passMatrix("model", model);
-                    pawnUV.render();
+                    knightUV.render();
                 }
                 else if (linear[i - 64] == 'N')
-                    pawnUV.render();
+                    knightUV.render();
                 else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-                    pawnUV.render();
+                    bishopUV.render();
                 else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-                    pawnUV.render();
+                    queenUV.render();
                 else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-                    pawnUV.render();
+                    kingUV.render();
             }
 
             glActiveTexture(GL_TEXTURE0);
