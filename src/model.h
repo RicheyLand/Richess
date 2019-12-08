@@ -122,21 +122,63 @@ private:
     vector<glm::vec3> normals;
     vector<unsigned int> indices;
     vector<glm::vec2> uv;
-    unsigned indexCount;
 
     unsigned int VAO = 0;
     unsigned int VBO;
     unsigned int EBO;
 
-    bool loadFlag = false;
     bool initFlag = false;
 
-    string pathPositions;
-    string pathNormals;
-    string pathIndices;
-    string pathUV;
+    void init()
+    {
+        glGenVertexArrays(1, &VAO);
 
-    void load()
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
+
+        vector<float> data;
+        int N = positions.size();
+
+        for (unsigned i = 0; i < N; i++)
+        {
+            data.push_back(positions[i].x);
+            data.push_back(positions[i].y);
+            data.push_back(positions[i].z);
+
+            if (uv.size() > 0)
+            {
+                data.push_back(uv[i].x);
+                data.push_back(uv[i].y);
+            }
+
+            if (normals.size() > 0)
+            {
+                data.push_back(normals[i].x);
+                data.push_back(normals[i].y);
+                data.push_back(normals[i].z);
+            }
+        }
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+
+        float stride = (3 + 2 + 3) * sizeof(float);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)(5 * sizeof(float)));
+
+        initFlag = true;
+    }
+
+public:
+    ModelUV(string pathPositions, string pathNormals, string pathIndices, string pathUV)
     {
         ifstream fin;
         fin.open(pathPositions, ios::in);
@@ -211,72 +253,8 @@ private:
             fin.close();
         }
 
-        indexCount = indices.size();
-
         if (positions.size() && normals.size() && uv.size() && indices.size())
-            loadFlag = true;
-        else
-            return;
-    }
-
-    void init()
-    {
-        if (loadFlag == false)
-            return;
-
-        glGenVertexArrays(1, &VAO);
-
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &EBO);
-
-        vector<float> data;
-
-        for (unsigned i = 0; i < positions.size(); ++i)
-        {
-            data.push_back(positions[i].x);
-            data.push_back(positions[i].y);
-            data.push_back(positions[i].z);
-
-            if (uv.size() > 0)
-            {
-                data.push_back(uv[i].x);
-                data.push_back(uv[i].y);
-            }
-
-            if (normals.size() > 0)
-            {
-                data.push_back(normals[i].x);
-                data.push_back(normals[i].y);
-                data.push_back(normals[i].z);
-            }
-        }
-
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-        float stride = (3 + 2 + 3) * sizeof(float);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)(5 * sizeof(float)));
-
-        initFlag = true;
-    }
-
-public:
-    ModelUV(string _pathPositions, string _pathNormals, string _pathIndices, string _pathUV)
-    {
-        pathPositions = _pathPositions;
-        pathNormals = _pathNormals;
-        pathIndices = _pathIndices;
-        pathUV = _pathUV;
-
-        load();
-        init();
+            init();
     }
 
     void render()
@@ -284,7 +262,8 @@ public:
         if (initFlag)
         {
             glBindVertexArray(VAO);
-            glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+            glBindVertexArray(0);
         }
     }
 };
