@@ -6,7 +6,7 @@
                                                         //  define all required GLFW callback functions
 void framebuffer_size_callback(GLFWwindow * window, int width, int height);
 void mouse_button_callback(GLFWwindow * window, int button, int action, int mods);
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void key_callback(GLFWwindow * window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow * window);
 unsigned int loadTexture(const char * path);
 
@@ -28,8 +28,14 @@ unique_ptr<Camera> cameraPtr(new Camera);               //  create camera instan
 bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
 
-glm::vec3 lightPosition(-3.0f, 3.0f, 0.0f);
-glm::vec3 lightColor(150.0f, 150.0f, 150.0f);           //  emitted color of light source
+glm::vec3 lightPositionOne(-5.0f, 5.0f, 0.0f);
+glm::vec3 lightPositionTwo(-5.0f, 5.0f, -6.0f);
+glm::vec3 lightPositionThree(-5.0f, 5.0f, 6.0f);
+glm::vec3 lightPositionFour(-0.0f, 20.0f, -0.0f);
+glm::vec3 lightColorOne(150.0f, 150.0f, 120.0f);
+glm::vec3 lightColorTwo(150.0f, 150.0f, 120.0f);
+glm::vec3 lightColorThree(150.0f, 150.0f, 120.0f);
+glm::vec3 lightColorFour(150.0f, 150.0f, 120.0f);
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
 glm::vec3 positions[objectCount + 36];                  //  positions of all game objects(includes game board border)
@@ -2500,8 +2506,8 @@ int main(int argc, char ** argv)                        //  required main method
         if (lampOrbit)
         {
             float radius = 3.0f;
-            lightPosition.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
-            lightPosition.z = cos(glfwGetTime() * 0.1f) * radius;
+            lightPositionOne.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
+            lightPositionOne.z = cos(glfwGetTime() * 0.1f) * radius;
         }
 
         // reset viewport
@@ -2701,8 +2707,14 @@ int main(int argc, char ** argv)                        //  required main method
             cubePtr->render();
         }
 
-        shaderPBR->passVector("lightPositions[0]", lightPosition);
-        shaderPBR->passVector("lightColors[0]", lightColor);
+        shaderPBR->passVector("lightPositions[0]", lightPositionOne);
+        shaderPBR->passVector("lightColors[0]", lightColorOne);
+        shaderPBR->passVector("lightPositions[1]", lightPositionTwo);
+        shaderPBR->passVector("lightColors[1]", lightColorTwo);
+        shaderPBR->passVector("lightPositions[2]", lightPositionThree);
+        shaderPBR->passVector("lightColors[2]", lightColorThree);
+        shaderPBR->passVector("lightPositions[3]", lightPositionFour);
+        shaderPBR->passVector("lightColors[3]", lightColorFour);
 
         if (lampVisible)
         {
@@ -2717,7 +2729,7 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, aoBorder);
 
-            glm::vec3 finalPosition = lightPosition;
+            glm::vec3 finalPosition = lightPositionOne;
             finalPosition.y += 0.2;
 
             glm::mat4 model = glm::mat4(1.0f);
@@ -2747,17 +2759,17 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
         {
             lampOrbit = false;
 
-            lightPosition.x = -3.0f;
-            lightPosition.y = 3.0f;
-            lightPosition.z = 0.0f;
+            lightPositionOne.x = -3.0f;
+            lightPositionOne.y = 3.0f;
+            lightPositionOne.z = 0.0f;
         }
         else                                            //  disable lamp orbit
         {
             lampOrbit = true;
 
-            lightPosition.x = 0.0f;
-            lightPosition.y = 3.0f;
-            lightPosition.z = 0.0f;
+            lightPositionOne.x = 0.0f;
+            lightPositionOne.y = 3.0f;
+            lightPositionOne.z = 0.0f;
         }
     }
 }
@@ -2786,25 +2798,25 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
         cameraPtr->zoomIn();
                                                         //  move light source by pressing appropriate buttons
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        lightPosition.z += 0.03;
+        lightPositionOne.z += 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        lightPosition.z -= 0.03;
+        lightPositionOne.z -= 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-        lightPosition.x -= 0.03;
+        lightPositionOne.x -= 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        lightPosition.x += 0.03;
+        lightPositionOne.x += 0.03;
 
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
     {
-        if (lightPosition.y >= 0.4f)
-            lightPosition.y -= 0.03;
+        if (lightPositionOne.y >= 0.4f)
+            lightPositionOne.y -= 0.03;
     }
 
     if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-        lightPosition.y += 0.03;
+        lightPositionOne.y += 0.03;
 }
 
 void framebuffer_size_callback(GLFWwindow * /*window*/, int width, int height)  //  handle window resize using callback
