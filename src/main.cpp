@@ -8,7 +8,7 @@ void framebuffer_size_callback(GLFWwindow * window, int width, int height);
 void mouse_button_callback(GLFWwindow * window, int button, int action, int mods);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow * window);
-unsigned int loadTexture(const char *path);
+unsigned int loadTexture(const char * path);
 
 glm::vec3 rgbToFloats(int red, int green, int blue)     //  convert integer RGB value to appropriate float RGB value
 {
@@ -33,7 +33,7 @@ glm::vec3 lightColor(150.0f, 150.0f, 150.0f);           //  emitted color of lig
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
 glm::vec3 positions[objectCount + 36];                  //  positions of all game objects(includes game board border)
-bool isWhite[objectCount + 36];                         //  colors of all game objects(includes game board border)
+bool isWhite[objectCount];                              //  colors of all game objects(includes game board border)
 int highlight[objectCount];                             //  highlight indiced of all game objects
 
 int clicked = -1;                                       //  holds actual index of mouse click selection
@@ -2146,7 +2146,6 @@ int main(int argc, char ** argv)                        //  required main method
     ios_base::sync_with_stdio(false);
 
     bool fullscreen = true;
-    int details = 1;
 
     for (int i = 1; i < argc; i++)
     {
@@ -2163,9 +2162,6 @@ int main(int argc, char ** argv)                        //  required main method
                  << "USAGE\n"
                  << "    richess --help     ->  print usage information\n"
                  << "    richess --version  ->  print version information\n"
-                 << "    richess --low      ->  set low details of shadows\n"
-                 << "    richess --medium   ->  set medium details of shadows\n"
-                 << "    richess --high     ->  set high details of shadows\n"
                  << "    richess --window   ->  run application in windowed mode\n\n"
                  << "RETURN VALUES\n"
                  << "    0  ->  success\n"
@@ -2190,12 +2186,6 @@ int main(int argc, char ** argv)                        //  required main method
         }
         else if (!strcmp(argv[i], "--window") || !strcmp(argv[i], "-w"))
             fullscreen = false;
-        else if (!strcmp(argv[i], "--low"))
-            details = 0;
-        else if (!strcmp(argv[i], "--medium"))
-            details = 1;
-        else if (!strcmp(argv[i], "--high"))
-            details = 2;
     }
 
     glfwInit();                                         //  initialize GLFW window and set GLFW version
@@ -2245,35 +2235,6 @@ int main(int argc, char ** argv)                        //  required main method
     glEnable(GL_DEPTH_TEST);                            //  enable depth and stencil test
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_MULTISAMPLE);                           //  multisampling is going to be used
-                                                        //  setup shadow rendering
-    unsigned int SHADOW_WIDTH, SHADOW_HEIGHT;           //  shadow resolution
-
-    if (details == 1)                                   //  toggle shadows resolution by the appropriate flag value
-        SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
-    else if (details == 2)
-        SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
-    else
-        SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-
-    unsigned int depthMapFBO;
-    glGenFramebuffers(1, &depthMapFBO);
-                                                        //  create depth texture
-    unsigned int depthMap;
-    glGenTextures(1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-                                                        //  attach depth texture as FBO's depth buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     Chess chess;                                        //  create chess game logic instance
 
@@ -2430,7 +2391,6 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f;                 //  handle object offset
 
         positions[96 + i] = glm::vec3(offset, -0.03f, -0.4f);
-        isWhite[96 + i] = false;
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2438,7 +2398,6 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
         positions[105 + i] = glm::vec3(offset, -0.03f, 3.2f);
-        isWhite[105 + i] = false;
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2446,7 +2405,6 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f;                 //  handle object offset
 
         positions[114 + i] = glm::vec3(3.2f, -0.03f, offset);
-        isWhite[114 + i] = false;
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2454,7 +2412,6 @@ int main(int argc, char ** argv)                        //  required main method
         float offset = float(i) * 0.4f - 0.4f;          //  handle object offset
 
         positions[123 + i] = glm::vec3(-0.4f, -0.03f, offset);
-        isWhite[123 + i] = false;
     }
 
     for (int i = 0; i < 132; i++)                       //  move all game objects into the center of coordinate system
