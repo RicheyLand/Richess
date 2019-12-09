@@ -2145,7 +2145,7 @@ int main(int argc, char ** argv)                        //  required main method
 {
     ios_base::sync_with_stdio(false);
 
-    bool fullscreen = true;
+    bool fullscreen = false;
 
     for (int i = 1; i < argc; i++)
     {
@@ -2160,9 +2160,9 @@ int main(int argc, char ** argv)                        //  required main method
             cout << "DESCRIPTION\n"
                  << "    richess - 3D Chess game written in C++ and OpenGL\n\n"
                  << "USAGE\n"
-                 << "    richess --help     ->  print usage information\n"
-                 << "    richess --version  ->  print version information\n"
-                 << "    richess --window   ->  run application in windowed mode\n\n"
+                 << "    richess --help        ->  print usage information\n"
+                 << "    richess --version     ->  print version information\n"
+                 << "    richess --fullscreen  ->  run application in fullscreen mode\n\n"
                  << "RETURN VALUES\n"
                  << "    0  ->  success\n"
                  << "    1  ->  program arguments error\n\n"
@@ -2184,8 +2184,8 @@ int main(int argc, char ** argv)                        //  required main method
 
             return 0;
         }
-        else if (!strcmp(argv[i], "--window") || !strcmp(argv[i], "-w"))
-            fullscreen = false;
+        else if (!strcmp(argv[i], "--fullscreen") || !strcmp(argv[i], "-f"))
+            fullscreen = true;
     }
 
     glfwInit();                                         //  initialize GLFW window and set GLFW version
