@@ -23,7 +23,7 @@ unsigned int window_width = 1024;                       //  initial width of win
 unsigned int window_height = 600;                       //  initial height of window
 glm::vec3 backgroundColor(rgbToFloats(0, 0, 0));        //  window background color
 
-Camera camera;                                          //  create camera instance and use default camera position
+unique_ptr<Camera> cameraPtr(new Camera);               //  create camera instance and use default camera position
 
 bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
@@ -1984,7 +1984,7 @@ public:
                     }
 
                     selection[0] = selection[1] = -1;   //  remove actual selection
-                    camera.toggle();                    //  toggle camera to trace second player
+                    cameraPtr->toggle();                    //  toggle camera to trace second player
                     animationActive = true;             //  activate animation flag
                     blackTurn = !blackTurn;             //  opponent is now on the turn
 
@@ -2022,7 +2022,7 @@ public:
                                 }
 
                                 selection[0] = selection[1] = -1;   //  remove actual selection
-                                camera.toggle();        //  toggle camera to trace second player
+                                cameraPtr->toggle();        //  toggle camera to trace second player
                                 animationActive = true;     //  activate animation flag
                                 blackTurn = !blackTurn;     //  opponent is now on the turn
 
@@ -2084,7 +2084,7 @@ public:
                                 }
 
                                 selection[0] = selection[1] = -1;   //  remove actual selection
-                                camera.toggle();        //  toggle camera to trace second player
+                                cameraPtr->toggle();        //  toggle camera to trace second player
                                 animationActive = true;     //  activate animation flag
                                 blackTurn = !blackTurn;     //  opponent is now on the turn
 
@@ -2422,14 +2422,14 @@ int main(int argc, char ** argv)                        //  required main method
 
     //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        Shader shaderPBR("pbr.vs", "pbr.fs");
+        unique_ptr<Shader> shaderPBR(new Shader("pbr.vs", "pbr.fs"));
 
-        shaderPBR.activate();
-        shaderPBR.passInteger("albedoMap", 0);
-        shaderPBR.passInteger("normalMap", 1);
-        shaderPBR.passInteger("metallicMap", 2);
-        shaderPBR.passInteger("roughnessMap", 3);
-        shaderPBR.passInteger("aoMap", 4);
+        shaderPBR->activate();
+        shaderPBR->passInteger("albedoMap", 0);
+        shaderPBR->passInteger("normalMap", 1);
+        shaderPBR->passInteger("metallicMap", 2);
+        shaderPBR->passInteger("roughnessMap", 3);
+        shaderPBR->passInteger("aoMap", 4);
 
         unsigned int albedoRed = loadTexture("resources/textures/highlight/red/albedo.png");
         unsigned int albedoGreen = loadTexture("resources/textures/highlight/green/albedo.png");
@@ -2469,8 +2469,8 @@ int main(int argc, char ** argv)                        //  required main method
 
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
-        shaderPBR.activate();
-        shaderPBR.passMatrix("projection", projection);
+        shaderPBR->activate();
+        shaderPBR->passMatrix("projection", projection);
 
     //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -2490,7 +2490,7 @@ int main(int argc, char ** argv)                        //  required main method
 
             if (chessPtr->actual - chessPtr->previous > 0.01)   //  check if time after last animation step is a required chunk
             {
-                if (camera.animateToggle())             //  handle camera movement
+                if (cameraPtr->animateToggle())             //  handle camera movement
                     chessPtr->previous = chessPtr->actual;
                 else
                     chessPtr->animationActive = false;      //  disable animation after successfull camera movement
@@ -2509,11 +2509,11 @@ int main(int argc, char ** argv)                        //  required main method
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-        shaderPBR.activate();
+        shaderPBR->activate();
         glm::mat4 view = glm::mat4(1.0f);
-        view = camera.loadViewMatrix();
-        shaderPBR.passMatrix("view", view);
-        shaderPBR.passVector("camPos", camera.Position);
+        view = cameraPtr->loadViewMatrix();
+        shaderPBR->passMatrix("view", view);
+        shaderPBR->passVector("camPos", cameraPtr->Position);
 
         for (int i = 0; i < 64; i++)                    //  render all game board blocks
         {
@@ -2590,7 +2590,7 @@ int main(int argc, char ** argv)                        //  required main method
                 }
             }
 
-            shaderPBR.passMatrix("model", model);
+            shaderPBR->passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
             cubePtr->render();
         }
@@ -2655,7 +2655,7 @@ int main(int argc, char ** argv)                        //  required main method
                 }
             }
 
-            shaderPBR.passMatrix("model", model);
+            shaderPBR->passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
 
             string linear = chessPtr->getLinear();
@@ -2667,7 +2667,7 @@ int main(int argc, char ** argv)                        //  required main method
             else if (linear[i - 64] == 'n')
             {
                 model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-                shaderPBR.passMatrix("model", model);
+                shaderPBR->passMatrix("model", model);
                 knightPtr->render();
             }
             else if (linear[i - 64] == 'N')
@@ -2696,13 +2696,13 @@ int main(int argc, char ** argv)                        //  required main method
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, positions[i]);
             model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-            shaderPBR.passMatrix("model", model);
+            shaderPBR->passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
             cubePtr->render();
         }
 
-        shaderPBR.passVector("lightPositions[0]", lightPosition);
-        shaderPBR.passVector("lightColors[0]", lightColor);
+        shaderPBR->passVector("lightPositions[0]", lightPosition);
+        shaderPBR->passVector("lightColors[0]", lightColor);
 
         if (lampVisible)
         {
@@ -2720,7 +2720,7 @@ int main(int argc, char ** argv)                        //  required main method
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, lightPosition);
             model = glm::scale(model, glm::vec3(0.1f));
-            shaderPBR.passMatrix("model", model);
+            shaderPBR->passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
             cubePtr->render();
         }
@@ -2765,22 +2765,22 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
         glfwSetWindowShouldClose(window, true);         //  close window
                                                         //  move camera by pressing appropriate buttons
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        camera.tiltUp();
+        cameraPtr->tiltUp();
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        camera.tiltDown();
+        cameraPtr->tiltDown();
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        camera.rotateLeft();
+        cameraPtr->rotateLeft();
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        camera.rotateRight();
+        cameraPtr->rotateRight();
 
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
-        camera.zoomOut();
+        cameraPtr->zoomOut();
 
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
-        camera.zoomIn();
+        cameraPtr->zoomIn();
                                                         //  move light source by pressing appropriate buttons
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
         lightPosition.z += 0.03;
