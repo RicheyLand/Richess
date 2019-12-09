@@ -2437,35 +2437,35 @@ int main(int argc, char ** argv)                        //  required main method
         unsigned int albedoYellow = loadTexture("resources/textures/highlight/yellow/albedo.png");
         unsigned int albedoWhite = loadTexture("resources/textures/highlight/white/albedo.png");
 
-        unsigned int albedoGranite = loadTexture("resources/textures/granite/albedo.png");
-        unsigned int normalGranite = loadTexture("resources/textures/granite/normal.png");
-        unsigned int metallicGranite = loadTexture("resources/textures/granite/metallic.png");
-        unsigned int roughnessGranite = loadTexture("resources/textures/granite/roughness.png");
-        unsigned int aoGranite = loadTexture("resources/textures/granite/ao.png");
+        unsigned int albedoBlackFigurine = loadTexture("resources/textures/blackFigurine/albedo.png");
+        unsigned int normalBlackFigurine = loadTexture("resources/textures/blackFigurine/normal.png");
+        unsigned int metallicBlackFigurine = loadTexture("resources/textures/blackFigurine/metallic.png");
+        unsigned int roughnessBlackFigurine = loadTexture("resources/textures/blackFigurine/roughness.png");
+        unsigned int aoBlackFigurine = loadTexture("resources/textures/blackFigurine/ao.png");
 
-        unsigned int albedoWood = loadTexture("resources/textures/wood/albedo.png");
-        unsigned int normalWood = loadTexture("resources/textures/wood/normal.png");
-        unsigned int metallicWood = loadTexture("resources/textures/wood/metallic.png");
-        unsigned int roughnessWood = loadTexture("resources/textures/wood/roughness.png");
-        unsigned int aoWood = loadTexture("resources/textures/wood/ao.png");
+        unsigned int albedoWhiteBlock = loadTexture("resources/textures/whiteBlock/albedo.png");
+        unsigned int normalWhiteBlock = loadTexture("resources/textures/whiteBlock/normal.png");
+        unsigned int metallicWhiteBlock = loadTexture("resources/textures/whiteBlock/metallic.png");
+        unsigned int roughnessWhiteBlock = loadTexture("resources/textures/whiteBlock/roughness.png");
+        unsigned int aoWhiteBlock = loadTexture("resources/textures/whiteBlock/ao.png");
 
-        unsigned int albedoPlanks = loadTexture("resources/textures/planks/albedo.png");
-        unsigned int normalPlanks = loadTexture("resources/textures/planks/normal.png");
-        unsigned int metallicPlanks = loadTexture("resources/textures/planks/metallic.png");
-        unsigned int roughnessPlanks = loadTexture("resources/textures/planks/roughness.png");
-        unsigned int aoPlanks = loadTexture("resources/textures/planks/ao.png");
+        unsigned int albedoBlackBlock = loadTexture("resources/textures/blackBlock/albedo.png");
+        unsigned int normalBlackBlock = loadTexture("resources/textures/blackBlock/normal.png");
+        unsigned int metallicBlackBlock = loadTexture("resources/textures/blackBlock/metallic.png");
+        unsigned int roughnessBlackBlock = loadTexture("resources/textures/blackBlock/roughness.png");
+        unsigned int aoBlackBlock = loadTexture("resources/textures/blackBlock/ao.png");
 
-        unsigned int albedoMarble = loadTexture("resources/textures/marble/albedo.png");
-        unsigned int normalMarble = loadTexture("resources/textures/marble/normal.png");
-        unsigned int metallicMarble = loadTexture("resources/textures/marble/metallic.png");
-        unsigned int roughnessMarble = loadTexture("resources/textures/marble/roughness.png");
-        unsigned int aoMarble = loadTexture("resources/textures/marble/ao.png");
+        unsigned int albedoWhiteFigurine = loadTexture("resources/textures/whiteFigurine/albedo.png");
+        unsigned int normalWhiteFigurine = loadTexture("resources/textures/whiteFigurine/normal.png");
+        unsigned int metallicWhiteFigurine = loadTexture("resources/textures/whiteFigurine/metallic.png");
+        unsigned int roughnessWhiteFigurine = loadTexture("resources/textures/whiteFigurine/roughness.png");
+        unsigned int aoWhiteFigurine = loadTexture("resources/textures/whiteFigurine/ao.png");
 
-        unsigned int albedoFoam = loadTexture("resources/textures/foam/albedo.png");
-        unsigned int normalFoam = loadTexture("resources/textures/foam/normal.png");
-        unsigned int metallicFoam = loadTexture("resources/textures/foam/metallic.png");
-        unsigned int roughnessFoam = loadTexture("resources/textures/foam/roughness.png");
-        unsigned int aoFoam = loadTexture("resources/textures/foam/ao.png");
+        unsigned int albedoBorder = loadTexture("resources/textures/border/albedo.png");
+        unsigned int normalBorder = loadTexture("resources/textures/border/normal.png");
+        unsigned int metallicBorder = loadTexture("resources/textures/border/metallic.png");
+        unsigned int roughnessBorder = loadTexture("resources/textures/border/roughness.png");
+        unsigned int aoBorder = loadTexture("resources/textures/border/ao.png");
 
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
@@ -2526,67 +2526,67 @@ int main(int argc, char ** argv)                        //  required main method
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoBlue);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalFoam);
+                glBindTexture(GL_TEXTURE_2D, normalBorder);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                glBindTexture(GL_TEXTURE_2D, metallicBorder);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoFoam);
+                glBindTexture(GL_TEXTURE_2D, aoBorder);
             }
             else if (highlight[i] == 2)                     //  attack
             {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoRed);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalFoam);
+                glBindTexture(GL_TEXTURE_2D, normalBorder);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                glBindTexture(GL_TEXTURE_2D, metallicBorder);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoFoam);
+                glBindTexture(GL_TEXTURE_2D, aoBorder);
             }
             else if (highlight[i] == 3)                     //  castling
             {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoYellow);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalFoam);
+                glBindTexture(GL_TEXTURE_2D, normalBorder);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicFoam);
+                glBindTexture(GL_TEXTURE_2D, metallicBorder);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoFoam);
+                glBindTexture(GL_TEXTURE_2D, aoBorder);
             }
             else
             {
                 if (isWhite[i] == true)
                 {
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoWood);
+                    glBindTexture(GL_TEXTURE_2D, albedoWhiteBlock);
                     glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalWood);
+                    glBindTexture(GL_TEXTURE_2D, normalWhiteBlock);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicWood);
+                    glBindTexture(GL_TEXTURE_2D, metallicWhiteBlock);
                     glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessWood);
+                    glBindTexture(GL_TEXTURE_2D, roughnessWhiteBlock);
                     glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoWood);
+                    glBindTexture(GL_TEXTURE_2D, aoWhiteBlock);
                 }
                 else
                 {
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoPlanks);
+                    glBindTexture(GL_TEXTURE_2D, albedoBlackBlock);
                     glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalPlanks);
+                    glBindTexture(GL_TEXTURE_2D, normalBlackBlock);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicPlanks);
+                    glBindTexture(GL_TEXTURE_2D, metallicBlackBlock);
                     glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessPlanks);
+                    glBindTexture(GL_TEXTURE_2D, roughnessBlackBlock);
                     glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoPlanks);
+                    glBindTexture(GL_TEXTURE_2D, aoBlackBlock);
                 }
             }
 
@@ -2596,15 +2596,15 @@ int main(int argc, char ** argv)                        //  required main method
         }
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, albedoWood);
+        glBindTexture(GL_TEXTURE_2D, albedoWhiteBlock);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, normalWood);
+        glBindTexture(GL_TEXTURE_2D, normalWhiteBlock);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, metallicWood);
+        glBindTexture(GL_TEXTURE_2D, metallicWhiteBlock);
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, roughnessWood);
+        glBindTexture(GL_TEXTURE_2D, roughnessWhiteBlock);
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, aoWood);
+        glBindTexture(GL_TEXTURE_2D, aoWhiteBlock);
 
         for (int i = 64; i < 96; i++)                   //  render all figurines
         {
@@ -2617,41 +2617,41 @@ int main(int argc, char ** argv)                        //  required main method
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoGreen);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalGranite);
+                glBindTexture(GL_TEXTURE_2D, normalBorder);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicGranite);
+                glBindTexture(GL_TEXTURE_2D, metallicBorder);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessGranite);
+                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoGranite);
+                glBindTexture(GL_TEXTURE_2D, aoBorder);
             }
             else
             {
                 if (isWhite[i] == true)
                 {
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoMarble);
+                    glBindTexture(GL_TEXTURE_2D, albedoWhiteFigurine);
                     glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalMarble);
+                    glBindTexture(GL_TEXTURE_2D, normalWhiteFigurine);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicMarble);
+                    glBindTexture(GL_TEXTURE_2D, metallicWhiteFigurine);
                     glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessMarble);
+                    glBindTexture(GL_TEXTURE_2D, roughnessWhiteFigurine);
                     glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoMarble);
+                    glBindTexture(GL_TEXTURE_2D, aoWhiteFigurine);
                 }
                 else
                 {
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, albedoGranite);
+                    glBindTexture(GL_TEXTURE_2D, albedoBlackFigurine);
                     glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, normalGranite);
+                    glBindTexture(GL_TEXTURE_2D, normalBlackFigurine);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, metallicGranite);
+                    glBindTexture(GL_TEXTURE_2D, metallicBlackFigurine);
                     glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, roughnessGranite);
+                    glBindTexture(GL_TEXTURE_2D, roughnessBlackFigurine);
                     glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D, aoGranite);
+                    glBindTexture(GL_TEXTURE_2D, aoBlackFigurine);
                 }
             }
 
@@ -2681,15 +2681,15 @@ int main(int argc, char ** argv)                        //  required main method
         }
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, albedoFoam);
+        glBindTexture(GL_TEXTURE_2D, albedoBorder);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, normalFoam);
+        glBindTexture(GL_TEXTURE_2D, normalBorder);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, metallicFoam);
+        glBindTexture(GL_TEXTURE_2D, metallicBorder);
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+        glBindTexture(GL_TEXTURE_2D, roughnessBorder);
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, aoFoam);
+        glBindTexture(GL_TEXTURE_2D, aoBorder);
 
         for (int i = 96; i < 132; i++)                  //  render game board border cubes
         {
@@ -2709,13 +2709,13 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, albedoWhite);
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, normalFoam);
+            glBindTexture(GL_TEXTURE_2D, normalBorder);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, metallicFoam);
+            glBindTexture(GL_TEXTURE_2D, metallicBorder);
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, roughnessFoam);
+            glBindTexture(GL_TEXTURE_2D, roughnessBorder);
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, aoFoam);
+            glBindTexture(GL_TEXTURE_2D, aoBorder);
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, lightPosition);
