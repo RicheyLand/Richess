@@ -2717,9 +2717,12 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, aoBorder);
 
+            glm::vec3 finalPosition = lightPosition;
+            finalPosition.y += 0.2;
+
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, lightPosition);
-            model = glm::scale(model, glm::vec3(0.1f));
+            model = glm::translate(model, finalPosition);
+            model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
             shaderPBR->passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
             cubePtr->render();
