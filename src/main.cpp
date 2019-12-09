@@ -31,11 +31,11 @@ bool lampVisible = false;                               //  holds lamp object vi
 glm::vec3 lightPositionOne(-5.0f, 5.0f, 0.0f);
 glm::vec3 lightPositionTwo(-5.0f, 5.0f, -6.0f);
 glm::vec3 lightPositionThree(-5.0f, 5.0f, 6.0f);
-glm::vec3 lightPositionFour(-0.0f, 20.0f, -0.0f);
-glm::vec3 lightColorOne(150.0f, 150.0f, 120.0f);
-glm::vec3 lightColorTwo(150.0f, 150.0f, 120.0f);
-glm::vec3 lightColorThree(150.0f, 150.0f, 120.0f);
-glm::vec3 lightColorFour(150.0f, 150.0f, 120.0f);
+glm::vec3 lightPositionFour(-0.0f, 25.0f, -0.0f);
+glm::vec3 lightColorOne(150.0f, 150.0f, 150.0f);
+glm::vec3 lightColorTwo(150.0f, 150.0f, 150.0f);
+glm::vec3 lightColorThree(150.0f, 150.0f, 150.0f);
+glm::vec3 lightColorFour(150.0f, 150.0f, 150.0f);
 
 const int objectCount = 96;                             //  holds number of game objects(game board and figurines)
 glm::vec3 positions[objectCount + 36];                  //  positions of all game objects(includes game board border)
@@ -2686,26 +2686,26 @@ int main(int argc, char ** argv)                        //  required main method
                 kingPtr->render();
         }
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, albedoBorder);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, normalBorder);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, metallicBorder);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, roughnessBorder);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, aoBorder);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, albedoBorder);
+        // glActiveTexture(GL_TEXTURE1);
+        // glBindTexture(GL_TEXTURE_2D, normalBorder);
+        // glActiveTexture(GL_TEXTURE2);
+        // glBindTexture(GL_TEXTURE_2D, metallicBorder);
+        // glActiveTexture(GL_TEXTURE3);
+        // glBindTexture(GL_TEXTURE_2D, roughnessBorder);
+        // glActiveTexture(GL_TEXTURE4);
+        // glBindTexture(GL_TEXTURE_2D, aoBorder);
 
-        for (int i = 96; i < 132; i++)                  //  render game board border cubes
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, positions[i]);
-            model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-            shaderPBR->passMatrix("model", model);
-            glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cubePtr->render();
-        }
+        // for (int i = 96; i < 132; i++)                  //  render game board border cubes
+        // {
+        //     glm::mat4 model = glm::mat4(1.0f);
+        //     model = glm::translate(model, positions[i]);
+        //     model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+        //     shaderPBR->passMatrix("model", model);
+        //     glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
+        //     cubePtr->render();
+        // }
 
         shaderPBR->passVector("lightPositions[0]", lightPositionOne);
         shaderPBR->passVector("lightColors[0]", lightColorOne);
@@ -2762,6 +2762,8 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
             lightPositionOne.x = -3.0f;
             lightPositionOne.y = 3.0f;
             lightPositionOne.z = 0.0f;
+
+            cout << "Light orbit mode has been disabled" << endl;
         }
         else                                            //  disable lamp orbit
         {
@@ -2770,6 +2772,8 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
             lightPositionOne.x = 0.0f;
             lightPositionOne.y = 3.0f;
             lightPositionOne.z = 0.0f;
+
+            cout << "Light orbit mode has been enabled" << endl;
         }
     }
 }

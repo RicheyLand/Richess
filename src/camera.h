@@ -36,7 +36,7 @@ public:
         distanceTwo = distance;
     }
 
-    void setProperties(int _rotateAngle = 90, int _tiltAngle = 220, int _distance = 5.0f)   //  camera properties setter
+    void setProperties(int _rotateAngle = 90, int _tiltAngle = 225, float _distance = 4.5f)     //  camera properties setter
     {
         rotateAngle = _rotateAngle;                     //  pass values from paramaters
         tiltAngle = _tiltAngle;
