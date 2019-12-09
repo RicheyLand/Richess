@@ -26,6 +26,7 @@
 #include <cmath>
 #include <exception>
 #include <stdexcept>
+#include <memory>
 using namespace std;
 
 #endif

@@ -2236,15 +2236,15 @@ int main(int argc, char ** argv)                        //  required main method
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_MULTISAMPLE);                           //  multisampling is going to be used
 
-    Chess chess;                                        //  create chess game logic instance
+    unique_ptr<Chess> chessPtr(new Chess);              //  create chess game logic instance
 
-    Model cube("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt");
-    Model rook("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt");
-    Model knight("resources/knight/positions.txt", "resources/knight/normals.txt", "resources/knight/indices.txt", "resources/knight/uv.txt");
-    Model bishop("resources/bishop/positions.txt", "resources/bishop/normals.txt", "resources/bishop/indices.txt", "resources/bishop/uv.txt");
-    Model king("resources/king/positions.txt", "resources/king/normals.txt", "resources/king/indices.txt", "resources/king/uv.txt");
-    Model queen("resources/queen/positions.txt", "resources/queen/normals.txt", "resources/queen/indices.txt", "resources/queen/uv.txt");
-    Model pawn("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt");
+    unique_ptr<Model> cubePtr(new Model("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt"));
+    unique_ptr<Model> rookPtr(new Model("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt"));
+    unique_ptr<Model> knightPtr(new Model("resources/knight/positions.txt", "resources/knight/normals.txt", "resources/knight/indices.txt", "resources/knight/uv.txt"));
+    unique_ptr<Model> bishopPtr(new Model("resources/bishop/positions.txt", "resources/bishop/normals.txt", "resources/bishop/indices.txt", "resources/bishop/uv.txt"));
+    unique_ptr<Model> kingPtr(new Model("resources/king/positions.txt", "resources/king/normals.txt", "resources/king/indices.txt", "resources/king/uv.txt"));
+    unique_ptr<Model> queenPtr(new Model("resources/queen/positions.txt", "resources/queen/normals.txt", "resources/queen/indices.txt", "resources/queen/uv.txt"));
+    unique_ptr<Model> pawnPtr(new Model("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt"));
 
     for (int i = 0; i < 8; i++)                         //  initialize first row of game board blocks
     {
@@ -2482,18 +2482,18 @@ int main(int argc, char ** argv)                        //  required main method
         glClearStencil(0);                              //  clear stencil buffer and set default index value
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);     //  clear all required buffers
 
-        chess.handle();                                 //  handle chess logic turn
+        chessPtr->handle();                                 //  handle chess logic turn
         
-        if (chess.animationActive)                      //  check if camera animation is activated
+        if (chessPtr->animationActive)                      //  check if camera animation is activated
         {
-            chess.actual = glfwGetTime();               //  get actual timestamp
+            chessPtr->actual = glfwGetTime();               //  get actual timestamp
 
-            if (chess.actual - chess.previous > 0.01)   //  check if time after last animation step is a required chunk
+            if (chessPtr->actual - chessPtr->previous > 0.01)   //  check if time after last animation step is a required chunk
             {
                 if (camera.animateToggle())             //  handle camera movement
-                    chess.previous = chess.actual;
+                    chessPtr->previous = chessPtr->actual;
                 else
-                    chess.animationActive = false;      //  disable animation after successfull camera movement
+                    chessPtr->animationActive = false;      //  disable animation after successfull camera movement
             }
         }
 
@@ -2592,7 +2592,7 @@ int main(int argc, char ** argv)                        //  required main method
 
             shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cube.render();
+            cubePtr->render();
         }
 
         glActiveTexture(GL_TEXTURE0);
@@ -2658,26 +2658,26 @@ int main(int argc, char ** argv)                        //  required main method
             shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
 
-            string linear = chess.getLinear();
+            string linear = chessPtr->getLinear();
                                                         //  check type of figure using value inside linear array
             if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-                pawn.render();
+                pawnPtr->render();
             else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-                rook.render();
+                rookPtr->render();
             else if (linear[i - 64] == 'n')
             {
                 model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
                 shaderPBR.passMatrix("model", model);
-                knight.render();
+                knightPtr->render();
             }
             else if (linear[i - 64] == 'N')
-                knight.render();
+                knightPtr->render();
             else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-                bishop.render();
+                bishopPtr->render();
             else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-                queen.render();
+                queenPtr->render();
             else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-                king.render();
+                kingPtr->render();
         }
 
         glActiveTexture(GL_TEXTURE0);
@@ -2698,7 +2698,7 @@ int main(int argc, char ** argv)                        //  required main method
             model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
             shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cube.render();
+            cubePtr->render();
         }
 
         shaderPBR.passVector("lightPositions[0]", lightPosition);
@@ -2722,7 +2722,7 @@ int main(int argc, char ** argv)                        //  required main method
             model = glm::scale(model, glm::vec3(0.1f));
             shaderPBR.passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
-            cube.render();
+            cubePtr->render();
         }
 
         glfwSwapBuffers(window);                        //  swap buffers and poll IO events
@@ -2837,11 +2837,12 @@ unsigned int loadTexture(char const * path)
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    unsigned char * data = stbi_load(path, &width, &height, &nrComponents, 0);
 
     if (data)
     {
         GLenum format;
+
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)
