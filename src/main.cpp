@@ -2437,11 +2437,16 @@ int main(int argc, char ** argv)                        //  required main method
         shaderPBR->passInteger("roughnessMap", 3);
         shaderPBR->passInteger("aoMap", 4);
 
-        unsigned int albedoRed = loadTexture("resources/textures/highlight/red/albedo.png");
-        unsigned int albedoGreen = loadTexture("resources/textures/highlight/green/albedo.png");
-        unsigned int albedoBlue = loadTexture("resources/textures/highlight/blue/albedo.png");
-        unsigned int albedoYellow = loadTexture("resources/textures/highlight/yellow/albedo.png");
-        unsigned int albedoWhite = loadTexture("resources/textures/highlight/white/albedo.png");
+        unsigned int albedoRed = loadTexture("resources/textures/highlight/albedoRed.png");
+        unsigned int albedoGreen = loadTexture("resources/textures/highlight/albedoGreen.png");
+        unsigned int albedoBlue = loadTexture("resources/textures/highlight/albedoBlue.png");
+        unsigned int albedoYellow = loadTexture("resources/textures/highlight/albedoYellow.png");
+        unsigned int albedoWhite = loadTexture("resources/textures/highlight/albedoWhite.png");
+
+        unsigned int normalHighlight = loadTexture("resources/textures/highlight/normal.png");
+        unsigned int metallicHighlight = loadTexture("resources/textures/highlight/metallic.png");
+        unsigned int roughnessHighlight = loadTexture("resources/textures/highlight/roughness.png");
+        unsigned int aoHighlight = loadTexture("resources/textures/highlight/ao.png");
 
         unsigned int albedoBlackFigurine = loadTexture("resources/textures/blackFigurine/albedo.png");
         unsigned int normalBlackFigurine = loadTexture("resources/textures/blackFigurine/normal.png");
@@ -2466,12 +2471,6 @@ int main(int argc, char ** argv)                        //  required main method
         unsigned int metallicWhiteFigurine = loadTexture("resources/textures/whiteFigurine/metallic.png");
         unsigned int roughnessWhiteFigurine = loadTexture("resources/textures/whiteFigurine/roughness.png");
         unsigned int aoWhiteFigurine = loadTexture("resources/textures/whiteFigurine/ao.png");
-
-        unsigned int albedoBorder = loadTexture("resources/textures/border/albedo.png");
-        unsigned int normalBorder = loadTexture("resources/textures/border/normal.png");
-        unsigned int metallicBorder = loadTexture("resources/textures/border/metallic.png");
-        unsigned int roughnessBorder = loadTexture("resources/textures/border/roughness.png");
-        unsigned int aoBorder = loadTexture("resources/textures/border/ao.png");
 
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
@@ -2532,39 +2531,39 @@ int main(int argc, char ** argv)                        //  required main method
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoBlue);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalBorder);
+                glBindTexture(GL_TEXTURE_2D, normalHighlight);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicBorder);
+                glBindTexture(GL_TEXTURE_2D, metallicHighlight);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
+                glBindTexture(GL_TEXTURE_2D, roughnessHighlight);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoBorder);
+                glBindTexture(GL_TEXTURE_2D, aoHighlight);
             }
             else if (highlight[i] == 2)                     //  attack
             {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoRed);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalBorder);
+                glBindTexture(GL_TEXTURE_2D, normalHighlight);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicBorder);
+                glBindTexture(GL_TEXTURE_2D, metallicHighlight);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
+                glBindTexture(GL_TEXTURE_2D, roughnessHighlight);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoBorder);
+                glBindTexture(GL_TEXTURE_2D, aoHighlight);
             }
             else if (highlight[i] == 3)                     //  castling
             {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoYellow);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalBorder);
+                glBindTexture(GL_TEXTURE_2D, normalHighlight);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicBorder);
+                glBindTexture(GL_TEXTURE_2D, metallicHighlight);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
+                glBindTexture(GL_TEXTURE_2D, roughnessHighlight);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoBorder);
+                glBindTexture(GL_TEXTURE_2D, aoHighlight);
             }
             else
             {
@@ -2623,13 +2622,13 @@ int main(int argc, char ** argv)                        //  required main method
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, albedoGreen);
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, normalBorder);
+                glBindTexture(GL_TEXTURE_2D, normalHighlight);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, metallicBorder);
+                glBindTexture(GL_TEXTURE_2D, metallicHighlight);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, roughnessBorder);
+                glBindTexture(GL_TEXTURE_2D, roughnessHighlight);
                 glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, aoBorder);
+                glBindTexture(GL_TEXTURE_2D, aoHighlight);
             }
             else
             {
@@ -2687,15 +2686,15 @@ int main(int argc, char ** argv)                        //  required main method
         }
 
         // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, albedoBorder);
+        // glBindTexture(GL_TEXTURE_2D, albedoWhite);
         // glActiveTexture(GL_TEXTURE1);
-        // glBindTexture(GL_TEXTURE_2D, normalBorder);
+        // glBindTexture(GL_TEXTURE_2D, normalHighlight);
         // glActiveTexture(GL_TEXTURE2);
-        // glBindTexture(GL_TEXTURE_2D, metallicBorder);
+        // glBindTexture(GL_TEXTURE_2D, metallicHighlight);
         // glActiveTexture(GL_TEXTURE3);
-        // glBindTexture(GL_TEXTURE_2D, roughnessBorder);
+        // glBindTexture(GL_TEXTURE_2D, roughnessHighlight);
         // glActiveTexture(GL_TEXTURE4);
-        // glBindTexture(GL_TEXTURE_2D, aoBorder);
+        // glBindTexture(GL_TEXTURE_2D, aoHighlight);
 
         // for (int i = 96; i < 132; i++)                  //  render game board border cubes
         // {
@@ -2721,13 +2720,13 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, albedoWhite);
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, normalBorder);
+            glBindTexture(GL_TEXTURE_2D, normalHighlight);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, metallicBorder);
+            glBindTexture(GL_TEXTURE_2D, metallicHighlight);
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, roughnessBorder);
+            glBindTexture(GL_TEXTURE_2D, roughnessHighlight);
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, aoBorder);
+            glBindTexture(GL_TEXTURE_2D, aoHighlight);
 
             glm::vec3 finalPosition = lightPositionOne;
             finalPosition.y += 0.2;
