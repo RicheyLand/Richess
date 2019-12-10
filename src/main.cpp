@@ -2503,11 +2503,11 @@ int main(int argc, char ** argv)                        //  required main method
         {
             float radius;
 
-            radius = 3.0f;
+            radius = 7.0f;
             lightPositionOne.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
             lightPositionOne.z = cos(glfwGetTime() * 0.1f) * radius;
 
-            radius = 5.0f;
+            radius = 7.0f;
             lightPositionTwo.x = sin(glfwGetTime() * 0.09f) * radius;     //  orbit light source around the game board
             lightPositionTwo.z = cos(glfwGetTime() * 0.09f) * radius;
 
@@ -2515,7 +2515,7 @@ int main(int argc, char ** argv)                        //  required main method
             lightPositionThree.x = sin(glfwGetTime() * 0.08f) * radius;     //  orbit light source around the game board
             lightPositionThree.z = cos(glfwGetTime() * 0.08f) * radius;
 
-            radius = 9.0f;
+            radius = 7.0f;
             lightPositionFour.x = sin(glfwGetTime() * 0.07f) * radius;     //  orbit light source around the game board
             lightPositionFour.z = cos(glfwGetTime() * 0.07f) * radius;
         }
@@ -2821,21 +2821,21 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
             lightPositionFour.y = 5.0f;
             lightPositionFour.z = 0.0f;
 
-            lightColorOne.x = 150.0f;
-            lightColorOne.y = 50.0f;
-            lightColorOne.z = 50.0f;
+            lightColorOne.x = 237.0f;
+            lightColorOne.y = 21.0f;
+            lightColorOne.z = 77.0f;
 
-            lightColorTwo.x = 50.0f;
-            lightColorTwo.y = 150.0f;
-            lightColorTwo.z = 50.0f;
+            lightColorTwo.x = 21.0f;
+            lightColorTwo.y = 237.0f;
+            lightColorTwo.z = 93.0f;
 
-            lightColorThree.x = 50.0f;
-            lightColorThree.y = 50.0f;
-            lightColorThree.z = 150.0f;
+            lightColorThree.x = 29.0f;
+            lightColorThree.y = 129.0f;
+            lightColorThree.z = 243.0f;
 
-            lightColorFour.x = 150.0f;
-            lightColorFour.y = 150.0f;
-            lightColorFour.z = 50.0f;
+            lightColorFour.x = 243.0f;
+            lightColorFour.y = 200.0f;
+            lightColorFour.z = 29.0f;
         }
     }
 }
