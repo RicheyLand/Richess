@@ -2501,9 +2501,23 @@ int main(int argc, char ** argv)                        //  required main method
 
         if (lampOrbit)
         {
-            float radius = 3.0f;
+            float radius;
+
+            radius = 3.0f;
             lightPositionOne.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
             lightPositionOne.z = cos(glfwGetTime() * 0.1f) * radius;
+
+            radius = 5.0f;
+            lightPositionTwo.x = sin(glfwGetTime() * 0.09f) * radius;     //  orbit light source around the game board
+            lightPositionTwo.z = cos(glfwGetTime() * 0.09f) * radius;
+
+            radius = 7.0f;
+            lightPositionThree.x = sin(glfwGetTime() * 0.08f) * radius;     //  orbit light source around the game board
+            lightPositionThree.z = cos(glfwGetTime() * 0.08f) * radius;
+
+            radius = 9.0f;
+            lightPositionFour.x = sin(glfwGetTime() * 0.07f) * radius;     //  orbit light source around the game board
+            lightPositionFour.z = cos(glfwGetTime() * 0.07f) * radius;
         }
 
         // reset viewport
@@ -2755,21 +2769,73 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
         {
             lampOrbit = false;
 
-            lightPositionOne.x = -3.0f;
-            lightPositionOne.y = 3.0f;
+            lightPositionOne.x = -5.0f;
+            lightPositionOne.y = 5.0f;
             lightPositionOne.z = 0.0f;
 
-            cout << "Light orbit mode has been disabled" << endl;
+            lightPositionTwo.x = -5.0f;
+            lightPositionTwo.y = 5.0f;
+            lightPositionTwo.z = -6.0f;
+
+            lightPositionThree.x = -5.0f;
+            lightPositionThree.y = 5.0f;
+            lightPositionThree.z = 6.0f;
+
+            lightPositionFour.x = -3.5f;
+            lightPositionFour.y = 10.0f;
+            lightPositionFour.z = -0.0f;
+
+            lightColorOne.x = 150.0f;
+            lightColorOne.y = 150.0f;
+            lightColorOne.z = 150.0f;
+
+            lightColorTwo.x = 150.0f;
+            lightColorTwo.y = 150.0f;
+            lightColorTwo.z = 150.0f;
+
+            lightColorThree.x = 150.0f;
+            lightColorThree.y = 150.0f;
+            lightColorThree.z = 150.0f;
+
+            lightColorFour.x = 150.0f;
+            lightColorFour.y = 150.0f;
+            lightColorFour.z = 150.0f;
         }
         else                                            //  disable lamp orbit
         {
             lampOrbit = true;
 
             lightPositionOne.x = 0.0f;
-            lightPositionOne.y = 3.0f;
+            lightPositionOne.y = 5.0f;
             lightPositionOne.z = 0.0f;
 
-            cout << "Light orbit mode has been enabled" << endl;
+            lightPositionTwo.x = 0.0f;
+            lightPositionTwo.y = 5.0f;
+            lightPositionTwo.z = 0.0f;
+
+            lightPositionThree.x = 0.0f;
+            lightPositionThree.y = 5.0f;
+            lightPositionThree.z = 0.0f;
+
+            lightPositionFour.x = 0.0f;
+            lightPositionFour.y = 5.0f;
+            lightPositionFour.z = 0.0f;
+
+            lightColorOne.x = 150.0f;
+            lightColorOne.y = 50.0f;
+            lightColorOne.z = 50.0f;
+
+            lightColorTwo.x = 50.0f;
+            lightColorTwo.y = 150.0f;
+            lightColorTwo.z = 50.0f;
+
+            lightColorThree.x = 50.0f;
+            lightColorThree.y = 50.0f;
+            lightColorThree.z = 150.0f;
+
+            lightColorFour.x = 150.0f;
+            lightColorFour.y = 150.0f;
+            lightColorFour.z = 50.0f;
         }
     }
 }
