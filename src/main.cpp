@@ -1,8 +1,9 @@
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include "shader.h"
 #include "model.h"
 #include "camera.h"
+
+#include <stb_image.h>
+#include <helpers/RootDir.h>
                                                         //  define all required GLFW callback functions
 void framebuffer_size_callback(GLFWwindow * window, int width, int height);
 void mouse_button_callback(GLFWwindow * window, int button, int action, int mods);
@@ -2235,8 +2236,11 @@ int main(int argc, char ** argv)                        //  required main method
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetKeyCallback(window, key_callback);
 
-    glewExperimental = GL_TRUE;                         //  initialize glew library
-    glewInit();
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        cerr << "Failed to initialize GLAD\n";          //  initialize glad
+        return -1;
+    }
 
     glEnable(GL_DEPTH_TEST);                            //  enable depth and stencil test
     glEnable(GL_STENCIL_TEST);
@@ -2244,15 +2248,15 @@ int main(int argc, char ** argv)                        //  required main method
 
     unique_ptr<Chess> chessPtr(new Chess);              //  create chess game logic instance
 
-    unique_ptr<Model> cubePtr(new Model("resources/block/positions.txt", "resources/block/normals.txt", "resources/block/indices.txt", "resources/block/uv.txt"));
-    unique_ptr<Model> rookPtr(new Model("resources/rook/positions.txt", "resources/rook/normals.txt", "resources/rook/indices.txt", "resources/rook/uv.txt"));
-    unique_ptr<Model> knightPtr(new Model("resources/knight/positions.txt", "resources/knight/normals.txt", "resources/knight/indices.txt", "resources/knight/uv.txt"));
-    unique_ptr<Model> bishopPtr(new Model("resources/bishop/positions.txt", "resources/bishop/normals.txt", "resources/bishop/indices.txt", "resources/bishop/uv.txt"));
-    unique_ptr<Model> kingPtr(new Model("resources/king/positions.txt", "resources/king/normals.txt", "resources/king/indices.txt", "resources/king/uv.txt"));
-    unique_ptr<Model> queenPtr(new Model("resources/queen/positions.txt", "resources/queen/normals.txt", "resources/queen/indices.txt", "resources/queen/uv.txt"));
-    unique_ptr<Model> pawnPtr(new Model("resources/pawn/positions.txt", "resources/pawn/normals.txt", "resources/pawn/indices.txt", "resources/pawn/uv.txt"));
+    unique_ptr<Model> cubePtr(new Model(ROOT_DIR "res/models/block/positions.txt", ROOT_DIR "res/models/block/normals.txt", ROOT_DIR "res/models/block/indices.txt", ROOT_DIR "res/models/block/uv.txt"));
+    unique_ptr<Model> rookPtr(new Model(ROOT_DIR "res/models/rook/positions.txt", ROOT_DIR "res/models/rook/normals.txt", ROOT_DIR "res/models/rook/indices.txt", ROOT_DIR "res/models/rook/uv.txt"));
+    unique_ptr<Model> knightPtr(new Model(ROOT_DIR "res/models/knight/positions.txt", ROOT_DIR "res/models/knight/normals.txt", ROOT_DIR "res/models/knight/indices.txt", ROOT_DIR "res/models/knight/uv.txt"));
+    unique_ptr<Model> bishopPtr(new Model(ROOT_DIR "res/models/bishop/positions.txt", ROOT_DIR "res/models/bishop/normals.txt", ROOT_DIR "res/models/bishop/indices.txt", ROOT_DIR "res/models/bishop/uv.txt"));
+    unique_ptr<Model> kingPtr(new Model(ROOT_DIR "res/models/king/positions.txt", ROOT_DIR "res/models/king/normals.txt", ROOT_DIR "res/models/king/indices.txt", ROOT_DIR "res/models/king/uv.txt"));
+    unique_ptr<Model> queenPtr(new Model(ROOT_DIR "res/models/queen/positions.txt", ROOT_DIR "res/models/queen/normals.txt", ROOT_DIR "res/models/queen/indices.txt", ROOT_DIR "res/models/queen/uv.txt"));
+    unique_ptr<Model> pawnPtr(new Model(ROOT_DIR "res/models/pawn/positions.txt", ROOT_DIR "res/models/pawn/normals.txt", ROOT_DIR "res/models/pawn/indices.txt", ROOT_DIR "res/models/pawn/uv.txt"));
 
-    unique_ptr<Shader> shaderPBR(new Shader("pbr.vs", "pbr.fs"));
+    unique_ptr<Shader> shaderPBR(new Shader(ROOT_DIR "res/shaders/pbr.vs", ROOT_DIR "res/shaders/pbr.fs"));
 
     shaderPBR->activate();
     shaderPBR->passInteger("albedoMap", 0);
@@ -2261,41 +2265,41 @@ int main(int argc, char ** argv)                        //  required main method
     shaderPBR->passInteger("roughnessMap", 3);
     shaderPBR->passInteger("aoMap", 4);
 
-    unsigned int albedoRed = loadTexture("resources/textures/highlight/albedoRed.png");
-    unsigned int albedoGreen = loadTexture("resources/textures/highlight/albedoGreen.png");
-    unsigned int albedoBlue = loadTexture("resources/textures/highlight/albedoBlue.png");
-    unsigned int albedoYellow = loadTexture("resources/textures/highlight/albedoYellow.png");
-    unsigned int albedoWhite = loadTexture("resources/textures/highlight/albedoWhite.png");
-    unsigned int albedoBlack = loadTexture("resources/textures/highlight/albedoBlack.png");
+    unsigned int albedoRed = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoRed.png");
+    unsigned int albedoGreen = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoGreen.png");
+    unsigned int albedoBlue = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoBlue.png");
+    unsigned int albedoYellow = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoYellow.png");
+    unsigned int albedoWhite = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoWhite.png");
+    unsigned int albedoBlack = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoBlack.png");
 
-    unsigned int normalHighlight = loadTexture("resources/textures/highlight/normal.png");
-    unsigned int metallicHighlight = loadTexture("resources/textures/highlight/metallic.png");
-    unsigned int roughnessHighlight = loadTexture("resources/textures/highlight/roughness.png");
-    unsigned int aoHighlight = loadTexture("resources/textures/highlight/ao.png");
+    unsigned int normalHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/normal.png");
+    unsigned int metallicHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/metallic.png");
+    unsigned int roughnessHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/roughness.png");
+    unsigned int aoHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/ao.png");
 
-    unsigned int albedoBlackFigurine = loadTexture("resources/textures/blackFigurine/albedo.png");
-    unsigned int normalBlackFigurine = loadTexture("resources/textures/blackFigurine/normal.png");
-    unsigned int metallicBlackFigurine = loadTexture("resources/textures/blackFigurine/metallic.png");
-    unsigned int roughnessBlackFigurine = loadTexture("resources/textures/blackFigurine/roughness.png");
-    unsigned int aoBlackFigurine = loadTexture("resources/textures/blackFigurine/ao.png");
+    unsigned int albedoBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/albedo.png");
+    unsigned int normalBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/normal.png");
+    unsigned int metallicBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/metallic.png");
+    unsigned int roughnessBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/roughness.png");
+    unsigned int aoBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/ao.png");
 
-    unsigned int albedoWhiteBlock = loadTexture("resources/textures/whiteBlock/albedo.png");
-    unsigned int normalWhiteBlock = loadTexture("resources/textures/whiteBlock/normal.png");
-    unsigned int metallicWhiteBlock = loadTexture("resources/textures/whiteBlock/metallic.png");
-    unsigned int roughnessWhiteBlock = loadTexture("resources/textures/whiteBlock/roughness.png");
-    unsigned int aoWhiteBlock = loadTexture("resources/textures/whiteBlock/ao.png");
+    unsigned int albedoWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/albedo.png");
+    unsigned int normalWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/normal.png");
+    unsigned int metallicWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/metallic.png");
+    unsigned int roughnessWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/roughness.png");
+    unsigned int aoWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/ao.png");
 
-    unsigned int albedoBlackBlock = loadTexture("resources/textures/blackBlock/albedo.png");
-    unsigned int normalBlackBlock = loadTexture("resources/textures/blackBlock/normal.png");
-    unsigned int metallicBlackBlock = loadTexture("resources/textures/blackBlock/metallic.png");
-    unsigned int roughnessBlackBlock = loadTexture("resources/textures/blackBlock/roughness.png");
-    unsigned int aoBlackBlock = loadTexture("resources/textures/blackBlock/ao.png");
+    unsigned int albedoBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/albedo.png");
+    unsigned int normalBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/normal.png");
+    unsigned int metallicBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/metallic.png");
+    unsigned int roughnessBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/roughness.png");
+    unsigned int aoBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/ao.png");
 
-    unsigned int albedoWhiteFigurine = loadTexture("resources/textures/whiteFigurine/albedo.png");
-    unsigned int normalWhiteFigurine = loadTexture("resources/textures/whiteFigurine/normal.png");
-    unsigned int metallicWhiteFigurine = loadTexture("resources/textures/whiteFigurine/metallic.png");
-    unsigned int roughnessWhiteFigurine = loadTexture("resources/textures/whiteFigurine/roughness.png");
-    unsigned int aoWhiteFigurine = loadTexture("resources/textures/whiteFigurine/ao.png");
+    unsigned int albedoWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/albedo.png");
+    unsigned int normalWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/normal.png");
+    unsigned int metallicWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/metallic.png");
+    unsigned int roughnessWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/roughness.png");
+    unsigned int aoWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/ao.png");
 
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);

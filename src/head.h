@@ -9,9 +9,11 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/closest_point.hpp>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
+
+#include "helpers/RootDir.h"
 
 #include <string>
 #include <fstream>
