@@ -1,5 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
+#define myPi 3.14159265359
 
 #include "head.h"
 
@@ -183,9 +184,9 @@ public:
 
     void refreshPosition()
     {                                                   //  calculate actual position of the camera
-        Position.x = distance * -sinf(rotateAngle * (M_PI / 180)) * cosf((tiltAngle) * (M_PI / 180));
-        Position.y = distance * -sinf((tiltAngle) * (M_PI / 180));
-        Position.z = -distance * cosf((rotateAngle) * (M_PI / 180)) * cosf((tiltAngle) * (M_PI / 180));
+        Position.x = distance * -sinf(rotateAngle * (myPi / 180)) * cosf((tiltAngle) * (myPi / 180));
+        Position.y = distance * -sinf((tiltAngle) * (myPi / 180));
+        Position.z = -distance * cosf((rotateAngle) * (myPi / 180)) * cosf((tiltAngle) * (myPi / 180));
     }
 
     glm::mat4 loadViewMatrix()
