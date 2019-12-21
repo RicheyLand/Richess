@@ -2732,7 +2732,7 @@ int main(int argc, char ** argv)                        //  required main method
         shaderPBR->passVector("lightPositions[3]", lightPositionFour);
         shaderPBR->passVector("lightColors[3]", lightColorFour);
 
-        if (lampVisible)
+        if (lampVisible)                                //  check if light sources are visible
         {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, albedoWhite);
@@ -2745,15 +2745,51 @@ int main(int argc, char ** argv)                        //  required main method
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, aoHighlight);
 
-            glm::vec3 finalPosition = lightPositionOne;
-            finalPosition.y += 0.2;
+            glm::vec3 finalPositionOne = lightPositionOne;
+            glm::vec3 finalPositionTwo = lightPositionTwo;
+            glm::vec3 finalPositionThree = lightPositionThree;
+            glm::vec3 finalPositionFour = lightPositionFour;
+            
+            finalPositionOne.y += 0.2;
+            finalPositionTwo.y += 0.2;
+            finalPositionThree.y += 0.2;
+            finalPositionFour.y += 0.2;
 
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, finalPosition);
-            model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-            shaderPBR->passMatrix("model", model);
-            glStencilFunc(GL_ALWAYS, 97, -1);           //  write object into the stencil buffer
-            cubePtr->render();
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, finalPositionOne);
+                model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+                shaderPBR->passMatrix("model", model);
+                glStencilFunc(GL_ALWAYS, 97, -1);       //  write object into the stencil buffer
+                cubePtr->render();                      //  render first light source
+            }
+
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, finalPositionTwo);
+                model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+                shaderPBR->passMatrix("model", model);
+                glStencilFunc(GL_ALWAYS, 98, -1);       //  write object into the stencil buffer
+                cubePtr->render();                      //  render second light source
+            }
+
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, finalPositionThree);
+                model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+                shaderPBR->passMatrix("model", model);
+                glStencilFunc(GL_ALWAYS, 99, -1);       //  write object into the stencil buffer
+                cubePtr->render();                      //  render third light source
+            }
+
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, finalPositionFour);
+                model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+                shaderPBR->passMatrix("model", model);
+                glStencilFunc(GL_ALWAYS, 100, -1);      //  write object into the stencil buffer
+                cubePtr->render();                      //  render fourth light source
+            }
         }
 
         glfwSwapBuffers(window);                        //  swap buffers and poll IO events
