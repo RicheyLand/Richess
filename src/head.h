@@ -15,19 +15,14 @@
 
 #include "helpers/RootDir.h"
 
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <iterator>
 #include <cstdio>
 #include <cstdlib>
 #include <cctype>
-#include <map>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <vector>
-#include <cmath>
-#include <exception>
-#include <stdexcept>
+#include <iterator>
 #include <memory>
 using namespace std;
 
