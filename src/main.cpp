@@ -28,6 +28,7 @@ unique_ptr<Camera> cameraPtr(new Camera);               //  create camera instan
 
 bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
+unsigned activeLamp = 0;
 
 glm::vec3 lightPositionOne(-5.0f, 5.0f, 0.0f);
 glm::vec3 lightPositionTwo(-5.0f, 5.0f, -6.0f);
@@ -2180,14 +2181,15 @@ int main(int argc, char ** argv)                        //  required main method
                  << "    d  ->  rotate camera right\n"
                  << "    q  ->  zoom camera in\n"
                  << "    e  ->  zoom camera out\n"
-                 << "    i  ->  move light source forward\n"
-                 << "    k  ->  move light source backward\n"
-                 << "    j  ->  move light source left\n"
-                 << "    l  ->  move light source right\n"
-                 << "    u  ->  move light source up\n"
-                 << "    h  ->  move light source down\n"
-                 << "    p  ->  toggle light source visibility\n"
-                 << "    o  ->  toggle light source orbit\n";
+                 << "    i  ->  move active light source forward\n"
+                 << "    k  ->  move active light source backward\n"
+                 << "    j  ->  move active light source left\n"
+                 << "    l  ->  move active light source right\n"
+                 << "    u  ->  move active light source up\n"
+                 << "    h  ->  move active light source down\n"
+                 << "    m  ->  switch active light source\n"
+                 << "    p  ->  light sources visibility toggle\n"
+                 << "    o  ->  activate light source orbit mode\n";
 
             return 0;
         }
@@ -2842,6 +2844,13 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
             lightColorFour.z = 29.0f;
         }
     }
+    else if (key == GLFW_KEY_M && action == GLFW_PRESS)     //  toggle active lamp
+    {
+        if (activeLamp == 3)
+            activeLamp = 0;
+        else
+            activeLamp++;
+    }
 }
 
 void processInput(GLFWwindow * window)                  //  non-callback keyboard input
@@ -2868,25 +2877,126 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
         cameraPtr->zoomIn();
                                                         //  move light source by pressing appropriate buttons
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        lightPositionOne.z += 0.03;
+    {
+        switch (activeLamp)
+        {
+            case 0:
+                lightPositionOne.z += 0.03;
+                break;
+            case 1:
+                lightPositionTwo.z += 0.03;
+                break;
+            case 2:
+                lightPositionThree.z += 0.03;
+                break;
+            default:
+                lightPositionFour.z += 0.03;
+                break;
+        }
+    }
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        lightPositionOne.z -= 0.03;
+    {
+        switch (activeLamp)
+        {
+            case 0:
+                lightPositionOne.z -= 0.03;
+                break;
+            case 1:
+                lightPositionTwo.z -= 0.03;
+                break;
+            case 2:
+                lightPositionThree.z -= 0.03;
+                break;
+            default:
+                lightPositionFour.z -= 0.03;
+                break;
+        }
+    }
 
     if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-        lightPositionOne.x -= 0.03;
+    {
+        switch (activeLamp)
+        {
+            case 0:
+                lightPositionOne.x -= 0.03;
+                break;
+            case 1:
+                lightPositionTwo.x -= 0.03;
+                break;
+            case 2:
+                lightPositionThree.x -= 0.03;
+                break;
+            default:
+                lightPositionFour.x -= 0.03;
+                break;
+        }
+    }
 
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        lightPositionOne.x += 0.03;
+    {
+        switch (activeLamp)
+        {
+            case 0:
+                lightPositionOne.x += 0.03;
+                break;
+            case 1:
+                lightPositionTwo.x += 0.03;
+                break;
+            case 2:
+                lightPositionThree.x += 0.03;
+                break;
+            default:
+                lightPositionFour.x += 0.03;
+                break;
+        }
+    }
 
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
     {
-        if (lightPositionOne.y >= 0.4f)
-            lightPositionOne.y -= 0.03;
+        switch (activeLamp)
+        {
+            case 0:
+                if (lightPositionOne.y >= 0.4f)
+                    lightPositionOne.y -= 0.03;
+
+                break;
+            case 1:
+                if (lightPositionTwo.y >= 0.4f)
+                    lightPositionTwo.y -= 0.03;
+
+                break;
+            case 2:
+                if (lightPositionThree.y >= 0.4f)
+                    lightPositionThree.y -= 0.03;
+
+                break;
+            default:
+                if (lightPositionFour.y >= 0.4f)
+                    lightPositionFour.y -= 0.03;
+
+                break;
+        }
     }
 
     if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-        lightPositionOne.y += 0.03;
+    {
+        switch (activeLamp)
+        {
+            case 0:
+                lightPositionOne.y += 0.03;
+                break;
+            case 1:
+                lightPositionTwo.y += 0.03;
+                break;
+            case 2:
+                lightPositionThree.y += 0.03;
+                break;
+            default:
+                lightPositionFour.y += 0.03;
+                break;
+        }
+    }
 }
 
 void framebuffer_size_callback(GLFWwindow * /*window*/, int width, int height)  //  handle window resize using callback
