@@ -29,11 +29,12 @@ unique_ptr<Camera> cameraPtr(new Camera);               //  create camera instan
 bool lampOrbit = false;                                 //  holds if lamp orbit is active
 bool lampVisible = false;                               //  holds lamp object visibility
 unsigned activeLamp = 0;
-
+                                                        //  specify all light position
 glm::vec3 lightPositionOne(-5.0f, 5.0f, 0.0f);
 glm::vec3 lightPositionTwo(-5.0f, 5.0f, -6.0f);
 glm::vec3 lightPositionThree(-5.0f, 5.0f, 6.0f);
 glm::vec3 lightPositionFour(-3.5f, 10.0f, -0.0f);
+                                                        //  specify all light colors
 glm::vec3 lightColorOne(150.0f, 150.0f, 150.0f);
 glm::vec3 lightColorTwo(150.0f, 150.0f, 150.0f);
 glm::vec3 lightColorThree(150.0f, 150.0f, 150.0f);
@@ -1761,7 +1762,7 @@ public:
                 linear = oldLinear;                     //  restore old array
 
                 for (int i = 0; i < 8; i++)
-                    figurines[i] = oldFigurines[i];    //  restore old game board state
+                    figurines[i] = oldFigurines[i];     //  restore old game board state
 
                 return false;
             }
@@ -1782,7 +1783,7 @@ public:
                 linear = oldLinear;                     //  restore old array
 
                 for (int i = 0; i < 8; i++)
-                    figurines[i] = oldFigurines[i];    //  restore old game board state
+                    figurines[i] = oldFigurines[i];     //  restore old game board state
 
                 return false;
             }
@@ -1904,7 +1905,7 @@ public:
         return true;
     }
 
-    bool refreshFigurines(int & i, int & j)             //  rehresh game board after clicking onto highlighted game board board
+    bool refreshFigurines(int & i, int & j)             //  refresh game board after clicking onto highlighted game board board
     {
         if (selection[0] == -1 || selection[1] == -1)   //  do nothing when nothing is selected
             return false;
@@ -1915,7 +1916,7 @@ public:
         return performMove(i, j);                       //  perform move with figurine
     }
 
-    bool refreshFigurines(int index)                    //  rehresh game board after clicking onto highlighted game board board
+    bool refreshFigurines(int index)                    //  refresh game board after clicking onto highlighted game board board
     {
         if (selection[0] == -1 || selection[1] == -1)   //  do nothing when nothing is selected
             return false;
@@ -2227,7 +2228,7 @@ int main(int argc, char ** argv)                        //  required main method
 
     if (window == nullptr)                              //  window has not been created successfully
     {
-        cerr << "GLFW window has not been created successfully\n";
+        cerr << "GLFW window has not been created successfully" << endl;
         glfwTerminate();
 
         return -1;
@@ -2240,7 +2241,7 @@ int main(int argc, char ** argv)                        //  required main method
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        cerr << "Failed to initialize GLAD\n";          //  initialize glad
+        cerr << "Failed to initialize GLAD" << endl;    //  initialize glad
         return -1;
     }
 
@@ -2249,7 +2250,7 @@ int main(int argc, char ** argv)                        //  required main method
     glEnable(GL_MULTISAMPLE);                           //  multisampling is going to be used
 
     unique_ptr<Chess> chessPtr(new Chess);              //  create chess game logic instance
-
+                                                        //  load all required models
     unique_ptr<Model> cubePtr(new Model(ROOT_DIR "res/models/block/positions.txt", ROOT_DIR "res/models/block/normals.txt", ROOT_DIR "res/models/block/indices.txt", ROOT_DIR "res/models/block/uv.txt"));
     unique_ptr<Model> rookPtr(new Model(ROOT_DIR "res/models/rook/positions.txt", ROOT_DIR "res/models/rook/normals.txt", ROOT_DIR "res/models/rook/indices.txt", ROOT_DIR "res/models/rook/uv.txt"));
     unique_ptr<Model> knightPtr(new Model(ROOT_DIR "res/models/knight/positions.txt", ROOT_DIR "res/models/knight/normals.txt", ROOT_DIR "res/models/knight/indices.txt", ROOT_DIR "res/models/knight/uv.txt"));
@@ -2260,53 +2261,53 @@ int main(int argc, char ** argv)                        //  required main method
 
     unique_ptr<Shader> shaderPBR(new Shader(ROOT_DIR "res/shaders/pbr.vs", ROOT_DIR "res/shaders/pbr.fs"));
 
-    shaderPBR->activate();
+    shaderPBR->activate();                              //  setup and activate PBR shader
     shaderPBR->passInteger("albedoMap", 0);
     shaderPBR->passInteger("normalMap", 1);
     shaderPBR->passInteger("metallicMap", 2);
     shaderPBR->passInteger("roughnessMap", 3);
     shaderPBR->passInteger("aoMap", 4);
 
-    unsigned int albedoRed = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoRed.png");
+    unsigned int albedoRed = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoRed.png");   //  load all color textures
     unsigned int albedoGreen = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoGreen.png");
     unsigned int albedoBlue = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoBlue.png");
     unsigned int albedoYellow = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoYellow.png");
     unsigned int albedoWhite = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoWhite.png");
     unsigned int albedoBlack = loadTexture(ROOT_DIR "res/models/textures/highlight/albedoBlack.png");
 
-    unsigned int normalHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/normal.png");
+    unsigned int normalHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/normal.png");    //  load all highlight textures
     unsigned int metallicHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/metallic.png");
     unsigned int roughnessHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/roughness.png");
     unsigned int aoHighlight = loadTexture(ROOT_DIR "res/models/textures/highlight/ao.png");
 
-    unsigned int albedoBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/albedo.png");
+    unsigned int albedoBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/albedo.png");    //  load all textures for black figurines
     unsigned int normalBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/normal.png");
     unsigned int metallicBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/metallic.png");
     unsigned int roughnessBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/roughness.png");
     unsigned int aoBlackFigurine = loadTexture(ROOT_DIR "res/models/textures/blackFigurine/ao.png");
 
-    unsigned int albedoWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/albedo.png");
+    unsigned int albedoWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/albedo.png");      //  load all textures for white blocks
     unsigned int normalWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/normal.png");
     unsigned int metallicWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/metallic.png");
     unsigned int roughnessWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/roughness.png");
     unsigned int aoWhiteBlock = loadTexture(ROOT_DIR "res/models/textures/whiteBlock/ao.png");
 
-    unsigned int albedoBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/albedo.png");
+    unsigned int albedoBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/albedo.png");      //  load all textures for black blocks
     unsigned int normalBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/normal.png");
     unsigned int metallicBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/metallic.png");
     unsigned int roughnessBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/roughness.png");
     unsigned int aoBlackBlock = loadTexture(ROOT_DIR "res/models/textures/blackBlock/ao.png");
 
-    unsigned int albedoWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/albedo.png");
+    unsigned int albedoWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/albedo.png");    //  load all textures for white figurines
     unsigned int normalWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/normal.png");
     unsigned int metallicWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/metallic.png");
     unsigned int roughnessWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/roughness.png");
     unsigned int aoWhiteFigurine = loadTexture(ROOT_DIR "res/models/textures/whiteFigurine/ao.png");
 
-    glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
+    glm::mat4 projection = glm::mat4(1.0f);             //  create new projection matrix
+    projection = glm::perspective(glm::radians(45.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);   //  setup projection matrix
     shaderPBR->activate();
-    shaderPBR->passMatrix("projection", projection);
+    shaderPBR->passMatrix("projection", projection);    //  pass projection matrix into the PBR shader
 
     for (int i = 0; i < 8; i++)                         //  initialize first row of game board blocks
     {
@@ -2315,7 +2316,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[i] = glm::vec3(offset, 0.0f, 0.0f);
         highlight[i] = 0;                               //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[i] = false;
         else
             isWhite[i] = true;
@@ -2328,7 +2329,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[8 + i] = glm::vec3(offset, 0.0f, 0.4f);
         highlight[8 + i] = 0;                           //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[8 + i] = true;
         else
             isWhite[8 + i] = false;
@@ -2341,7 +2342,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[16 + i] = glm::vec3(offset, 0.0f, 0.8f);
         highlight[16 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[16 + i] = false;
         else
             isWhite[16 + i] = true;
@@ -2354,7 +2355,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[24 + i] = glm::vec3(offset, 0.0f, 1.2f);
         highlight[24 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[24 + i] = true;
         else
             isWhite[24 + i] = false;
@@ -2367,7 +2368,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[32 + i] = glm::vec3(offset, 0.0f, 1.6f);
         highlight[32 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[32 + i] = false;
         else
             isWhite[32 + i] = true;
@@ -2380,7 +2381,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[40 + i] = glm::vec3(offset, 0.0f, 2.0f);
         highlight[40 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[40 + i] = true;
         else
             isWhite[40 + i] = false;
@@ -2393,7 +2394,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[48 + i] = glm::vec3(offset, 0.0f, 2.4f);
         highlight[48 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[48 + i] = false;
         else
             isWhite[48 + i] = true;
@@ -2406,7 +2407,7 @@ int main(int argc, char ** argv)                        //  required main method
         positions[56 + i] = glm::vec3(offset, 0.0f, 2.8f);
         highlight[56 + i] = 0;                          //  nothing is highlighted by default
 
-        if (i & 1)
+        if (i & 1)                                      //  set value of the color flag
             isWhite[56 + i] = true;
         else
             isWhite[56 + i] = false;
@@ -2418,7 +2419,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[64 + i] = glm::vec3(offset, 0.23f, 0.4f);
         highlight[64 + i] = 0;                          //  nothing is highlighted by default
-        isWhite[64 + i] = false;
+        isWhite[64 + i] = false;                        //  set value of the color flag
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize white pawns
@@ -2427,7 +2428,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[72 + i] = glm::vec3(offset, 0.23f, 2.4f);
         highlight[72 + i] = 0;                          //  nothing is highlighted by default
-        isWhite[72 + i] = true;
+        isWhite[72 + i] = true;                         //  set value of the color flag
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize black non-pawns
@@ -2436,7 +2437,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[80 + i] = glm::vec3(offset, 0.23f, 0.0f);
         highlight[80 + i] = 0;                          //  nothing is highlighted by default
-        isWhite[80 + i] = false;
+        isWhite[80 + i] = false;                        //  set value of the color flag
     }
 
     for (int i = 0; i < 8; i++)                         //  initialize white non-pawns
@@ -2445,7 +2446,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         positions[88 + i] = glm::vec3(offset, 0.23f, 2.8f);
         highlight[88 + i] = 0;                          //  nothing is highlighted by default
-        isWhite[88 + i] = true;
+        isWhite[88 + i] = true;                         //  set value of the color flag
     }
 
     for (int i = 0; i < 9; i++)                         //  initialize game board border
@@ -2490,62 +2491,57 @@ int main(int argc, char ** argv)                        //  required main method
         glClearStencil(0);                              //  clear stencil buffer and set default index value
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);     //  clear all required buffers
 
-        chessPtr->handle();                                 //  handle chess logic turn
+        chessPtr->handle();                             //  handle chess logic turn
         
-        if (chessPtr->animationActive)                      //  check if camera animation is activated
+        if (chessPtr->animationActive)                  //  check if camera animation is activated
         {
-            chessPtr->actual = glfwGetTime();               //  get actual timestamp
+            chessPtr->actual = glfwGetTime();           //  get actual timestamp
 
             if (chessPtr->actual - chessPtr->previous > 0.01)   //  check if time after last animation step is a required chunk
             {
-                if (cameraPtr->animateToggle())             //  handle camera movement
+                if (cameraPtr->animateToggle())         //  handle camera movement
                     chessPtr->previous = chessPtr->actual;
                 else
-                    chessPtr->animationActive = false;      //  disable animation after successfull camera movement
+                    chessPtr->animationActive = false;  //  disable animation after successfull camera movement
             }
         }
 
-        if (lampOrbit)
+        if (lampOrbit)                                  //  check if light orbit mode has been activated
         {
-            float radius;
+            float radius = 7.0f;
 
-            radius = 7.0f;
-            lightPositionOne.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit light source around the game board
+            lightPositionOne.x = sin(glfwGetTime() * 0.1f) * radius;     //  orbit first light source around the game board
             lightPositionOne.z = cos(glfwGetTime() * 0.1f) * radius;
 
-            radius = 7.0f;
-            lightPositionTwo.x = sin(glfwGetTime() * 0.09f) * radius;     //  orbit light source around the game board
+            lightPositionTwo.x = sin(glfwGetTime() * 0.09f) * radius;     //  orbit second light source around the game board
             lightPositionTwo.z = cos(glfwGetTime() * 0.09f) * radius;
 
-            radius = 7.0f;
-            lightPositionThree.x = sin(glfwGetTime() * 0.08f) * radius;     //  orbit light source around the game board
+            lightPositionThree.x = sin(glfwGetTime() * 0.08f) * radius;     //  orbit third light source around the game board
             lightPositionThree.z = cos(glfwGetTime() * 0.08f) * radius;
 
-            radius = 7.0f;
-            lightPositionFour.x = sin(glfwGetTime() * 0.07f) * radius;     //  orbit light source around the game board
+            lightPositionFour.x = sin(glfwGetTime() * 0.07f) * radius;     //  orbit fourth light source around the game board
             lightPositionFour.z = cos(glfwGetTime() * 0.07f) * radius;
         }
 
-        // reset viewport
-        glViewport(0, 0, window_width, window_height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glViewport(0, 0, window_width, window_height);  //  reset viewport
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);     //  clear selected buffers
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);      //  setup stencil buffer
 
         shaderPBR->activate();
         glm::mat4 view = glm::mat4(1.0f);
-        view = cameraPtr->loadViewMatrix();
+        view = cameraPtr->loadViewMatrix();             //  camera view matrix needs to be loaded
         shaderPBR->passMatrix("view", view);
         shaderPBR->passVector("camPos", cameraPtr->Position);
 
         for (int i = 0; i < 64; i++)                    //  render all game board blocks
         {
-            glm::mat4 model = glm::mat4(1.0f);
+            glm::mat4 model = glm::mat4(1.0f);          //  create new model matrix
             model = glm::translate(model, positions[i]);
             model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 
-            if (highlight[i] == 1)                          //  move
+            if (highlight[i] == 1)                      //  move highlight
             {
-                glActiveTexture(GL_TEXTURE0);
+                glActiveTexture(GL_TEXTURE0);           //  bind new set of textures
                 glBindTexture(GL_TEXTURE_2D, albedoBlue);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, normalHighlight);
@@ -2556,9 +2552,9 @@ int main(int argc, char ** argv)                        //  required main method
                 glActiveTexture(GL_TEXTURE4);
                 glBindTexture(GL_TEXTURE_2D, aoHighlight);
             }
-            else if (highlight[i] == 2)                     //  attack
+            else if (highlight[i] == 2)                 //  attack highlight
             {
-                glActiveTexture(GL_TEXTURE0);
+                glActiveTexture(GL_TEXTURE0);           //  bind new set of textures
                 glBindTexture(GL_TEXTURE_2D, albedoRed);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, normalHighlight);
@@ -2569,9 +2565,9 @@ int main(int argc, char ** argv)                        //  required main method
                 glActiveTexture(GL_TEXTURE4);
                 glBindTexture(GL_TEXTURE_2D, aoHighlight);
             }
-            else if (highlight[i] == 3)                     //  castling
+            else if (highlight[i] == 3)                 //  castling highlight
             {
-                glActiveTexture(GL_TEXTURE0);
+                glActiveTexture(GL_TEXTURE0);           //  bind new set of textures
                 glBindTexture(GL_TEXTURE_2D, albedoYellow);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, normalHighlight);
@@ -2584,9 +2580,9 @@ int main(int argc, char ** argv)                        //  required main method
             }
             else
             {
-                if (isWhite[i] == true)
+                if (isWhite[i] == true)                 //  current block has got white color
                 {
-                    glActiveTexture(GL_TEXTURE0);
+                    glActiveTexture(GL_TEXTURE0);       //  bind new set of textures
                     glBindTexture(GL_TEXTURE_2D, albedoWhiteBlock);
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, normalWhiteBlock);
@@ -2597,9 +2593,9 @@ int main(int argc, char ** argv)                        //  required main method
                     glActiveTexture(GL_TEXTURE4);
                     glBindTexture(GL_TEXTURE_2D, aoWhiteBlock);
                 }
-                else
+                else                                    //  current block has got black color
                 {
-                    glActiveTexture(GL_TEXTURE0);
+                    glActiveTexture(GL_TEXTURE0);       //  bind new set of textures
                     glBindTexture(GL_TEXTURE_2D, albedoBlackBlock);
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, normalBlackBlock);
@@ -2614,10 +2610,10 @@ int main(int argc, char ** argv)                        //  required main method
 
             shaderPBR->passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cubePtr->render();
+            cubePtr->render();                          //  render selected object
         }
 
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);                   //  bind new set of textures
         glBindTexture(GL_TEXTURE_2D, albedoWhiteBlock);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, normalWhiteBlock);
@@ -2630,13 +2626,13 @@ int main(int argc, char ** argv)                        //  required main method
 
         for (int i = 64; i < 96; i++)                   //  render all figurines
         {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, positions[i]);  //  translate and scale object before rendering
+            glm::mat4 model = glm::mat4(1.0f);          //  create new model matrix
+            model = glm::translate(model, positions[i]);    //  translate and scale object before rendering
             model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 
             if (highlight[i])
             {
-                glActiveTexture(GL_TEXTURE0);
+                glActiveTexture(GL_TEXTURE0);           //  bind new set of textures
                 glBindTexture(GL_TEXTURE_2D, albedoGreen);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, normalHighlight);
@@ -2651,7 +2647,7 @@ int main(int argc, char ** argv)                        //  required main method
             {
                 if (isWhite[i] == true)
                 {
-                    glActiveTexture(GL_TEXTURE0);
+                    glActiveTexture(GL_TEXTURE0);       //  bind new set of textures
                     glBindTexture(GL_TEXTURE_2D, albedoWhiteFigurine);
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, normalWhiteFigurine);
@@ -2664,7 +2660,7 @@ int main(int argc, char ** argv)                        //  required main method
                 }
                 else
                 {
-                    glActiveTexture(GL_TEXTURE0);
+                    glActiveTexture(GL_TEXTURE0);       //  bind new set of textures
                     glBindTexture(GL_TEXTURE_2D, albedoBlackFigurine);
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, normalBlackFigurine);
@@ -2683,26 +2679,26 @@ int main(int argc, char ** argv)                        //  required main method
             string linear = chessPtr->getLinear();
                                                         //  check type of figure using value inside linear array
             if (linear[i - 64] == 'p' || linear[i - 64] == 'P')
-                pawnPtr->render();
+                pawnPtr->render();                      //  render selected object
             else if (linear[i - 64] == 'r' || linear[i - 64] == 'R')
-                rookPtr->render();
+                rookPtr->render();                      //  render selected object
             else if (linear[i - 64] == 'n')
             {
                 model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
                 shaderPBR->passMatrix("model", model);
-                knightPtr->render();
+                knightPtr->render();                    //  render selected object
             }
             else if (linear[i - 64] == 'N')
-                knightPtr->render();
+                knightPtr->render();                    //  render selected object
             else if (linear[i - 64] == 'b' || linear[i - 64] == 'B')
-                bishopPtr->render();
+                bishopPtr->render();                    //  render selected object
             else if (linear[i - 64] == 'q' || linear[i - 64] == 'Q')
-                queenPtr->render();
+                queenPtr->render();                     //  render selected object
             else if (linear[i - 64] == 'k' || linear[i - 64] == 'K')
-                kingPtr->render();
+                kingPtr->render();                      //  render selected object
         }
 
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);                   //  bind new set of textures
         glBindTexture(GL_TEXTURE_2D, albedoBlack);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, normalHighlight);
@@ -2715,16 +2711,16 @@ int main(int argc, char ** argv)                        //  required main method
 
         for (int i = 96; i < 132; i++)                  //  render game board border cubes
         {
-            glm::mat4 model = glm::mat4(1.0f);
+            glm::mat4 model = glm::mat4(1.0f);          //  create new model matrix
             model = glm::translate(model, positions[i]);
             model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
             shaderPBR->passMatrix("model", model);
             glStencilFunc(GL_ALWAYS, i + 1, -1);        //  write object into the stencil buffer
-            cubePtr->render();
+            cubePtr->render();                          //  render selected object
         }
 
-        shaderPBR->passVector("lightPositions[0]", lightPositionOne);
-        shaderPBR->passVector("lightColors[0]", lightColorOne);
+        shaderPBR->passVector("lightPositions[0]", lightPositionOne);   //  pass all light source positions into the PBR shader
+        shaderPBR->passVector("lightColors[0]", lightColorOne);     //  pass all light source colors into the PBR shader
         shaderPBR->passVector("lightPositions[1]", lightPositionTwo);
         shaderPBR->passVector("lightColors[1]", lightColorTwo);
         shaderPBR->passVector("lightPositions[2]", lightPositionThree);
@@ -2734,7 +2730,7 @@ int main(int argc, char ** argv)                        //  required main method
 
         if (lampVisible)                                //  check if light sources are visible
         {
-            glActiveTexture(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);               //  bind new set of textures
             glBindTexture(GL_TEXTURE_2D, albedoWhite);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, normalHighlight);
@@ -2750,13 +2746,13 @@ int main(int argc, char ** argv)                        //  required main method
             glm::vec3 finalPositionThree = lightPositionThree;
             glm::vec3 finalPositionFour = lightPositionFour;
             
-            finalPositionOne.y += 0.2;
+            finalPositionOne.y += 0.2;                  //  modify position to make light source bright and visible
             finalPositionTwo.y += 0.2;
             finalPositionThree.y += 0.2;
             finalPositionFour.y += 0.2;
 
             {
-                glm::mat4 model = glm::mat4(1.0f);
+                glm::mat4 model = glm::mat4(1.0f);      //  create new model matrix
                 model = glm::translate(model, finalPositionOne);
                 model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
                 shaderPBR->passMatrix("model", model);
@@ -2765,7 +2761,7 @@ int main(int argc, char ** argv)                        //  required main method
             }
 
             {
-                glm::mat4 model = glm::mat4(1.0f);
+                glm::mat4 model = glm::mat4(1.0f);      //  create new model matrix
                 model = glm::translate(model, finalPositionTwo);
                 model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
                 shaderPBR->passMatrix("model", model);
@@ -2774,7 +2770,7 @@ int main(int argc, char ** argv)                        //  required main method
             }
 
             {
-                glm::mat4 model = glm::mat4(1.0f);
+                glm::mat4 model = glm::mat4(1.0f);      //  create new model matrix
                 model = glm::translate(model, finalPositionThree);
                 model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
                 shaderPBR->passMatrix("model", model);
@@ -2783,7 +2779,7 @@ int main(int argc, char ** argv)                        //  required main method
             }
 
             {
-                glm::mat4 model = glm::mat4(1.0f);
+                glm::mat4 model = glm::mat4(1.0f);      //  create new model matrix
                 model = glm::translate(model, finalPositionFour);
                 model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
                 shaderPBR->passMatrix("model", model);
@@ -2885,7 +2881,7 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
         if (activeLamp == 3)
             activeLamp = 0;
         else
-            activeLamp++;
+            activeLamp++;                               //  select next light source as active lamp
     }
 }
 
@@ -2914,102 +2910,102 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
                                                         //  move light source by pressing appropriate buttons
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
     {
-        switch (activeLamp)
+        switch (activeLamp)                             //  check which light source is active
         {
             case 0:
-                lightPositionOne.z += 0.03;
+                lightPositionOne.z += 0.03;             //  move first light source
                 break;
             case 1:
-                lightPositionTwo.z += 0.03;
+                lightPositionTwo.z += 0.03;             //  move second light source
                 break;
             case 2:
-                lightPositionThree.z += 0.03;
+                lightPositionThree.z += 0.03;           //  move third light source
                 break;
             default:
-                lightPositionFour.z += 0.03;
+                lightPositionFour.z += 0.03;            //  move fourth light source
                 break;
         }
     }
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
     {
-        switch (activeLamp)
+        switch (activeLamp)                             //  check which light source is active
         {
             case 0:
-                lightPositionOne.z -= 0.03;
+                lightPositionOne.z -= 0.03;             //  move first light source
                 break;
             case 1:
-                lightPositionTwo.z -= 0.03;
+                lightPositionTwo.z -= 0.03;             //  move second light source
                 break;
             case 2:
-                lightPositionThree.z -= 0.03;
+                lightPositionThree.z -= 0.03;           //  move third light source
                 break;
             default:
-                lightPositionFour.z -= 0.03;
+                lightPositionFour.z -= 0.03;            //  move fourth light source
                 break;
         }
     }
 
     if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
     {
-        switch (activeLamp)
+        switch (activeLamp)                             //  check which light source is active
         {
             case 0:
-                lightPositionOne.x -= 0.03;
+                lightPositionOne.x -= 0.03;             //  move first light source
                 break;
             case 1:
-                lightPositionTwo.x -= 0.03;
+                lightPositionTwo.x -= 0.03;             //  move second light source
                 break;
             case 2:
-                lightPositionThree.x -= 0.03;
+                lightPositionThree.x -= 0.03;           //  move third light source
                 break;
             default:
-                lightPositionFour.x -= 0.03;
+                lightPositionFour.x -= 0.03;            //  move fourth light source
                 break;
         }
     }
 
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
     {
-        switch (activeLamp)
+        switch (activeLamp)                             //  check which light source is active
         {
             case 0:
-                lightPositionOne.x += 0.03;
+                lightPositionOne.x += 0.03;             //  move first light source
                 break;
             case 1:
-                lightPositionTwo.x += 0.03;
+                lightPositionTwo.x += 0.03;             //  move second light source
                 break;
             case 2:
-                lightPositionThree.x += 0.03;
+                lightPositionThree.x += 0.03;           //  move third light source
                 break;
             default:
-                lightPositionFour.x += 0.03;
+                lightPositionFour.x += 0.03;            //  move fourth light source
                 break;
         }
     }
 
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
     {
-        switch (activeLamp)
+        switch (activeLamp)                             //  check which light source is active
         {
             case 0:
-                if (lightPositionOne.y >= 0.4f)
-                    lightPositionOne.y -= 0.03;
+                if (lightPositionOne.y >= 0.4f)         //  check if light source is still above game bard
+                    lightPositionOne.y -= 0.03;         //  move first light source
 
                 break;
             case 1:
-                if (lightPositionTwo.y >= 0.4f)
-                    lightPositionTwo.y -= 0.03;
+                if (lightPositionTwo.y >= 0.4f)         //  check if light source is still above game bard
+                    lightPositionTwo.y -= 0.03;         //  move second light source
 
                 break;
             case 2:
-                if (lightPositionThree.y >= 0.4f)
-                    lightPositionThree.y -= 0.03;
+                if (lightPositionThree.y >= 0.4f)       //  check if light source is still above game bard
+                    lightPositionThree.y -= 0.03;       //  move third light source
 
                 break;
             default:
-                if (lightPositionFour.y >= 0.4f)
-                    lightPositionFour.y -= 0.03;
+                if (lightPositionFour.y >= 0.4f)        //  check if light source is still above game bard
+                    lightPositionFour.y -= 0.03;        //  move fourth light source
 
                 break;
         }
@@ -3017,19 +3013,19 @@ void processInput(GLFWwindow * window)                  //  non-callback keyboar
 
     if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
     {
-        switch (activeLamp)
+        switch (activeLamp)                             //  check which light source is active
         {
             case 0:
-                lightPositionOne.y += 0.03;
+                lightPositionOne.y += 0.03;             //  move first light source
                 break;
             case 1:
-                lightPositionTwo.y += 0.03;
+                lightPositionTwo.y += 0.03;             //  move second light source
                 break;
             case 2:
-                lightPositionThree.y += 0.03;
+                lightPositionThree.y += 0.03;           //  move third light source
                 break;
             default:
-                lightPositionFour.y += 0.03;
+                lightPositionFour.y += 0.03;            //  move fourth light source
                 break;
         }
     }
@@ -3062,41 +3058,41 @@ void mouse_button_callback(GLFWwindow * window, int button, int action, int)    
     }
 }
 
-unsigned int loadTexture(char const * path)
+unsigned int loadTexture(char const * path)             //  load texture and return texture ID value
 {
     unsigned int textureID;
-    glGenTextures(1, &textureID);
+    glGenTextures(1, &textureID);                       //  generate new texture ID value
 
     int width, height, nrComponents;
-    unsigned char * data = stbi_load(path, &width, &height, &nrComponents, 0);
+    unsigned char * data = stbi_load(path, &width, &height, &nrComponents, 0);  //  use appropriate function to load texture date
 
-    if (data)
+    if (data)                                           //  check if something has been loaded
     {
         GLenum format;
 
-        if (nrComponents == 1)
-            format = GL_RED;
+        if (nrComponents == 1)                          //  detect color format of the texture
+            format = GL_RED;                            //  set appropriate texture color format
         else if (nrComponents == 3)
-            format = GL_RGB;
+            format = GL_RGB;                            //  set appropriate texture color format
         else if (nrComponents == 4)
-            format = GL_RGBA;
+            format = GL_RGBA;                           //  set appropriate texture color format
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);        //  bind loaded texture with generated texture ID value
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D);                //  generate appropriate mipmap texture
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   //  setup texture wrapping
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);     //  setup texture filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        stbi_image_free(data);
+        stbi_image_free(data);                          //  delete previously allocated memory
     }
-    else
+    else                                                //  no data has been loaded
     {
-        cout << "Texture failed to load at path: " << path << endl;
-        stbi_image_free(data);
+        cerr << "Texture failed to load at path: " << path << endl;
+        stbi_image_free(data);                          //  delete previously allocated memory
     }
 
-    return textureID;
+    return textureID;                                   //  return generated texture ID value
 }
