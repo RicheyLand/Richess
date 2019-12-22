@@ -9,16 +9,9 @@ void framebuffer_size_callback(GLFWwindow * window, int width, int height);
 void mouse_button_callback(GLFWwindow * window, int button, int action, int mods);
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow * window);
+                                                        //  define all required functions
+glm::vec3 rgbToFloats(int red, int green, int blue);
 unsigned int loadTexture(const char * path);
-
-glm::vec3 rgbToFloats(int red, int green, int blue)     //  convert integer RGB value to appropriate float RGB value
-{
-    float newRed = float(red) / 255.0;
-    float newGreen = float(green) / 255.0;
-    float newBlue = float(blue) / 255.0;
-
-    return glm::vec3(newRed, newGreen, newBlue);        //  return value as a vector
-}
 
 unsigned int window_width = 1024;                       //  initial width of window
 unsigned int window_height = 600;                       //  initial height of window
@@ -2176,6 +2169,11 @@ int main(int argc, char ** argv)                        //  required main method
                  << "    0  ->  success\n"
                  << "    1  ->  program arguments error\n\n"
                  << "KEYBOARD SHORTCUTS\n"
+                 << "    2  ->  camera front view\n"
+                 << "    4  ->  camera left view\n"
+                 << "    5  ->  camera top view\n"
+                 << "    6  ->  camera right view\n"
+                 << "    8  ->  camera rear view\n"
                  << "    w  ->  rotate camera up\n"
                  << "    s  ->  rotate camera down\n"
                  << "    a  ->  rotate camera left\n"
@@ -2883,6 +2881,26 @@ void key_callback(GLFWwindow * /*window*/, int key, int /*scancode*/, int action
         else
             activeLamp++;                               //  select next light source as active lamp
     }
+    else if (key == GLFW_KEY_0 && action == GLFW_PRESS)
+        cameraPtr->setProperties(90, 180, 5.0f);
+    else if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+        cameraPtr->setProperties(45, 220, 5.0f);
+    else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+        cameraPtr->setProperties(90, 220, 5.0f);
+    else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+        cameraPtr->setProperties(135, 220, 5.0f);
+    else if (key == GLFW_KEY_4 && action == GLFW_PRESS)
+        cameraPtr->setProperties(0, 220, 5.0f);
+    else if (key == GLFW_KEY_5 && action == GLFW_PRESS)
+        cameraPtr->setProperties(90, 269, 5.0f);
+    else if (key == GLFW_KEY_6 && action == GLFW_PRESS)
+        cameraPtr->setProperties(180, 220, 5.0f);
+    else if (key == GLFW_KEY_7 && action == GLFW_PRESS)
+        cameraPtr->setProperties(225, 220, 5.0f);
+    else if (key == GLFW_KEY_8 && action == GLFW_PRESS)
+        cameraPtr->setProperties(270, 220, 5.0f);
+    else if (key == GLFW_KEY_9 && action == GLFW_PRESS)
+        cameraPtr->setProperties(315, 220, 5.0f);
 }
 
 void processInput(GLFWwindow * window)                  //  non-callback keyboard input
@@ -3056,6 +3074,15 @@ void mouse_button_callback(GLFWwindow * window, int button, int action, int)    
         if (index && index <= 96)
             clicked = index - 1;                        //  ignore border cubes and light source click
     }
+}
+
+glm::vec3 rgbToFloats(int red, int green, int blue)     //  convert integer RGB value to appropriate float RGB value
+{
+    float newRed = float(red) / 255.0;
+    float newGreen = float(green) / 255.0;
+    float newBlue = float(blue) / 255.0;
+
+    return glm::vec3(newRed, newGreen, newBlue);        //  return value as a vector
 }
 
 unsigned int loadTexture(char const * path)             //  load texture and return texture ID value

@@ -39,6 +39,9 @@ public:
 
     void setProperties(int _rotateAngle = 90, int _tiltAngle = 220, float _distance = 5.0f)     //  camera properties setter
     {
+        if (animation)                                  //  do nothing when animation is running
+            return;
+
         rotateAngle = _rotateAngle;                     //  pass values from paramaters
         tiltAngle = _tiltAngle;
         distance = _distance;
