@@ -1,5 +1,5 @@
 #include "shader.h"
-#include "model.h"
+#include "mesh.h"
 #include "camera.h"
 
 #include <stb_image.h>
@@ -2214,7 +2214,7 @@ int main(int argc, char ** argv)                        //  required main method
     }
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    // this line allows successfull compilation on Apple operating systems
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    // this line allows successful compilation on Apple operating systems
 #endif
     
     GLFWwindow * window;
@@ -2249,13 +2249,13 @@ int main(int argc, char ** argv)                        //  required main method
 
     unique_ptr<Chess> chessPtr(new Chess);              //  create chess game logic instance
                                                         //  load all required models
-    unique_ptr<Model> cubePtr(new Model(ROOT_DIR "res/models/block/positions.txt", ROOT_DIR "res/models/block/normals.txt", ROOT_DIR "res/models/block/indices.txt", ROOT_DIR "res/models/block/uv.txt"));
-    unique_ptr<Model> rookPtr(new Model(ROOT_DIR "res/models/rook/positions.txt", ROOT_DIR "res/models/rook/normals.txt", ROOT_DIR "res/models/rook/indices.txt", ROOT_DIR "res/models/rook/uv.txt"));
-    unique_ptr<Model> knightPtr(new Model(ROOT_DIR "res/models/knight/positions.txt", ROOT_DIR "res/models/knight/normals.txt", ROOT_DIR "res/models/knight/indices.txt", ROOT_DIR "res/models/knight/uv.txt"));
-    unique_ptr<Model> bishopPtr(new Model(ROOT_DIR "res/models/bishop/positions.txt", ROOT_DIR "res/models/bishop/normals.txt", ROOT_DIR "res/models/bishop/indices.txt", ROOT_DIR "res/models/bishop/uv.txt"));
-    unique_ptr<Model> kingPtr(new Model(ROOT_DIR "res/models/king/positions.txt", ROOT_DIR "res/models/king/normals.txt", ROOT_DIR "res/models/king/indices.txt", ROOT_DIR "res/models/king/uv.txt"));
-    unique_ptr<Model> queenPtr(new Model(ROOT_DIR "res/models/queen/positions.txt", ROOT_DIR "res/models/queen/normals.txt", ROOT_DIR "res/models/queen/indices.txt", ROOT_DIR "res/models/queen/uv.txt"));
-    unique_ptr<Model> pawnPtr(new Model(ROOT_DIR "res/models/pawn/positions.txt", ROOT_DIR "res/models/pawn/normals.txt", ROOT_DIR "res/models/pawn/indices.txt", ROOT_DIR "res/models/pawn/uv.txt"));
+    unique_ptr<Mesh> cubePtr(new Mesh(ROOT_DIR "res/models/block/positions.txt", ROOT_DIR "res/models/block/normals.txt", ROOT_DIR "res/models/block/indices.txt", ROOT_DIR "res/models/block/uv.txt"));
+    unique_ptr<Mesh> rookPtr(new Mesh(ROOT_DIR "res/models/rook/positions.txt", ROOT_DIR "res/models/rook/normals.txt", ROOT_DIR "res/models/rook/indices.txt", ROOT_DIR "res/models/rook/uv.txt"));
+    unique_ptr<Mesh> knightPtr(new Mesh(ROOT_DIR "res/models/knight/positions.txt", ROOT_DIR "res/models/knight/normals.txt", ROOT_DIR "res/models/knight/indices.txt", ROOT_DIR "res/models/knight/uv.txt"));
+    unique_ptr<Mesh> bishopPtr(new Mesh(ROOT_DIR "res/models/bishop/positions.txt", ROOT_DIR "res/models/bishop/normals.txt", ROOT_DIR "res/models/bishop/indices.txt", ROOT_DIR "res/models/bishop/uv.txt"));
+    unique_ptr<Mesh> kingPtr(new Mesh(ROOT_DIR "res/models/king/positions.txt", ROOT_DIR "res/models/king/normals.txt", ROOT_DIR "res/models/king/indices.txt", ROOT_DIR "res/models/king/uv.txt"));
+    unique_ptr<Mesh> queenPtr(new Mesh(ROOT_DIR "res/models/queen/positions.txt", ROOT_DIR "res/models/queen/normals.txt", ROOT_DIR "res/models/queen/indices.txt", ROOT_DIR "res/models/queen/uv.txt"));
+    unique_ptr<Mesh> pawnPtr(new Mesh(ROOT_DIR "res/models/pawn/positions.txt", ROOT_DIR "res/models/pawn/normals.txt", ROOT_DIR "res/models/pawn/indices.txt", ROOT_DIR "res/models/pawn/uv.txt"));
 
     unique_ptr<Shader> shaderPBR(new Shader(ROOT_DIR "res/shaders/pbr.vs", ROOT_DIR "res/shaders/pbr.fs"));
 
@@ -2500,7 +2500,7 @@ int main(int argc, char ** argv)                        //  required main method
                 if (cameraPtr->animateToggle())         //  handle camera movement
                     chessPtr->previous = chessPtr->actual;
                 else
-                    chessPtr->animationActive = false;  //  disable animation after successfull camera movement
+                    chessPtr->animationActive = false;  //  disable animation after successful camera movement
             }
         }
 
