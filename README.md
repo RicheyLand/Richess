@@ -22,7 +22,7 @@ Rendering is implemented using PBR techniques.<br />
 
 * Clone the Richess game repository.
 * Move into the root directory of repository.
-* Run `cmake -G "Visual Studio 16 2019" -A Win32 -Bbuild -H.` command.
+* Run `cmake -G "Visual Studio 16 2019" -A Win32 -Bbuild -S.` command.
 * Move into the `build` directory.
 * Open `richess.sln` file using Visual Studio.
 * Select `Release` solution configuration in Visual Studio.
