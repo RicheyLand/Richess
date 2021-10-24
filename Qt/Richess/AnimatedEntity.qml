@@ -3,10 +3,14 @@ import Qt3D.Render 2.12
 import Qt3D.Input 2.12
 import Qt3D.Extras 2.12
 
+import QtQml 2.12
+import QtQml.Models 2.12
 import QtQuick 2.0 as QQ2
 
 Entity {
-    id: sceneRoot
+    id: root
+
+    property int selectedIndex: -1
 
     Camera {
         id: camera
@@ -14,7 +18,7 @@ Entity {
         fieldOfView: 45
         nearPlane : 0.1
         farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, 20.0 )
+        position: Qt.vector3d( 0.0, 0.0, 40.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
@@ -33,30 +37,54 @@ Entity {
         InputSettings { }
     ]
 
-    PhongMaterial {
-        id: pawnMaterial
-
-        ambient: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-        diffuse: Qt.rgba(1.0, 1.0, 1.0, 1.0)
+    ListModel {
+        id: entityModel
     }
 
-    Mesh {
-        id: pawnMesh
+    NodeInstantiator {
+        model: entityModel
 
-        source: "qrc:/Resources/pawn.obj"
-    }
+        delegate: Entity {
+            property bool selected: root.selectedIndex === index
 
-    Transform {
-        id: pawnTransform
+            PhongMaterial {
+                id: entityMaterial
 
-        translation: Qt.vector3d(0.0, -1.0, 0.0)
-        scale3D: Qt.vector3d(1.0, 1.0, 1.0)
-//        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
-    }
+                ambient: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+                diffuse: parent.selected ? Qt.rgba(0.0, 1.0, 0.0, 1.0) : Qt.rgba(1.0, 1.0, 1.0, 1.0)
+            }
 
-    Entity {
-        id: pawnEntity
+            Mesh {
+                id: entityMesh
 
-        components: [ pawnMesh, pawnMaterial, pawnTransform ]
+                source: "qrc:/Resources/pawn.obj"
+            }
+
+            Transform {
+                id: entityTransform
+
+                translation: Qt.vector3d(x, y, z)
+                scale3D: Qt.vector3d(1.0, 1.0, 1.0)
+//                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
+            }
+
+            ObjectPicker {
+                id: entityPicker
+
+                onPressed: {
+                    root.selectedIndex = root.selectedIndex !== index ? root.selectedIndex = index : -1
+                }
+            }
+
+            components: [ entityMesh, entityMaterial, entityTransform, entityPicker ]
+        }
+
+        Component.onCompleted: {
+            for (var i = 0; i < 4; i++)
+                entityModel.append({"x" : i * 5.0 + 2.5, "y" : 0.0, "z" : 0.0} )
+
+            for (var i = 0; i < 4; i++)
+                entityModel.append({"x" : -i * 5.0 - 2.5, "y" : 0.0, "z" : 0.0} )
+        }
     }
 }
