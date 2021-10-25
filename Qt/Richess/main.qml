@@ -15,9 +15,10 @@ Item {
             focus: true
             aspects: ["input", "logic"]
             cameraAspectRatioMode: Scene3D.AutomaticAspectRatio
+            multisample: true
 
-            AnimatedEntity {
-                id: animatedEntity
+            NodeEntity {
+                id: nodeEntity
             }
         }
     }
